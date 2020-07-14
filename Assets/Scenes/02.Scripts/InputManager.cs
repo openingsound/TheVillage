@@ -13,12 +13,15 @@ public class InputManager : MonoBehaviour
     // [ 입력 상태 형식 ]
     // 1) CLICK         - 클릭
     // 2) DRAG          - 드래그 중
-    // 3) NULL          - 아무런 입력도 없음
-    public enum InputState { CLICK, DRAG, NULL };
+    // 3) ZOOM_IN       - 마우스 휠을 위로 올릴 때
+    // 4) ZOOM_OUT      - 마우스 휠을 아래로 내릴 때
+    // 5) NULL          - 아무런 입력도 없음
+    public enum InputState { CLICK, DRAG, ZOOM_IN, ZOOM_OUT, NULL };
 
     // 현재 입력 상태
     [SerializeField]
     private InputState nowState = InputState.NULL;
+
 
     // 외부에서 확인하는 입력 상태
     // 이 프로퍼티의 값 변경은 외부 클래스에서는 하지 않아야 함.
@@ -49,6 +52,10 @@ public class InputManager : MonoBehaviour
     // 입력이 종료된 위치 - null값 허용
     public Vector3? EndPos { get { return endPos; } }
     private Vector3? endPos;
+
+
+    // 멀티 터치 시 이전 입력 간 거리
+    private float m_lastTouchLenth = 0;
 
 
     private void Awake()
@@ -155,13 +162,70 @@ public class InputManager : MonoBehaviour
         }
         else
         {
-            nowState = InputState.NULL;
-            state = InputState.NULL;
+            float wheelInput = Input.GetAxis("Mouse ScrollWheel");
+
+            // 휠을 올렸을 때 처리 ↑
+            if(wheelInput > 0)
+            {
+                nowState = InputState.ZOOM_IN;
+                state = InputState.ZOOM_IN;
+            }
+            // 휠을 내렸을 때 처리 ↓
+            else if (wheelInput < 0)
+            {
+                nowState = InputState.ZOOM_OUT;
+                state = InputState.ZOOM_OUT;
+            }
+            else
+            {
+                nowState = InputState.NULL;
+                state = InputState.NULL;
+            }
+            
         }
+
+
 
 #endif
 
 #if UNITY_ANDROID
+
+        // 멀티 터치가 들어왔다면
+        if(Input.touchCount > 2)
+        {
+            Vector2 pos1 = Input.GetTouch(0).position;
+            Vector2 pos2 = Input.GetTouch(1).position;
+
+            float m_touchLenth = (pos1 - pos2).sqrMagnitude;
+
+            // 이전에 멀티 터치가 없었다면
+            if(m_lastTouchLenth == 0)
+            {
+                m_lastTouchLenth = m_touchLenth;
+                return;
+            }
+            // 거리가 더 멀어졌다면 줌인
+            else if(m_touchLenth > m_lastTouchLenth)
+            {
+                nowState = InputState.ZOOM_IN;
+                state = InputState.ZOOM_IN;
+            }
+            // 거리가 더 가까어졌다면 줌아웃
+            else
+            {
+                nowState = InputState.ZOOM_OUT;
+                state = InputState.ZOOM_OUT;
+            }
+
+            // 현재 터치간 거리를 이전 터치간 거리로 이동
+            m_lastTouchLenth = m_touchLenth;
+            return;
+
+        }
+        else
+        {
+            m_lastTouchLenth = 0;
+        }
 
         if(Input.touchCount > 0)
         {

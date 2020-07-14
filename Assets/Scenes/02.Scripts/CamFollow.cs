@@ -45,8 +45,21 @@ public class CamFollow : MonoBehaviour
     // 드래그가 완료되었다고 허용할 오차 길이 한계점
     private float errorLimit;
 
-    // 드래그로 인식할 이동 범위
-    //private float dragMinLimit;
+
+
+    /* 줌 인, 아웃 관련 프로퍼티 */
+
+    // 줌 인, 아웃 되는 정도
+    [SerializeField]
+    private float zoomRate = 0.3f;
+
+    // 카메라 크기의 최저 사이즈
+    [SerializeField]
+    private float zoomMin = 5f;
+
+    // 카메라 크기의 최대 사이즈
+    [SerializeField]
+    private float zoomMax = 15f;
 
     //------------------[캠 이동 관련 기본  루틴]-------------------
 
@@ -125,6 +138,23 @@ public class CamFollow : MonoBehaviour
 
             // 목표 지점은 시작점에서 방향벡터를 뺀 만큼
             TargetPos = InputManager.InputSystem.StartPos.Value - moveVec;
+        }
+        // 만일 줌인이 일어났다면
+        else if(InputManager.InputSystem.State == InputManager.InputState.ZOOM_IN)
+        {
+            if(cam.orthographicSize < zoomMax)
+            {
+                cam.orthographicSize += zoomRate;
+            }
+            
+        }
+        // 만일 줌아웃이 일어났다면
+        else if (InputManager.InputSystem.State == InputManager.InputState.ZOOM_OUT)
+        {
+            if (cam.orthographicSize > zoomMin)
+            {
+                cam.orthographicSize -= zoomRate;
+            }
         }
     }
 

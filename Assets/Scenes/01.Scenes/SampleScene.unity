@@ -18472,6 +18472,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetPos: {x: 0, y: 0, z: 0}
   MoveRate: 3
+  zoomRate: 0.5
 --- !u!4 &598800731
 Transform:
   m_ObjectHideFlags: 0
