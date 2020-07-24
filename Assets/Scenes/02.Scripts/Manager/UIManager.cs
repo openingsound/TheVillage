@@ -10,6 +10,8 @@ public class UIManager : MonoBehaviour
     // 링 이미지 오브젝트
     public Image ring;
 
+    public List<Image> ringUIList = new List<Image>();
+
     // 링 오브젝트 표시 여부
     private bool isRing;
 
@@ -18,9 +20,6 @@ public class UIManager : MonoBehaviour
 
     // 현재 UI를 켜야 하는가
     private bool isUI;
-
-    // 터치한 위치를 기억하는 변수
-    private Vector3 clickedPos;
 
 
 
@@ -68,8 +67,6 @@ public class UIManager : MonoBehaviour
             else
             {
                 isUI = true;
-
-                clickedPos = InputManager.InputSystem.StartPos.Value;
             }
 
         }
@@ -108,10 +105,22 @@ public class UIManager : MonoBehaviour
     {
         if(isRing == true)
         {
+            string type = InputManager.InputSystem.selectedObject.tag;
+
+            switch(type)
+            {
+                case "Boundary":
+                    ring = ringUIList[0];
+                    break;
+
+                case "Tree":
+                    ring = ringUIList[1];
+                    break;
+            }
+
             ring.gameObject.SetActive(true);
 
-            ring.gameObject.transform.position // = (clickedPos + new Vector3(0, 0.51f, 0));
-                = new Vector3((((int)(clickedPos.x + 1.5f)) / 3) * 3, 0.51f, (((int)(clickedPos.z + 1.5f)) / 3) * 3);
+            ring.gameObject.transform.position = InputManager.InputSystem.TargetPos;
 
             Debug.Log("ring Pos - " + ring.gameObject.transform.position.ToString());
 

@@ -47,6 +47,8 @@ public class InputManager : MonoBehaviour
     // 입력이 종료된 위치 - null값 허용
     public Vector3? EndPos { get; private set; }
 
+    public Vector3 TargetPos { get; private set; }
+
     // 입력에 들어온 오브젝트
     public GameObject selectedObject { get; private set; }
 
@@ -120,7 +122,11 @@ public class InputManager : MonoBehaviour
                 State = InputState.CLICK;
 
                 selectedObject = TouchScreen(Input.mousePosition).collider.gameObject;
+
+                TargetPos = new Vector3((((int)(StartPos.Value.x + 1.5f)) / 3) * 3, 0.51f, (((int)(StartPos.Value.z + 1.5f)) / 3) * 3);
             }
+
+            
         }
         // 마우스가 눌리고 있다면
         else if (Input.GetMouseButton(0))
