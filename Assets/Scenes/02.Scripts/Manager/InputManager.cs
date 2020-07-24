@@ -122,8 +122,30 @@ public class InputManager : MonoBehaviour
                 State = InputState.CLICK;
 
                 selectedObject = TouchScreen(Input.mousePosition).collider.gameObject;
+                Debug.Log("Select Object : " + selectedObject.tag);
 
-                TargetPos = new Vector3((((int)(StartPos.Value.x + 1.5f)) / 3) * 3, 0.51f, (((int)(StartPos.Value.z + 1.5f)) / 3) * 3);
+                float targetX, targetZ;
+
+                if(StartPos.Value.x > -1.5f)
+                {
+                    targetX = (((int)(StartPos.Value.x + 1.5f)) / 3) * 3;
+                }
+                else
+                {
+                    targetX = (((int)(StartPos.Value.x - 1.5f)) / 3) * 3;
+                }
+
+                if (StartPos.Value.z > -1.5f)
+                {
+                    targetZ = (((int)(StartPos.Value.z + 1.5f)) / 3) * 3;
+                }
+                else
+                {
+                    targetZ = (((int)(StartPos.Value.z - 1.5f)) / 3) * 3;
+                }
+
+                TargetPos = new Vector3(targetX, 0.51f, targetZ);
+                Debug.Log("TargetPos : " + TargetPos.ToString());
             }
 
             
@@ -259,6 +281,9 @@ public class InputManager : MonoBehaviour
                     State = InputState.CLICK;
 
                     selectedObject = TouchScreen(Input.mousePosition).collider.gameObject;
+                    Debug.Log("Select Object : " + selectedObject.tag);
+
+                    TargetPos = new Vector3((((int)(StartPos.Value.x + 1.5f)) / 3) * 3, 0.51f, (((int)(StartPos.Value.z + 1.5f)) / 3) * 3);
                 }
             }
             else if(Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(0).phase == TouchPhase.Stationary)
