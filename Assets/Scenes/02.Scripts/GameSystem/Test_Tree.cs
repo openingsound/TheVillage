@@ -9,7 +9,7 @@ public class Test_Tree : MonoBehaviour
     public void OnClickPlanting()
     {
         // 새 나무 생성
-        Item_Tree newTree = Instantiate(Tree, InputManager.InputSystem.TargetPos, Quaternion.identity).GetComponent<Item_Tree>();
+        Item_Tree newTree = Instantiate(Tree, InputManager.InputSystem.TargetPos - new Vector3(0, 0.5f, 0), Quaternion.identity).GetComponent<Item_Tree>();
 
         // 새 나무 초기화
         newTree.Planting();
@@ -20,9 +20,9 @@ public class Test_Tree : MonoBehaviour
     {
         Item_Tree tree = InputManager.InputSystem.selectedObject.GetComponent<Item_Tree>();
 
-        if(tree.state == Item_Tree.TreeState.Harvest)
+        if(tree.state == Item_Tree.TreeState.Harvest && !tree.isAuto)
         {
-            tree.FruitHarvestingComplete();
+            tree.FruitHarvesting();
         }
     }
 }
