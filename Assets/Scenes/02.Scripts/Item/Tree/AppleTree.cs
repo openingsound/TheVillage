@@ -10,10 +10,10 @@ public class AppleTree : Item_Tree
         name = "AppleTree";
 
         // 사과 나무의 성장 시간은 10초
-        base.treeGrowTime = 10; 
+        treeGrowTime = 10; 
 
         // 사과 나무의 열매 성장 시간은 10초
-        base.fruitGrowTime = 10;
+        fruitGrowTime = 10;
 
         base.Planting();
     }

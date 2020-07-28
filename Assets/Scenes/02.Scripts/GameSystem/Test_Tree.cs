@@ -20,7 +20,7 @@ public class Test_Tree : MonoBehaviour
     {
         Item_Tree tree = InputManager.InputSystem.selectedObject.GetComponent<Item_Tree>();
 
-        if(tree.state == Item_Tree.TreeState.Harvest && !tree.isAuto)
+        if(tree.growth == Item_Tree.TreeState.Harvest && !tree.isAuto)
         {
             tree.FruitHarvesting();
         }

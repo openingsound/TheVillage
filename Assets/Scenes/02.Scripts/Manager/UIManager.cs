@@ -120,7 +120,7 @@ public class UIManager : MonoBehaviour
 
             ring.gameObject.SetActive(true);
 
-            ring.gameObject.transform.position = InputManager.InputSystem.TargetPos;
+            ring.rectTransform.anchoredPosition3D = new Vector3(InputManager.InputSystem.TargetPos.x, InputManager.InputSystem.TargetPos.z, -1f);
 
             Debug.Log("ring Pos - " + ring.gameObject.transform.position.ToString());
 

@@ -9,10 +9,18 @@ public class Item_Tree : Item
     /* 나무의 상태 관련 프로퍼티 */
 
     // 나무의 상태 열거형
-    public enum TreeState {TreeGrow, FruitGrow, Harvest };
+    public enum TreeState { Bush, Fruit, Harvest };
+
+    // 나무의 크기 열거형
+    public enum SizeState { S, M, L, NULL };
 
     // 현재 나무의 상태
-    public TreeState state { get; private set; }
+    public TreeState growth { get; private set; }
+    
+    // 현재 나무의 크기
+    public SizeState size { get; private set; }
+
+    // 현재 나무의 크기
 
     // 나무가 자라나는데 걸리는 시간
     [SerializeField]
@@ -23,8 +31,8 @@ public class Item_Tree : Item
     public float fruitGrowTime { get; protected set; }
 
     // 상태 변환이 일어난 시각 (DateTime 구조체)
-    [SerializeField]
-    protected string stateStartTime;
+    //[SerializeField]
+    //protected string stateStartTime;
 
     // 상태 변환이 종료되는 시각 (DateTime 구조체)
     [SerializeField]
@@ -50,7 +58,6 @@ public class Item_Tree : Item
 
     #region Tree Basic Method
 
-
     /// <summary>
     /// 나무가 처음 심어질 때 호출하는 함수
     /// </summary>
@@ -60,63 +67,8 @@ public class Item_Tree : Item
         type = "Tree";
 
         // 나무의 상태 초기화
-        state = TreeState.TreeGrow;
-
-        // 나무가 자라기 시작하는 시각정보
-        stateStartTime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-        // 나무가 다 자라나는 시각정보
-        stateEndTime = System.DateTime.Now.AddSeconds(treeGrowTime).ToString("yyyy-MM-dd HH:mm:ss");
-
-
-        // 애니메이션 실행
-        anim.Anim_PlantingTree();
-
-
-        Debug.Log("Plant a tree : " + stateStartTime);
-        Debug.Log("State Ending Time : " + stateEndTime);
+        treeStateInit(TreeState.Bush, SizeState.S, treeGrowTime / 3);
     }
-
-
-    /// <summary>
-    /// 나무의 성장이 완료되었을 때 호출하는 함수
-    /// </summary>
-    public virtual void TreeGrowingComplete()
-    {
-        // 나무의 상태 초기화
-        state = TreeState.FruitGrow;
-
-        // 열매가 자라기 시작하는 시각정보
-        stateEndTime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-        // 열매가 다 자라나는 시각정보
-        stateEndTime = System.DateTime.Now.AddSeconds(treeGrowTime).ToString("yyyy-MM-dd HH:mm:ss");
-
-        // 애니메이션 실행
-        anim.Anim_FruitGrowthStart();
-
-
-        Debug.Log("Tree Growing Complete : " + stateStartTime);
-        Debug.Log("State Ending Time : " + stateEndTime);
-    }
-
-
-
-    /// <summary>
-    /// 열매의 성장이 완료되었을 때 호출하는 함수
-    /// </summary>
-    public virtual void FruitGrowingComplete()
-    {
-        // 나무의 상태 초기화
-        state = TreeState.Harvest;
-
-        // 열매 성장 완료 애니메이션 실행
-        anim.Anim_FruitGrowthEnd();
-
-        Debug.Log("Fruit Growing Complete : " + stateStartTime);
-        Debug.Log("State Ending Time : " + stateEndTime);
-    }
-
 
 
     /// <summary>
@@ -125,13 +77,36 @@ public class Item_Tree : Item
     public virtual void FruitHarvesting()
     {
         // 임시 - 이전에 떨구었던 열매 아이템 제거 애니메이션 함수
-        anim.Anim_GetFruitItem();
+        anim.Anim_GetFruitBox();
 
         // 열매 아이템 떨구기
-        anim.Anim_HarvestStart();
+        anim.Anim_DropBox();
 
-        // 열매가 다시 자라나는 함수 실행
-        this.TreeGrowingComplete();
+        // 다시 열매 성장 상태로 초기화
+        treeStateInit(TreeState.Fruit, SizeState.S, fruitGrowTime / 3);
+    }
+
+
+    /// <summary>
+    /// 나무의 상태를 변경하는 함수
+    /// </summary>
+    /// <param name="newTreeState"></param>
+    /// <param name="newSizeState"></param>
+    /// <param name="endTime"></param>
+    public virtual void treeStateInit(TreeState newTreeState, SizeState newSizeState, float endTime)
+    {
+        // 상태 변수의 값 변경
+        growth = newTreeState;
+
+        // 크기 변수의 값 변경
+        size = newSizeState;
+
+        // 상태 종료때의 시간
+        stateEndTime = System.DateTime.Now.AddSeconds(endTime).ToString("yyyy-MM-dd HH:mm:ss");
+        Debug.Log("State Ending Time : " + stateEndTime);
+
+        // 상태 애니메이션 초기화 함수 실행
+        anim.AnimStateInit(newTreeState, newSizeState);
     }
 
     #endregion
@@ -146,12 +121,13 @@ public class Item_Tree : Item
         anim = this.GetComponent<Anim_Tree>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        if(state == TreeState.Harvest)
+        if(growth == TreeState.Harvest)
         {
             if(isAuto)
             {
+                // 수확하는 함수
                 FruitHarvesting();
             }
             else
@@ -167,16 +143,45 @@ public class Item_Tree : Item
         // 현재 시각이 상태 종료 시각과 일치하는가
         if(now == stateEndTime)
         {
-            switch(state)
-            {
-                case TreeState.TreeGrow:
-                    TreeGrowingComplete();
-                    break;
+            // 상태 변경
 
-                case TreeState.FruitGrow:
-                    FruitGrowingComplete();
-                    break;
-            } 
+            // 만일 사이즈가 L이면 다음 상태로 넘어감
+            if(size == SizeState.L)
+            {
+                switch(growth)
+                {
+                    // 묘목 -> 열매 성장
+                    case TreeState.Bush:
+                        treeStateInit(TreeState.Fruit, SizeState.S, fruitGrowTime / 3);
+                        break;
+
+                    // 열매 성장 -> 수확 대기
+                    case TreeState.Fruit:
+                        treeStateInit(TreeState.Harvest, SizeState.NULL, 0);
+                        break;
+                }
+
+                return;
+            }
+            // 아직 묘목이나 열매가 성장중이라면
+            else
+            {
+                // 다음 크기 상태로 넘어감
+                
+                switch(growth)
+                {
+                    case TreeState.Bush:
+                        treeStateInit(growth, ++size, treeGrowTime / 3);
+                        break;
+                    
+                    case TreeState.Fruit:
+                        treeStateInit(growth, ++size, fruitGrowTime / 3);
+                        break;
+                }
+
+                return;
+            }
+
         }
     }
 
