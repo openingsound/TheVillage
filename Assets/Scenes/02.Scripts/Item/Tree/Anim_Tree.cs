@@ -1,34 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-
-
-[Serializable]
-public class MyVector3
-{
-    public List<Vector3> scale = new List<Vector3>();
-}
 
 public class Anim_Tree : MonoBehaviour
 {
     /* 게임 오브젝트 */
 
-    // 나무 묘목 오브젝트 - S, M, L 3개 존재
-    public GameObject[] bushes = new GameObject[3];
-
-    // 열매 오브젝트
-    public GameObject[] fruits = new GameObject[6];
-
-    // 다 성장한 나무 오브젝트
-    public GameObject emptyTree;
-
     // 열매 아이템 오브젝트
     public GameObject fruitBox;
-
-    // 현재 활성화된 묘목 혹은 열매 오브젝트
-    private GameObject ActivatedObject = null;
-
 
 
     /* 컴포넌트 */
@@ -36,15 +15,8 @@ public class Anim_Tree : MonoBehaviour
     // <Item_Tree> 컴포넌트
     private Item_Tree thisTree;
 
-
-
-    /* 성장 애니메이션 관련 변수 */
-
-    // 나무의 성장 크기 정도
-    public Vector3[] bushGrowthSizes = new Vector3[6];
-
-    // 열매의 성장 크기 정도
-    public Vector3[] fruitGrowthSizes = new Vector3[6];
+    // <Animatior> 컴포넌트
+    private Animator anim;
 
 
 
@@ -55,21 +27,6 @@ public class Anim_Tree : MonoBehaviour
     {
         /* 모든 오브젝트 비활성화 */
 
-        // 나무 묘목 오브젝트 비활성화
-        foreach(GameObject obj in bushes)
-        {
-            obj.SetActive(false);
-        }
-
-        // 나무 성체 오브젝트 비활성화
-        emptyTree.SetActive(false);
-
-        // 나무 열매 오브젝트 비활성화
-        foreach(GameObject obj in fruits)
-        {
-            obj.SetActive(false);
-        }
-
         // 열매 박스 오브젝트 비활성화
         fruitBox.SetActive(false);
 
@@ -78,27 +35,9 @@ public class Anim_Tree : MonoBehaviour
 
         // <Item_Tree> 컴포넌트 연결
         thisTree = this.GetComponent<Item_Tree>();
-    }
 
-
-    private void FixedUpdate()
-    {
-        switch(thisTree.growth)
-        {
-            case Item_Tree.TreeState.Bush:
-                ActivatedObject.transform.localScale += 
-                    (bushGrowthSizes[(int)thisTree.growth * 2 + 1] - bushGrowthSizes[(int)thisTree.growth * 2]) / (thisTree.treeGrowTime / 3) * Time.deltaTime;
-                break;
-
-            case Item_Tree.TreeState.Fruit:
-                foreach (GameObject fruit in fruits)
-                {
-                    fruit.transform.localScale +=
-                    (fruitGrowthSizes[(int)thisTree.growth * 2 + 1] - fruitGrowthSizes[(int)thisTree.growth * 2]) / (thisTree.fruitGrowTime / 3) * Time.deltaTime;
-                }
-
-                break;
-        }
+        // <Animator> 컴포넌트 연결
+        anim = this.GetComponent<Animator>();
     }
 
 
@@ -112,56 +51,54 @@ public class Anim_Tree : MonoBehaviour
         // 변경된 상태가 Bush(묘목)이라면
         if(state == Item_Tree.TreeState.Bush)
         {
-            // 현재 활성화된 오브젝트가 있다면 비활성화로 변경
-            if (ActivatedObject != null)
+            // 애니메이션의 재생 속도 조절
+            anim.speed = 3 / thisTree.treeGrowTime;
+
+            switch (size)
             {
-                ActivatedObject.SetActive(false);
+                case Item_Tree.SizeState.S:
+                    break;
+
+                case Item_Tree.SizeState.M:
+                    anim.SetBool("Bush_M", true);
+                    break;
+
+                case Item_Tree.SizeState.L:
+                    anim.SetBool("Bush_L", true);
+                    break;
             }
-
-            // 현재 활성화할 묘목 오브젝트를 활성화된 오브젝트 변수로 넣음
-            ActivatedObject = bushes[(int)size];
-
-            // 현재 활성화할 묘목 오브젝트의 크기 초기화
-            ActivatedObject.transform.localScale = bushGrowthSizes[(int)size * 2];
-
-            // 현재 변경된 상태에 맞는 묘목 오브젝트 활성화
-            ActivatedObject.SetActive(true);
         }
         // 변경된 상태가 Fruit(과일)이라면
         else if (state == Item_Tree.TreeState.Fruit)
         {
-            // 완전히 자란 나무 오브젝트가 비활성화되어 있다면
-            if (emptyTree.activeSelf == false)
+            // 애니메이션의 재생 속도 조절
+            anim.speed = 3 / thisTree.fruitGrowTime;
+
+            switch (size)
             {
-                // 빈 나무 오브젝트 활성화
-                emptyTree.SetActive(true);
+                case Item_Tree.SizeState.S:
+                    anim.SetBool("Fruit_S", true);
+                    anim.SetBool("Fruit_L", false);
+                    break;
+
+                case Item_Tree.SizeState.M:
+                    anim.SetBool("Fruit_M", true);
+                    anim.SetBool("Fruit_S", false);
+                    break;
+
+                case Item_Tree.SizeState.L:
+                    anim.SetBool("Fruit_L", true);
+                    anim.SetBool("Fruit_M", false);
+                    break;
             }
-
-            // 현재 활성화된 오브젝트가 있다면 비활성화로 변경
-            if (ActivatedObject != null)
-            {
-                ActivatedObject.SetActive(false);
-            }
-
-            foreach (GameObject fruit in fruits)
-            {
-                // 열매의 크기 설정
-                fruit.transform.localScale = fruitGrowthSizes[(int)size * 2];
-
-                // 만일 열매가 비활성화 되어있다면
-                if (fruit.activeSelf == false)
-                {
-                    // 열매 오브젝트 활성화
-                    fruit.SetActive(true);
-                }
-            }
-
         }
         // 변경된 상태가 Harvest(수확)이라면
         else
         {
             // 아무것도 하지 않는다
         }
+
+        Debug.Log("Animation Start to " + state.ToString() + " " + size.ToString());
     }
 
 

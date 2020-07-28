@@ -46,7 +46,6 @@ public class Item_Tree : Item
     protected Anim_Tree anim;
 
 
-
     /* 나무의 수확 관련 프로퍼티 */
 
     // 자동수확을 할 것인가
