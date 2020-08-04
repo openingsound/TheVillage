@@ -116,13 +116,17 @@ public class UIManager : MonoBehaviour
                 case "Tree":
                     ring = ringUIList[1];
                     break;
+
+                case "Field":
+                    ring = ringUIList[2];
+                    break;
             }
 
             ring.gameObject.SetActive(true);
 
-            ring.rectTransform.anchoredPosition3D = new Vector3(InputManager.InputSystem.TargetPos.x, InputManager.InputSystem.TargetPos.z, -1f);
+            ring.gameObject.transform.position = InputManager.InputSystem.TargetPos;
 
-            Debug.Log("ring Pos - " + ring.gameObject.transform.position.ToString());
+            //Debug.Log("ring Pos - " + ring.gameObject.transform.position.ToString());
 
         }
         else

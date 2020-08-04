@@ -145,7 +145,7 @@ public class InputManager : MonoBehaviour
                 }
 
                 TargetPos = new Vector3(targetX, StartPos.Value.y, targetZ);
-                Debug.Log("TargetPos : " + TargetPos.ToString());
+                //Debug.Log("TargetPos : " + TargetPos.ToString());
             }
 
             
