@@ -9,6 +9,9 @@ public class Anim_Field : MonoBehaviour
     // 열매 박스 오브젝트
     private GameObject fruitBox;
 
+    // 다 성장한 작물 오브젝트
+    private GameObject[,] fruits = new GameObject[5, 5];
+
     // 레벨별 작물 그룹 오브젝트
     private GameObject[] levelPos = new GameObject[5];
 
@@ -26,16 +29,17 @@ public class Anim_Field : MonoBehaviour
     private Animator fieldAnim;
 
     // 작물 성장 <Animator> 컴포넌트
-    private Animator[,] fruitAnims = new Animator[5, 5];
+    private Animator[,] bushAnims = new Animator[5, 5];
 
 
 
     /// <summary>
     /// 애니메이션 초기화 함수
     /// </summary>
-    /// <param name="crop">자라날 작물 프리팹</param>
+    /// <param name="bush">성장하는 작물 프리팹</param>
+    /// <param name="crop">다 자란 작물 프리팹</param>
     /// <param name="box">수확 시 드랍할 박스 프리팹</param>
-    public void Anim_Init(GameObject crop, GameObject box)
+    public void Anim_Init(GameObject bush, GameObject crop, GameObject box)
     {
         /* 모든 오브젝트 비활성화 */
 
@@ -63,9 +67,17 @@ public class Anim_Field : MonoBehaviour
                 spawnpoints[i, j] = levelPos[i].transform.Find("Pos" + (j + 1).ToString());
 
                 // 각각의 작물 애니메이터를 배열에 저장
-                fruitAnims[i, j] = Instantiate(crop, spawnpoints[i, j].position, Quaternion.identity).GetComponent<Animator>();
+                bushAnims[i, j] = Instantiate(bush, spawnpoints[i, j].position, Quaternion.identity).GetComponent<Animator>();
 
-                fruitAnims[i, j].transform.parent = spawnpoints[i, j];
+                bushAnims[i, j].transform.parent = spawnpoints[i, j];
+
+                // 각각의 다 자란 작물 오브젝트를 배열에 저장
+                fruits[i, j] = Instantiate(crop, spawnpoints[i, j].position + new Vector3(0, 0.25f, 0), Quaternion.identity);
+
+                fruits[i, j].transform.parent = spawnpoints[i, j];
+
+                fruits[i, j].SetActive(false);
+
             }
 
             // 한 줄을 담당하는 그룹 오브젝트를 비활성화
@@ -108,23 +120,37 @@ public class Anim_Field : MonoBehaviour
                     continue;
                 }
 
-                // 수확 직후의 상태인 Harvest -> IDLE로 변경
-                if (isHarvest)
+                // 다음 성장 상태로 변경
+                for (int j = 0; j < 5; j++)
                 {
-                    for (int j = 0; j < 5; j++)
-                    {
-                        fruitAnims[i, j].SetTrigger("Harvest");
-                    }
+                    fruits[i, j].SetActive(false);
+
+                    bushAnims[i, j].SetTrigger("Next");
+                    bushAnims[i, j].speed = 3 / thisField.CropGrowTime;
+                }
+            }
+         
+        }
+        else if(state == Object_Field.FieldState.Harvest)
+        {
+            // 각 레벨별 작물 스폰포인트를 순회
+            for (int i = 0; i < 5; i++)
+            {
+                // 해당 라인이 비활성화되어 있다면
+                if (levelPos[i].activeInHierarchy == false)
+                {
+                    // 처리를 건너뜀
+                    continue;
                 }
 
                 // 다음 성장 상태로 변경
                 for (int j = 0; j < 5; j++)
                 {
-                    fruitAnims[i, j].SetTrigger("Next");
-                    fruitAnims[i, j].speed = 3 / thisField.CropGrowTime;
+                    bushAnims[i, j].SetTrigger("Next");
+
+                    fruits[i, j].SetActive(true);
                 }
             }
-         
         }
 
         Debug.Log("Animation Start to " + state.ToString() + " " + size.ToString());

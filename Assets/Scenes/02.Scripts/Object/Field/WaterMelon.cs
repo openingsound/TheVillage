@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class WaterMelon : Object_Field
 {
-    public override void Plowing(GameObject crop, GameObject box)
+    /// <summary>
+    /// 수박 밭을 처음 만들 때 호출하는 함수
+    /// </summary>
+    /// <param name="bush">수박 식물의 성장 애니메이션이 있는 프리팹</param>
+    /// <param name="crop">수박 프리팹</param>
+    /// <param name="box">수확 시 드랍될 수박 아이템 박스 프리팹</param>
+    public override void Plowing(GameObject bush, GameObject crop, GameObject box)
     {
         Debug.Log("수박을 심었습니다...");
 
@@ -17,6 +23,6 @@ public class WaterMelon : Object_Field
         // 수박의 열매 성장 시간은 10초
         CropGrowTime = 10;
 
-        base.Plowing(crop, box);
+        base.Plowing(bush, crop, box);
     }
 }

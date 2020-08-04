@@ -55,12 +55,13 @@ public class Object_Field : BasicObject
     /// <summary>
     /// 밭을 처음 만들 때 호출하는 함수
     /// </summary>
+    /// <param name="bush">성장하는 작물 프리팹</param>
     /// <param name="crop">심으려는 작물 프리팹</param>
     /// <param name="box">수확 시 드랍될 아이템 박스 프리팹</param>
-    public virtual void Plowing(GameObject crop, GameObject box)
+    public virtual void Plowing(GameObject bush, GameObject crop, GameObject box)
     {
         // 밭 애니메이션 초기화
-        anim.Anim_Init(crop, box);
+        anim.Anim_Init(bush, crop, box);
 
         // 아이템 종류는 밭
         type = "Field";

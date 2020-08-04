@@ -18,6 +18,7 @@ public class Test_Tree : MonoBehaviour
     public GameObject Field;
     public enum CropType { watermelon };
     public CropType cropType;
+    public GameObject Bush;
     public GameObject Crop;
     public GameObject field_FruitBox;
 
@@ -79,7 +80,7 @@ public class Test_Tree : MonoBehaviour
         }
 
         // 새 밭 초기화
-        field.Plowing(Crop, field_FruitBox);
+        field.Plowing(Bush, Crop, field_FruitBox);
     }
 
     public void OnClickFieldHarvesting()

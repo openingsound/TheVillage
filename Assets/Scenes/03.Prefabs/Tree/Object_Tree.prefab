@@ -403,7 +403,7 @@ PrefabInstance:
     - target: {fileID: 5865372215494078482, guid: 7257679ca1449914d98246a972084149,
         type: 3}
       propertyPath: m_Name
-      value: TreeBushType01
+      value: Bush_02
       objectReference: {fileID: 0}
     - target: {fileID: 8394896853830172706, guid: 7257679ca1449914d98246a972084149,
         type: 3}
