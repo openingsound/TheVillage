@@ -255,14 +255,9 @@ public class MiniGame2GM : MonoBehaviour
         {
             Release();
         }
-        
-        
-        
     }
     IEnumerator GetScore()
     {
-        
-        
         int score = 0;
         foreach (var line in lines)
         {
@@ -276,7 +271,7 @@ public class MiniGame2GM : MonoBehaviour
             if (score % 2 == 0)
                 Scoretext.fontSize = tem + 1;
         }
-        Release();
+        
     }
     void dfs2(int y,int x)
     {
