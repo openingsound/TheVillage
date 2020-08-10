@@ -8,7 +8,6 @@ using UnityEngine.UI;
 using System.Diagnostics.Contracts;
 using System.Net;
 using TMPro;
-
 struct pii { int y; int x; };
 
 
@@ -110,8 +109,21 @@ public class MiniGame2GM : MonoBehaviour
     int px;
     int ncou;
     int scou;
+    public Slider slider;
+    bool activated = true;//시간 체크 확인
+    float timeElapse = 0;
     void Update()
     {
+        if (activated)
+        {
+            timeElapse += UnityEngine.Time.deltaTime;
+            if(timeElapse >= 20.0f)
+            {
+                activated = false;
+            }
+            slider.value = 20.0f - timeElapse;
+            
+        }
         if(enabled == false)
         {
             return;
@@ -121,9 +133,12 @@ public class MiniGame2GM : MonoBehaviour
             Vector3 mousePos = canvas.transform.InverseTransformPoint(Input.mousePosition);
             //마우스랑 canvas의 좌표는 기준이 달라서 canvas 위치 역행렬을 곱해줌!
             lineOnEditRcts.sizeDelta = new Vector2(lineOnEditRcts.sizeDelta.x, Vector3.Distance(mousePos, foodOnEdit.transform.localPosition));
-
             lineOnEditRcts.rotation = Quaternion.FromToRotation(Vector3.up, (mousePos - foodOnEdit.transform.localPosition).normalized);
         }
+    }
+    void TimeButton()
+    {
+        activated = !activated;
     }
     bool TrySetLineEdit(Food food)
     {
@@ -213,6 +228,8 @@ public class MiniGame2GM : MonoBehaviour
         int x = food.cou % 10;
         if (food.cou == ncou && (Math.Abs(py - y) > 1 || Math.Abs(px - x) > 1) == false && arr[py, px] == arr[y, x] && lines.Count >= 2)
         {
+            //완성 했따리
+            activated = !activated;
             enabled = false;
             lineOnEditRcts.sizeDelta = new Vector2(lineOnEditRcts.sizeDelta.x, Vector3.Distance(foodOnEdit.transform.localPosition, food.transform.localPosition));
             lineOnEditRcts.rotation = Quaternion.FromToRotation(Vector3.up, (food.transform.localPosition - foodOnEdit.transform.localPosition).normalized);
@@ -271,7 +288,6 @@ public class MiniGame2GM : MonoBehaviour
             if (score % 2 == 0)
                 Scoretext.fontSize = tem + 1;
         }
-        
     }
     void dfs2(int y,int x)
     {
