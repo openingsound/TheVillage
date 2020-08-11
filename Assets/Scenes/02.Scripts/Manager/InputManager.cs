@@ -60,6 +60,9 @@ public class InputManager : MonoBehaviour
     private float m_lastTouchLenth = 0;
 
 
+    public GridTile gridSystem;
+
+
     private void Awake()
     {
         // Scene에 이미 InputSystem 싱글톤이 존재하는지 검사함
@@ -145,7 +148,11 @@ public class InputManager : MonoBehaviour
                 }
 
                 TargetPos = new Vector3(targetX, StartPos.Value.y, targetZ);
-                //Debug.Log("TargetPos : " + TargetPos.ToString());
+
+                Debug.Log(" - TargetPos : " + TargetPos.ToString());
+
+                int idx = gridSystem.GettingGridPos(TargetPos);
+                Debug.Log(" - Grid[" + (idx % gridSystem.xSize) + ", " + (idx / gridSystem.xSize) + "]");
             }
 
             

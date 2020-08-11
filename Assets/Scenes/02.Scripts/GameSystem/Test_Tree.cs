@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Test_Tree : MonoBehaviour
 {
+    [Header(" - 그리드 시스템")]
+    public GridTile gridSystem;
+
     [Header(" - 나무 오브젝트")]
     public GameObject Tree;
     public enum FruitType { apple };
@@ -25,6 +28,8 @@ public class Test_Tree : MonoBehaviour
 
     public void OnClickPlanting()
     {
+        gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, 'T');
+
         // 새 나무 생성
         GameObject newTree = Instantiate(Tree, InputManager.InputSystem.TargetPos, Quaternion.identity);
         Object_Tree tree;
@@ -42,6 +47,8 @@ public class Test_Tree : MonoBehaviour
 
         // 새 나무 초기화
         tree.Planting(TreePrefab, Fruit, tree_FruitBox);
+
+        
     }
 
 
@@ -64,6 +71,8 @@ public class Test_Tree : MonoBehaviour
 
     public void OnClickPlowing()
     {
+        gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, 'F');
+
         // 새 밭 생성
         GameObject newField = Instantiate(Field, InputManager.InputSystem.TargetPos, Quaternion.identity);
         Object_Field field;
@@ -81,6 +90,8 @@ public class Test_Tree : MonoBehaviour
 
         // 새 밭 초기화
         field.Plowing(Bush, Crop, field_FruitBox);
+
+        
     }
 
     public void OnClickFieldHarvesting()

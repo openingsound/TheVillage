@@ -4,39 +4,17 @@ using UnityEngine;
 
 public class Test_Inheritance : MonoBehaviour
 {
-    public GameObject Tree;
-    public GameObject Field;
+    public GameObject something;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Update()
     {
-        Object_Tree treeComp = Tree.GetComponent<Object_Tree>();
-
-        if(treeComp == null)
+        if(something == null)
         {
-            Debug.Log("<Object_Tree> is null");
+            Debug.LogError("오브젝트가 사라졌습니다!!!");
         }
         else
         {
-            Debug.Log(treeComp.ToString());
+            Debug.Log("오브젝트 위치 - " + something.transform.position.ToString());
         }
-
-
-        Object_Field fieldComp = Tree.GetComponent<Object_Field>();
-
-        if (fieldComp == null)
-        {
-            Debug.Log("<Object_Field> is null");
-        }
-        else
-        {
-            Debug.Log(fieldComp.ToString());
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
