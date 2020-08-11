@@ -26,6 +26,8 @@ public class MiniGame2GM : MonoBehaviour
     public Text Scoretext;
     // Start is called before the first frame update
     new bool enabled = true;
+    public GameObject Successpanel;
+    public GameObject Failpanel;
     void Start()
     {
         foods = new Dictionary<int, Food>();
@@ -119,6 +121,9 @@ public class MiniGame2GM : MonoBehaviour
             timeElapse += UnityEngine.Time.deltaTime;
             if(timeElapse >= 20.0f)
             {
+                enabled = false;
+                Release();
+                Failpanel.SetActive(true);
                 activated = false;
             }
             slider.value = 20.0f - timeElapse;
@@ -214,6 +219,7 @@ public class MiniGame2GM : MonoBehaviour
         px = food.cou % 10;
         scou = food.cou;
     }
+    int linesiz = 0;
     public void OnMouseUpCircle(Food food)
     {
         if (enabled == false)
@@ -236,6 +242,7 @@ public class MiniGame2GM : MonoBehaviour
             CreatLine(food.transform.localPosition, food.cou);
             Destroy(lines[lines.Count - 1].gameObject);
             lines.RemoveAt(lines.Count - 1);
+            linesiz = lines.Count;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 10; j++)
@@ -284,10 +291,27 @@ public class MiniGame2GM : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
             print(score);
             Scoretext.text = score.ToString();
+            int rnum;
+            rnum = UnityEngine.Random.Range(1,7);
+            if (score % 2==1) rnum = -rnum;
+            Scoretext.transform.rotation = Quaternion.Euler(new Vector3(0, 0, rnum));
             int tem = Scoretext.fontSize;
             if (score % 2 == 0)
                 Scoretext.fontSize = tem + 1;
         }
+        yield return new WaitForSeconds(0.2f);
+        int cou = 0;
+        foreach (var line in lines)
+        {
+            cou++;
+            if (cou > linesiz) break;
+            Destroy(line.gameObject);
+        }
+        lines.Clear();
+        lineOnEdit = null;
+        lineOnEditRcts = null;
+        foodOnEdit = null;
+        Successpanel.SetActive(true);
     }
     void dfs2(int y,int x)
     {
