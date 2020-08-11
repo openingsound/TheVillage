@@ -64,7 +64,7 @@ public class GridTile : MonoBehaviour
     public int GettingGridPos(Vector3 pos)
     {
         int x = (int) ((xSize - 1) / 2f - pos.x / cellSize);
-        int y = (int) ((ySize - 1) / 2f - pos.y / cellSize);
+        int y = (int) ((ySize - 1) / 2f - pos.z / cellSize);
 
         // 만일 인덱스가 0보다 작다면
         if(x < 0 || y < 0)
