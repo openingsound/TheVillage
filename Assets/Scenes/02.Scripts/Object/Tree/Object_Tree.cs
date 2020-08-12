@@ -120,7 +120,7 @@ public class Object_Tree : BasicObject
 
         // 상태 애니메이션 초기화 함수 실행
         anim.AnimStateInit(newTreeState, newSizeState, isHarvest);
-    }
+    }    
 
     #endregion
 
@@ -149,6 +149,7 @@ public class Object_Tree : BasicObject
             }
         }
 
+        
         // 현재 시각
         string now = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         Debug.Log("Now Time : " + now);

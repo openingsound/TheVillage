@@ -93,10 +93,12 @@ public class Object_Field : BasicObject
         // 열매 아이템 떨구기
         anim.Anim_DropBox();
 
+        anim.Anim_SetLevel(level);
+
         // 다시 열매 성장 상태로 초기화
         fieldStateInit(FieldState.Grow, SizeState.S, CropGrowTime / 3, true);
 
-        anim.Anim_SetLevel(level);
+        
     }
 
 

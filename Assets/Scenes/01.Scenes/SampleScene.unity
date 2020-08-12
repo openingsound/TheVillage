@@ -391,7 +391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSize: 31
   ySize: 31
-  zHeight: -0.3
+  zHeight: -0.5
   cellSize: 3
   gridTile: {fileID: 7872103730332902320, guid: 5ef391b3c9bfd8543911865a4019889b,
     type: 3}
@@ -1667,7 +1667,7 @@ MonoBehaviour:
     type: 3}
   Field: {fileID: 1587832654954589310, guid: a5f6a08505f754b428d0919d690d3015, type: 3}
   cropType: 0
-  Bush: {fileID: 6232718888319822188, guid: 1201d74894db46746b29ac36118167d5, type: 3}
+  Bush: {fileID: 5653723813529140487, guid: 6da6f6af2cb33c34d9f77afa497623c5, type: 3}
   Crop: {fileID: 1546187669215154, guid: dfb380540e3c50a448c60559b282f9b0, type: 3}
   field_FruitBox: {fileID: 6300812150710263852, guid: f45c1050d53297c42a7f04c9ec5ea029,
     type: 3}

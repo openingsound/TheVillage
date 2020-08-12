@@ -82,7 +82,11 @@ public class GridTile : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// 그리드 내용물 배열에 값을 변경하는 함수
+    /// </summary>
+    /// <param name="idx">배열의 인덱스 번호</param>
+    /// <param name="newCh">새로 저장할 값</param>
     public void ChangeGridContent(int idx, char newCh)
     {
         if(idx < 0 || idx >= ySize * xSize)
