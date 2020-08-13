@@ -8,14 +8,14 @@ public class endpoint : MonoBehaviour
     public GameObject Column;
 
     private float nowTime;
-    private float makeTime = 1.0f;
+    private float makeTime = 3.0f;
 
 
     // Start is called before the first frame update
     void Start()
     {
         nowTime = Time.time;
-       
+
     }
 
     // Update is called once per frame
@@ -31,10 +31,10 @@ public class endpoint : MonoBehaviour
 
             float randomY = Random.Range(-1.3f, -1.2f);
 
-            temp.transform.localPosition = new Vector3(-gameObject.transform.localPosition.x-5, randomY, 0);
+            temp.transform.localPosition = new Vector3(-gameObject.transform.localPosition.x - 5, randomY, 0);
             temp.transform.localScale = new Vector3(1, 1, 1);
         }
     }
-   
+
 
 }

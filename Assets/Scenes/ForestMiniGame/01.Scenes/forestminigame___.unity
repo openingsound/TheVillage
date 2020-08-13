@@ -178,7 +178,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: EXIT
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8a89fa14b10d46a99122fd4f73fca9a2, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 2140474, guid: 8a89fa14b10d46a99122fd4f73fca9a2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -326,7 +326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5058824, g: 0.9647059, b: 0.9411765, a: 0.8666667}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.078431375}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -418,10 +418,10 @@ MonoBehaviour:
   m_enableVertexGradient: 1
   m_colorMode: 3
   m_fontColorGradient:
-    topLeft: {r: 0.6627451, g: 0.96862745, b: 0.972549, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 0.6627451, g: 0.96862745, b: 0.972549, a: 1}
+    topLeft: {r: 1, g: 0.011764706, b: 0, a: 1}
+    topRight: {r: 1, g: 0.23921569, b: 0.23921569, a: 1}
+    bottomLeft: {r: 0.8784314, g: 0.02745098, b: 0.02745098, a: 1}
+    bottomRight: {r: 0.8862745, g: 0.37254903, b: 0.39215687, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
@@ -484,7 +484,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 0}
@@ -1114,7 +1114,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 0}
@@ -1280,6 +1280,16 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 456534923, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
+      propertyPath: Column
+      value: 
+      objectReference: {fileID: 8218513865450177885, guid: ec13628fb15d10b4e9c84a5149567179,
+        type: 3}
+    - target: {fileID: 456534924, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
+      propertyPath: Column
+      value: 
+      objectReference: {fileID: 6155686055918947393, guid: 401840e8df940854e996f453f3d640ff,
+        type: 3}
     - target: {fileID: 456534925, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
       propertyPath: m_Size.x
       value: 1
@@ -1296,6 +1306,11 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 456534926, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
+      propertyPath: Column
+      value: 
+      objectReference: {fileID: 4569235485015663064, guid: 62f126aacfaa2024db14caf79c03d78f,
+        type: 3}
     - target: {fileID: 543600098, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
       propertyPath: m_Center.x
       value: 0.1
@@ -1329,6 +1344,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 534333059428003897, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964,
+        type: 3}
+      propertyPath: grounds.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 534333059428003897, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964,
         type: 3}
@@ -1536,7 +1556,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 5fd9fcf9b037543179fd139164f4b877, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1760,7 +1780,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 5fd9fcf9b037543179fd139164f4b877, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1855,7 +1875,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 5fd9fcf9b037543179fd139164f4b877, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1881,6 +1901,31 @@ Transform:
   m_Father: {fileID: 1558226522}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &976062209 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1639918991659174119, guid: f0a5981936efdcb4c8bbf0ea737110dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 150360288506843885}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &976062210
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 976062209}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b98ad4ea36ff11a4382074f46fcae5ef, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1030541548
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,7 +1976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.503827, g: 0.9622642, b: 0.93810225, a: 0.8666667}
+  m_Color: {r: 0, g: 0.3019608, b: 1, a: 0.8666667}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2030,7 +2075,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: RESTART
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8a89fa14b10d46a99122fd4f73fca9a2, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 2140474, guid: 8a89fa14b10d46a99122fd4f73fca9a2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2197,10 +2242,10 @@ MonoBehaviour:
   m_enableVertexGradient: 1
   m_colorMode: 3
   m_fontColorGradient:
-    topLeft: {r: 0.6627451, g: 0.96862745, b: 0.972549, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 0.6627451, g: 0.96862745, b: 0.972549, a: 1}
+    topLeft: {r: 0.8156863, g: 0.24313726, b: 0.94509804, a: 1}
+    topRight: {r: 0.8352941, g: 0.09019608, b: 0.99215686, a: 1}
+    bottomLeft: {r: 0.5058824, g: 0, b: 1, a: 1}
+    bottomRight: {r: 0.5568628, g: 0.2784314, b: 0.94509804, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
@@ -2263,7 +2308,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 0}
@@ -2547,7 +2592,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 0}

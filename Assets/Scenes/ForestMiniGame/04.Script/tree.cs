@@ -26,7 +26,7 @@ public class tree : MonoBehaviour
             GameObject temp = Instantiate(Column);
             temp.transform.parent = gameObject.transform;
 
-            float randomY = Random.Range(-3.6f, -2.2f);
+            float randomY = Random.Range(-3.7f, -2.6f);
 
             temp.transform.localPosition = new Vector3(-gameObject.transform.localPosition.x + 8, randomY, 0);
             temp.transform.localScale = new Vector3(1, 1, 1);

@@ -40,15 +40,18 @@ public class charjump : MonoBehaviour
     //캐릭터 충돌했을 때 게임오버
     void OnCollisionEnter(Collision coll)
     {
-        collideAudio.Play();
-        gameOverCanvas.SetActive(true);
-        Debug.Log("GameOver");
-        Time.timeScale = 0;
+     
+            collideAudio.Play();
+            gameOverCanvas.SetActive(true);
+            Debug.Log("GameOver");
+            Time.timeScale = 0;
+            gameObject.GetComponent<Animator>().Play("die");
+        
     }
 
     public void Replay()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("forestminigame___");
     }
 
     //동전을 먹을경우 보상
@@ -60,6 +63,7 @@ public class charjump : MonoBehaviour
             congratsCanvas.SetActive(true);
             Debug.Log("Player wins");
             Time.timeScale = 0;
+            gameObject.GetComponent<Animator>().Play("win");
         }
     }
 
