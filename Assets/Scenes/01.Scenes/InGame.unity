@@ -435,10 +435,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 236079810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45300040a100e2c4e9128f8f716771ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 51fb6f23aa14b01409879a114aee7a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nowState: 2
+  nowState: 4
   gridSystem: {fileID: 234774459}
 --- !u!4 &236079812
 Transform:
@@ -946,12 +946,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 598800729}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46acb09d3aeaf7b40a629c8020a34082, type: 3}
+  m_Script: {fileID: 11500000, guid: 3704b4e36ca994c4596e2f8f84bd4a7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   TargetPos: {x: 0, y: 0, z: 0}
-  MoveRate: 3
-  zoomRate: 0.5
+  MoveRate: 1
+  zoomRate: 1
   zoomMin: 5
   zoomMax: 15
 --- !u!4 &598800731
@@ -998,15 +998,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4761665368518926, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4761665368518926, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4761665368518926, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.0000000074505797
       objectReference: {fileID: 0}
     - target: {fileID: 4761665368518926, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1598,8 +1598,11 @@ MonoBehaviour:
   - {fileID: 4463328381083045700, guid: 1880af7bc73b16342824e32346cc7570, type: 3}
   FruitBoxes:
   - {fileID: 2415746095826044218, guid: 736b9f4f012fa2846be7dc1941bff489, type: 3}
-  fieldComps: []
-  treeComps: []
+  fieldComps:
+  - {fileID: 0}
+  - {fileID: 0}
+  treeComps:
+  - {fileID: 0}
 --- !u!4 &1434493338
 Transform:
   m_ObjectHideFlags: 0
@@ -1919,10 +1922,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2111009699}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ecd85e4c06c2b8438c77ce40c30c4f8, type: 3}
+  m_Script: {fileID: 11500000, guid: ac43226082ac6d246b8eb0645d910202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ring: {fileID: 861546548}
+  ring: {fileID: 0}
   ringUIList:
   - {fileID: 861546548}
   - {fileID: 1444153091}
