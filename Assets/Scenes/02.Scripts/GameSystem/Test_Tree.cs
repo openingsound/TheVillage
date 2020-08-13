@@ -8,35 +8,27 @@ public class Test_Tree : MonoBehaviour
     public GridTile gridSystem;
 
     [Header(" - 나무 오브젝트")]
-    public GameObject Tree;
-    public enum FruitType { apple };
-    public FruitType fruitType;
-    public GameObject TreePrefab;
-    public GameObject Fruit;
-    public GameObject tree_FruitBox;
-
-    [Space(20)]
+    public Plants_DB.Fruit selectedFruit;
 
     [Header(" - 밭 오브젝트")]
-    public GameObject Field;
-    public enum CropType { watermelon };
-    public CropType cropType;
-    public GameObject Bush;
-    public GameObject Crop;
-    public GameObject field_FruitBox;
+    public Plants_DB.Crop selectedCrop;
 
 
+
+    /// <summary>
+    /// 나무 건설하는 함수
+    /// </summary>
     public void OnClickPlanting()
     {
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, 'T');
 
         // 새 나무 생성
-        GameObject newTree = Instantiate(Tree, InputManager.InputSystem.TargetPos, Quaternion.identity);
+        GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, InputManager.InputSystem.TargetPos, Quaternion.identity);
         Object_Tree tree;
 
-        switch (fruitType)
+        switch (selectedFruit)
         {
-            case FruitType.apple:
+            case Plants_DB.Fruit.Apple:
                 tree = newTree.gameObject.AddComponent<AppleTree>();
                 break;
 
@@ -46,12 +38,16 @@ public class Test_Tree : MonoBehaviour
         }
 
         // 새 나무 초기화
-        tree.Planting(TreePrefab, Fruit, tree_FruitBox);
+        tree.Planting(Plants_DB.PlantDB.OwnTrees[(int) selectedFruit], Plants_DB.PlantDB.Fruits[(int)selectedFruit], Plants_DB.PlantDB.FruitBoxes[(int)selectedFruit]);
 
         
     }
 
 
+
+    /// <summary>
+    /// 나무에서 수확하는 함수
+    /// </summary>
     public void OnClickTreeHarvesting()
     {
         Object_Tree tree = InputManager.InputSystem.selectedObject.GetComponent<Object_Tree>();
@@ -69,17 +65,22 @@ public class Test_Tree : MonoBehaviour
         }
     }
 
+
+
+    /// <summary>
+    /// 밭을 제작하는 함수
+    /// </summary>
     public void OnClickPlowing()
     {
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, 'F');
 
         // 새 밭 생성
-        GameObject newField = Instantiate(Field, InputManager.InputSystem.TargetPos, Quaternion.identity);
+        GameObject newField = Instantiate(Plants_DB.PlantDB.Field, InputManager.InputSystem.TargetPos, Quaternion.identity);
         Object_Field field;
 
-        switch(cropType)
+        switch(selectedCrop)
         {
-            case CropType.watermelon:
+            case Plants_DB.Crop.Watermelon:
                 field = newField.gameObject.AddComponent<WaterMelon>();
                 break;
 
@@ -89,11 +90,16 @@ public class Test_Tree : MonoBehaviour
         }
 
         // 새 밭 초기화
-        field.Plowing(Bush, Crop, field_FruitBox);
+        field.Plowing(Plants_DB.PlantDB.OwnBushes[(int) selectedCrop], Plants_DB.PlantDB.Crops[(int)selectedCrop], Plants_DB.PlantDB.CropBoxes[(int)selectedCrop]);
 
         
     }
 
+
+
+    /// <summary>
+    /// 밭 작물 수확하는 함수
+    /// </summary>
     public void OnClickFieldHarvesting()
     {
         Object_Field field = InputManager.InputSystem.selectedObject.GetComponent<Object_Field>();

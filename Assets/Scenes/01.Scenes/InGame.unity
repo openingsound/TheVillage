@@ -407,7 +407,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &236079810
 GameObject:
@@ -452,7 +452,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &372702536
 GameObject:
@@ -967,7 +967,7 @@ Transform:
   m_Children:
   - {fileID: 534669905}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 45, y: 45, z: 0}
 --- !u!1001 &654803018
 PrefabInstance:
@@ -1014,7 +1014,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4761665368518926, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4761665368518926, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1136,7 +1136,7 @@ RectTransform:
   - {fileID: 1444153093}
   - {fileID: 483775246}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1207,7 +1207,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &861546546
 GameObject:
@@ -1540,6 +1540,80 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1055430036}
   m_CullTransparentMesh: 0
+--- !u!1 &1434493336
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1434493338}
+  - component: {fileID: 1434493337}
+  m_Layer: 0
+  m_Name: PlantsDB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1434493337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434493336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38dc1f72bfd305142b6a8a6e319b419e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Field: {fileID: 1587832654954589310, guid: a5f6a08505f754b428d0919d690d3015, type: 3}
+  Bushes:
+  - {fileID: 7841999036059644121, guid: 899f0fa5183896b4c98876e31a3bba0e, type: 3}
+  - {fileID: 5865372215494078482, guid: 7257679ca1449914d98246a972084149, type: 3}
+  - {fileID: 6274176031300146322, guid: af6fd34dc48143745ac09e06f67bf095, type: 3}
+  GroundBushes:
+  - {fileID: 6980737000404978256, guid: 34cf3f9b12070804c933f09a042a70a7, type: 3}
+  - {fileID: 6980737000404978256, guid: df892bff81acaf949abdde380b3cc74e, type: 3}
+  - {fileID: 5457627084137346706, guid: 1f4efa34149c1844ea5bfc399a827b3a, type: 3}
+  - {fileID: 7776119680261628367, guid: 63aa7e1228f51b647af9922f4b9272f8, type: 3}
+  - {fileID: 6650956930991558831, guid: 5ba5acb6b97e456428716242183ea833, type: 3}
+  - {fileID: 7905689495741998586, guid: 06b7fa194301d6a49a61902bdafb1376, type: 3}
+  OwnBushes:
+  - {fileID: 5653723813529140487, guid: 6da6f6af2cb33c34d9f77afa497623c5, type: 3}
+  - {fileID: 6232718888319822188, guid: 1201d74894db46746b29ac36118167d5, type: 3}
+  Crops:
+  - {fileID: 1633090950825022, guid: dc639d1e38ce2f842900cce188dbd42c, type: 3}
+  - {fileID: 1546187669215154, guid: dfb380540e3c50a448c60559b282f9b0, type: 3}
+  CropBoxes:
+  - {fileID: 0}
+  - {fileID: 6300812150710263852, guid: f45c1050d53297c42a7f04c9ec5ea029, type: 3}
+  TreeBush: {fileID: 2742956894808081159, guid: cf8620e813763eb459c5bb5fde843b50,
+    type: 3}
+  OwnTrees:
+  - {fileID: 1638305729631902, guid: 91169ee23d4147340bba9836e7c51716, type: 3}
+  Fruits:
+  - {fileID: 4463328381083045700, guid: 1880af7bc73b16342824e32346cc7570, type: 3}
+  FruitBoxes:
+  - {fileID: 2415746095826044218, guid: 736b9f4f012fa2846be7dc1941bff489, type: 3}
+  fieldComps: []
+  treeComps: []
+--- !u!4 &1434493338
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434493336}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.0000114, y: -0.7678468, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1444153090
 GameObject:
   m_ObjectHideFlags: 0
@@ -1615,6 +1689,36 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 3, y: 3}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1862803032
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1862803033}
+  m_Layer: 0
+  m_Name: ===== GameManager Objects =====
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1862803033
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862803032}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.0000114, y: -0.7678468, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1885639087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1644,7 +1748,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1885639089
 MonoBehaviour:
@@ -1659,18 +1763,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSystem: {fileID: 234774459}
-  Tree: {fileID: 2742956894808081159, guid: cf8620e813763eb459c5bb5fde843b50, type: 3}
-  fruitType: 0
-  TreePrefab: {fileID: 1638305729631902, guid: 91169ee23d4147340bba9836e7c51716, type: 3}
-  Fruit: {fileID: 4463328381083045700, guid: 1880af7bc73b16342824e32346cc7570, type: 3}
-  tree_FruitBox: {fileID: 2415746095826044218, guid: 736b9f4f012fa2846be7dc1941bff489,
-    type: 3}
-  Field: {fileID: 1587832654954589310, guid: a5f6a08505f754b428d0919d690d3015, type: 3}
-  cropType: 0
-  Bush: {fileID: 5653723813529140487, guid: 6da6f6af2cb33c34d9f77afa497623c5, type: 3}
-  Crop: {fileID: 1546187669215154, guid: dfb380540e3c50a448c60559b282f9b0, type: 3}
-  field_FruitBox: {fileID: 6300812150710263852, guid: f45c1050d53297c42a7f04c9ec5ea029,
-    type: 3}
+  selectedFruit: 0
+  selectedCrop: 1
 --- !u!1 &2109766269
 GameObject:
   m_ObjectHideFlags: 0
@@ -1845,5 +1939,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
