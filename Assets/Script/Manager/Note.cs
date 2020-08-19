@@ -17,16 +17,18 @@ public class Note : MonoBehaviour
 
     void Update()
     {
-         Random rRan = new Random();
-       if(_playerController.n >= 2) { 
-       if(transform.localPosition.y <= -400)
-        {
-            a = 1;
-        }
-        
-       transform.localPosition += new Vector3(0,a*rRan.rSpeed,0)*Time.deltaTime;
-        }
+        Random rRan = new Random();
+
+        if(_playerController.n >= 2) { 
+
+            if(transform.localPosition.y <= -400)
+            {
+                a = 1;
             }
+        
+            transform.localPosition += new Vector3(0,a*rRan.rSpeed,0)*Time.deltaTime;
+        }
+    }
     
 }
 

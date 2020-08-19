@@ -729,8 +729,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tex: {fileID: 0}
-  n: 0
   _note: {fileID: 0}
+  n: 0
 --- !u!4 &839855612
 Transform:
   m_ObjectHideFlags: 0
@@ -1336,8 +1336,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tex: {fileID: 1770960553}
-  n: 0
   _note: {fileID: 0}
+  n: 0
 --- !u!114 &1770960556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1466,7 +1466,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 853.0001, y: 399.9999}
+  m_AnchoredPosition: {x: 853.0001, y: 400}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1781031509
@@ -1482,8 +1482,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tex: {fileID: 0}
-  n: 0
   _note: {fileID: 0}
+  n: 0
 --- !u!114 &1781031510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1636,6 +1636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   percent: {fileID: 1817333918}
+  _timingManager: {fileID: 1781031514}
 --- !u!114 &1817333918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1836,6 +1837,10 @@ PrefabInstance:
     - target: {fileID: 1160220439793846, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
       propertyPath: m_Name
       value: SM_Chr_Farmer_Male_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1970083119225840, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
       propertyPath: m_LocalPosition.x

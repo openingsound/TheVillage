@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class UIManager : MonoBehaviour
+public class FishingUIManager : MonoBehaviour
 {
     public Text percent;
-    TimingManager _timingManager;
+    public TimingManager _timingManager;
     void Update()
     {
         
