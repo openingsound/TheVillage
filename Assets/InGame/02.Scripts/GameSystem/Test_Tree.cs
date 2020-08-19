@@ -5,7 +5,7 @@ using UnityEngine;
 public class Test_Tree : MonoBehaviour
 {
     [Header(" - 그리드 시스템")]
-    public GridTile gridSystem;
+    public GridMap gridSystem;
 
     [Header(" - 나무 오브젝트")]
     public Plants_DB.Fruit selectedFruit;

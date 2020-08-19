@@ -60,7 +60,7 @@ public class InputManager : MonoBehaviour
     private float m_lastTouchLenth = 0;
 
 
-    public GridTile gridSystem;
+    public GridMap gridSystem;
 
 
     private void Awake()

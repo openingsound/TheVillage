@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class GridTile : MonoBehaviour
+public class GridMap : MonoBehaviour
 {
     [Header(" - 그리드 좌표 설정")]
     public int xSize;
