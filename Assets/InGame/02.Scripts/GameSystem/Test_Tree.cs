@@ -5,7 +5,7 @@ using UnityEngine;
 public class Test_Tree : MonoBehaviour
 {
     [Header(" - 그리드 시스템")]
-    public GridTile gridSystem;
+    public GridMap gridSystem;
 
     [Header(" - 나무 오브젝트")]
     public Plants_DB.Fruit selectedFruit;
@@ -20,7 +20,9 @@ public class Test_Tree : MonoBehaviour
     /// </summary>
     public void OnClickPlanting()
     {
-        gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, 'T');
+        GridTile newGridTile = new GridTile("Tree_" + selectedFruit.ToString(), 1, false, Object_Tree.TreeState.Bush.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        
+        gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
         // 새 나무 생성
         GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, InputManager.InputSystem.TargetPos, Quaternion.identity);
@@ -72,7 +74,9 @@ public class Test_Tree : MonoBehaviour
     /// </summary>
     public void OnClickPlowing()
     {
-        gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, 'F');
+        GridTile newGridTile = new GridTile("Field_" + selectedCrop.ToString(), 1, false, Object_Field.FieldState.Plow.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+
+        gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
         // 새 밭 생성
         GameObject newField = Instantiate(Plants_DB.PlantDB.Field, InputManager.InputSystem.TargetPos, Quaternion.identity);

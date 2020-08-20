@@ -60,7 +60,7 @@ public class InputManager : MonoBehaviour
     private float m_lastTouchLenth = 0;
 
 
-    public GridTile gridSystem;
+    public GridMap gridSystem;
 
 
     private void Awake()
@@ -152,7 +152,7 @@ public class InputManager : MonoBehaviour
                 Debug.Log(" - TargetPos : " + TargetPos.ToString());
 
                 int idx = gridSystem.GettingGridPos(TargetPos);
-                Debug.Log(" - Grid[" + (idx % gridSystem.xSize) + ", " + (idx / gridSystem.xSize) + "]");
+                Debug.Log(" - Grid[" + (idx % gridSystem.GridSize) + ", " + (idx / gridSystem.GridSize) + "]");
             }
 
             
