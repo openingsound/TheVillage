@@ -20,7 +20,7 @@ public class Test_Tree : MonoBehaviour
     /// </summary>
     public void OnClickPlanting()
     {
-        GridTile newGridTile = new GridTile("Tree_" + selectedFruit.ToString(), 1, false, Object_Tree.TreeState.Bush.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile("Tree", selectedFruit.ToString(), 1, false, Object_Tree.TreeState.Bush.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
         
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
@@ -74,7 +74,7 @@ public class Test_Tree : MonoBehaviour
     /// </summary>
     public void OnClickPlowing()
     {
-        GridTile newGridTile = new GridTile("Field_" + selectedCrop.ToString(), 1, false, Object_Field.FieldState.Plow.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile("Field", selectedCrop.ToString(), 1, false, Object_Field.FieldState.Plow.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
 
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 

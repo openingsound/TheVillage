@@ -2,28 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class GridTile
 {
     // 현재 그리드 타일 위의 오브젝트 종류
-    string type;
+    [SerializeField]
+    private string type;
+
+    // 현재 그리드 타일 위의 오브젝트 이름
+    [SerializeField]
+    private string name;
 
     // 오브젝트의 레벨
-    int level;
+    [SerializeField]
+    private int level;
 
     // 농작물 관련 오브젝트의 경우 자동수확인가
-    bool isAuto;
+    [SerializeField]
+    private bool isAuto;
 
     // 마지막 상태가 무엇인가
-    string lastState;
+    [SerializeField]
+    private string lastState;
 
     // 마지막으로 상태가 변한 것이 언제인가
-    string lastStateTime;
+    [SerializeField]
+    private string lastStateTime;
 
 
 
-    public GridTile(string _type = "", int _level = 0, bool _isAuto = false, string _lastState = "", string _lastStateTime = "")
+    public GridTile(string _type = "", string _name = "", int _level = 0, bool _isAuto = false, string _lastState = "", string _lastStateTime = "")
     {
         type = _type;
+        name = _name;
         level = _level;
         isAuto = _isAuto;
         lastState = _lastState;

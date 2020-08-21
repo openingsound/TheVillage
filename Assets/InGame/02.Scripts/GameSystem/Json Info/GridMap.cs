@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+[System.Serializable]
 public class GridMap : MonoBehaviour
 {
     [Header(" - 그리드 설정")]
     public int GridSize;
+
+    [SerializeField]
     private float zHeight = -0.5f;
+
+    [SerializeField]
     private float cellSize = 3f;
 
     [Header(" - 그리드 타일")]
+
     public GameObject gridTile;
     
+    [SerializeField]
     private GridTile[] tiles;
+    
     private GameObject[] gridObjects;
 
     private void Awake()
@@ -24,7 +32,7 @@ public class GridMap : MonoBehaviour
 
 
 
-    private void GenerateGrid()
+    public void GenerateGrid()
     {
         // 내부 칸의 내용물 배열
         tiles = new GridTile[GridSize * GridSize];

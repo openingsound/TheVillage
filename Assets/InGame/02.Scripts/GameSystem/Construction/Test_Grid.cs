@@ -17,9 +17,10 @@ public class Test_Grid : MonoBehaviour
             return;
         }
 
-        if(GridSize % 2 != 0)
+        if(GridSize % 2 == 0)
         {
             Debug.LogError("Error) 그리드맵의 크기는 반드시 홀수여야 합니다!");
+            return;
         }
 
         Debug.Log("-------[Create Grid " + GridSize + " X " + GridSize + " Size]-------");
