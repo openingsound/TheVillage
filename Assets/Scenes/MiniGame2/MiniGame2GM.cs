@@ -34,7 +34,6 @@ public class MiniGame2GM : MonoBehaviour
         while (true)
         {
             //print("go");
-
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 10; j++)
@@ -232,7 +231,7 @@ public class MiniGame2GM : MonoBehaviour
         //print("손가락 땜" + food.cou);
         int y = food.cou / 10;
         int x = food.cou % 10;
-        if (food.cou == ncou && (Math.Abs(py - y) > 1 || Math.Abs(px - x) > 1) == false && arr[py, px] == arr[y, x] && lines.Count >= 2)
+        if (food.cou == ncou && (Math.Abs(py - y) > 1 || Math.Abs(px - x) > 1) == false && arr[py, px] == arr[y, x] && lines.Count >= 3)
         {
             //완성 했따리
             activated = !activated;

@@ -131,7 +131,10 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            ring.gameObject.SetActive(false);
+            if (ring != null & ring.gameObject.activeSelf)
+            {
+                ring.gameObject.SetActive(false);
+            }
         }
     }
 }
