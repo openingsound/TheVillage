@@ -20,7 +20,7 @@ public class GridMap : MonoBehaviour
     public GameObject gridTile;
     
     [SerializeField]
-    private GridTile[] tiles;
+    public GridTile[] tiles;
     
     private GameObject[] gridObjects;
 
@@ -44,9 +44,47 @@ public class GridMap : MonoBehaviour
             for(int x = 0; x < GridSize; x++)
             {
                 // 빈 그리드 타일 생성
-                CreateNullTile(x, y, GridSize, tiles, gridObjects);
+                gridObjects[y * GridSize + x] = CreateNullTile(x, y, GridSize);
+                tiles[y * GridSize + x] = new GridTile();
             }
         }
+    }
+
+
+    public void LoadGrid()
+    {
+        // 그리드 중앙 좌표
+        int center = (GridSize - 1) / 2;
+
+        // 기존 그리드 좌표 범위
+        int range = ((int)Mathf.Sqrt((float)gridObjects.Length) - 1) / 2;
+
+        // 내부 칸의 내용물 배열
+        GameObject[] newgridObjects = new GameObject[GridSize * GridSize];
+
+        // 그리드 생성
+        for (int y = 0, idx = 0; y < GridSize; y++)
+        {
+            for (int x = 0; x < GridSize; x++)
+            {
+                // 만일 그리드의 범위가 이전에 생성했던 범위 이내라면
+                if (y > center - range - 1 && y < center + range + 1 && x > center - range - 1 && x < center + range + 1)
+                {
+                    // 타일 오브젝트 연결
+                    newgridObjects[y * GridSize + x] = gridObjects[idx];
+                    newgridObjects[y * GridSize + x].name = "Grid(" + x + "," + y + ")";
+                    idx++;
+                }
+                else
+                {
+                    // 만일 그리드의 범위가 이전에 생성했던 범위 밖이라면
+                    // 그리드타일 오브젝트를 넣음
+                    newgridObjects[y * GridSize + x] = CreateNullTile(x, y, GridSize);
+                }
+            }
+        }
+
+        gridObjects = newgridObjects;
     }
 
 
@@ -81,7 +119,8 @@ public class GridMap : MonoBehaviour
                 {
                     // 만일 그리드의 범위가 이전에 생성했던 범위 밖이라면
                     // 빈 그리드타일 오브젝트를 넣음
-                    CreateNullTile(x, y, newGridSize, newTiles, newgridObjects);
+                    newgridObjects[y * newGridSize + x] = CreateNullTile(x, y, newGridSize);
+                    newTiles[y * newGridSize + x] = new GridTile();
                 }
             }
         }
@@ -98,7 +137,7 @@ public class GridMap : MonoBehaviour
     /// <param name="x">그리드 내 x좌표</param>
     /// <param name="y">그리드 내 y좌표</param>
     /// <param name="size">현재 그리드의 크기</param>
-    private void CreateNullTile(int x, int y, int size, GridTile[] maps, GameObject[] Tiles)
+    private GameObject CreateNullTile(int x, int y, int size)
     {
         // 위치 설정
         // 그리드 좌표 : (((xSize - 1) / 2f - x) * cellSize, zHeight, ((ySize - 1) / 2f - y) * cellSize)
@@ -109,18 +148,20 @@ public class GridMap : MonoBehaviour
         GameObject tile = Instantiate(gridTile, pos, rot);
 
         tile.name = "Grid(" + x + "," + y + ")";
-        Tiles[y * size + x] = tile;
+        //gridObjects[y * size + x] = tile;
 
         // 부모를 이 스크립트를 가진 오브젝트로 함
         tile.transform.parent = this.transform;
 
         // 빈 그리드타일 오브젝트 생성
-        GridTile nullTile = new GridTile();
+        //GridTile nullTile = new GridTile();
 
         // 그리드 값 초기화
-        maps[y * size + x] = nullTile;
+        //tiles[y * size + x] = nullTile;
 
         Debug.Log("Create Tile[" + x + ", " + y + "] - null Tile");
+
+        return tile;
     }
 
 
@@ -129,7 +170,7 @@ public class GridMap : MonoBehaviour
     /// </summary>
     /// <param name="pos">주어지는 좌표</param>
     /// <returns>grid의 인덱스</returns>
-    public int GettingGridPos(Vector3 pos)
+    public int GettingGridIdx(Vector3 pos)
     {
         int x = (int) ((GridSize - 1) / 2f - pos.x / cellSize);
         int y = (int) ((GridSize - 1) / 2f - pos.z / cellSize);
@@ -148,6 +189,37 @@ public class GridMap : MonoBehaviour
 
         return y * GridSize + x;
     }
+
+
+    public Vector3? GettingGridPos(int idx)
+    {
+        if(idx < 0 || idx > GridSize * GridSize)
+        {
+            return null;
+        }
+
+        int x = idx % GridSize;
+        int y = idx / GridSize;
+
+        return new Vector3(((GridSize - 1) / 2f - x) * cellSize, zHeight, ((GridSize - 1) / 2f - y) * cellSize);
+    }
+
+
+    public Vector3? GettingGridPos(int x, int y)
+    {
+        if(x < 0 || x >= GridSize)
+        {
+            return null;
+        }
+
+        if(y < 0 || y >= GridSize)
+        {
+            return null;
+        }
+
+        return new Vector3(((GridSize - 1) / 2f - x) * cellSize, zHeight, ((GridSize - 1) / 2f - y) * cellSize);
+    }
+
 
 
     /// <summary>
@@ -182,7 +254,7 @@ public class GridMap : MonoBehaviour
 
     public void ChangeGridContent(Vector3 pos, GridTile newTiles)
     {
-        int idx = GettingGridPos(pos);
+        int idx = GettingGridIdx(pos);
         
         if(idx == -1)
         {

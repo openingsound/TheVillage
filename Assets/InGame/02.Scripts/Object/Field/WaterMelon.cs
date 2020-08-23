@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/*
 [System.Serializable]
 public class WaterMelon : Object_Field
 {
@@ -14,6 +14,7 @@ public class WaterMelon : Object_Field
     /// <param name="box">수확 시 드랍될 수박 아이템 박스 프리팹</param>
     public override void Plowing(GameObject bush, GameObject crop, GameObject box)
     {
+
         Debug.Log("수박을 심었습니다...");
 
         // 오브젝트 이름은 사과나무
@@ -28,3 +29,4 @@ public class WaterMelon : Object_Field
         base.Plowing(bush, crop, box);
     }
 }
+*/

@@ -54,28 +54,13 @@ public class Plants_DB : MonoBehaviour
     // 나무 열매 수확물 박스 프리팹
     public GameObject[] FruitBoxes;
 
-
-
-    /* 작물들의 컴포넌트 배열 */
-    [Header(" - 작물 컴포넌트들")]
-
-    [Space(10)]
-    // 밭 작물 고유 컴포넌트 배열
-    public Object_Field[] fieldComps;
-
-    [Space(10)]
-    // 나무 작물 고유 컴포넌트 배열
-    public Object_Tree[] treeComps;
-
-
-
     /* 밭, 나무 작물들의 이름, 종류들을 열거한 열거형 */
 
     // 밭 열거형
-    public enum Crop { Asparagus, Watermelon };
+    public enum Crop { NULL = -1, Asparagus, Watermelon };
 
     // 나무열매 열거형
-    public enum Fruit { Apple };
+    public enum Fruit { NULL = -1, Apple };
 
 
 

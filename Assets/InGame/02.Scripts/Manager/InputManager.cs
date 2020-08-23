@@ -151,7 +151,7 @@ public class InputManager : MonoBehaviour
 
                 Debug.Log(" - TargetPos : " + TargetPos.ToString());
 
-                int idx = gridSystem.GettingGridPos(TargetPos);
+                int idx = gridSystem.GettingGridIdx(TargetPos);
                 Debug.Log(" - Grid[" + (idx % gridSystem.GridSize) + ", " + (idx / gridSystem.GridSize) + "]");
             }
 

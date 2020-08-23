@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public abstract class Object_Field : BasicObject
+public class Object_Field : BasicObject
 {
     #region Field Basic Property
 
@@ -53,6 +53,36 @@ public abstract class Object_Field : BasicObject
 
     #region Field Basic Method
 
+
+    /// <summary>
+    /// 밭의 기본적인 수치들을 초기화하는 함수
+    /// </summary>
+    /// <param name="_name"></param>
+    /// <param name="plowTime"></param>
+    /// <param name="cropTime"></param>
+    public void InitField(string _name, float plowTime, float cropTime)
+    {
+        // 오브젝트 이름 설정
+        name = _name;
+
+        // 오브젝트 종류는 밭
+        type = "Field";
+        
+        // 밭을 가는데 걸리는 시간 설정
+        FieldPlowTime = plowTime;
+
+        // 작물이 자라는 시간 설정
+        CropGrowTime = cropTime;
+
+        // 레벨은 1
+        level = 1;
+
+        // 자동 수확은 off
+        isAuto = false;
+    }
+
+
+
     /// <summary>
     /// 밭을 처음 만들 때 호출하는 함수
     /// </summary>
@@ -63,15 +93,6 @@ public abstract class Object_Field : BasicObject
     {
         // 밭 애니메이션 초기화
         anim.Anim_Init(bush, crop, box);
-
-        // 아이템 종류는 밭
-        type = "Field";
-
-        // 레벨은 1
-        level = 1;
-
-        // 자동 수확은 off
-        isAuto = false;
 
         // 밭 레벨에 따른 애니메이션 설정
         anim.Anim_SetLevel(level);
