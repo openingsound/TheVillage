@@ -118,14 +118,14 @@ public class MiniGame2GM : MonoBehaviour
         if (activated)
         {
             timeElapse += UnityEngine.Time.deltaTime;
-            if(timeElapse >= 20.0f)
+            if(timeElapse >= 3.0f)
             {
                 enabled = false;
                 Release();
                 Failpanel.SetActive(true);
                 activated = false;
             }
-            slider.value = 20.0f - timeElapse;
+            slider.value = 3.0f - timeElapse;
             
         }
         if(enabled == false)
