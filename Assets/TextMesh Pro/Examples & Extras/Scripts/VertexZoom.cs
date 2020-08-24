@@ -129,7 +129,7 @@ namespace TMPro.Examples
                     //Vector3 jitterOffset = new Vector3(Random.Range(-.25f, .25f), Random.Range(-.25f, .25f), 0);
 
                     // Determine the random scale change for each character.
-                    float randomScale = Random.Range(1f, 1.5f);
+                    float randomScale = UnityEngine.Random.Range(1f, 1.5f);
                     
                     // Add modified scale and index
                     modifiedCharScale.Add(randomScale);

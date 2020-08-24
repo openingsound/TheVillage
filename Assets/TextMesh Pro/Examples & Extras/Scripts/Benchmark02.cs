@@ -25,7 +25,7 @@ namespace TMPro.Examples
                 {
                     // TextMesh Pro Implementation
                     GameObject go = new GameObject();
-                    go.transform.position = new Vector3(Random.Range(-95f, 95f), 0.25f, Random.Range(-95f, 95f));
+                    go.transform.position = new Vector3(UnityEngine.Random.Range(-95f, 95f), 0.25f, UnityEngine.Random.Range(-95f, 95f));
 
                     TextMeshPro textMeshPro = go.AddComponent<TextMeshPro>();
 
@@ -47,7 +47,7 @@ namespace TMPro.Examples
                 {
                     // TextMesh Implementation
                     GameObject go = new GameObject();
-                    go.transform.position = new Vector3(Random.Range(-95f, 95f), 0.25f, Random.Range(-95f, 95f));
+                    go.transform.position = new Vector3(UnityEngine.Random.Range(-95f, 95f), 0.25f, UnityEngine.Random.Range(-95f, 95f));
 
                     TextMesh textMesh = go.AddComponent<TextMesh>();
                     textMesh.font = Resources.Load<Font>("Fonts/ARIAL");
@@ -71,7 +71,7 @@ namespace TMPro.Examples
                     canvas.worldCamera = Camera.main;
 
                     go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-                    go.transform.position = new Vector3(Random.Range(-95f, 95f), 5f, Random.Range(-95f, 95f));
+                    go.transform.position = new Vector3(UnityEngine.Random.Range(-95f, 95f), 5f, UnityEngine.Random.Range(-95f, 95f));
 
                     TextMeshProUGUI textObject = new GameObject().AddComponent<TextMeshProUGUI>();
                     textObject.rectTransform.SetParent(go.transform, false);
