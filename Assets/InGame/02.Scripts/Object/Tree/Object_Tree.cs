@@ -58,6 +58,35 @@ public class Object_Tree : BasicObject
 
     #region Tree Basic Method
 
+
+    /// <summary>
+    /// 나무의 기본적인 수치들을 초기화하는 함수
+    /// </summary>
+    /// <param name="_name"></param>
+    /// <param name="plowTime"></param>
+    /// <param name="cropTime"></param>
+    public void InitTree(string _name, float treeTime, float fruitTime)
+    {
+        // 오브젝트 이름 설정
+        name = _name;
+
+        // 오브젝트 종류는 밭
+        type = "Tree";
+
+        // 밭을 가는데 걸리는 시간 설정
+        treeGrowTime = treeTime;
+
+        // 작물이 자라는 시간 설정
+        fruitGrowTime = fruitTime;
+
+        // 레벨은 1
+        level = 1;
+
+        // 자동 수확은 off
+        isAuto = false;
+    }
+
+
     /// <summary>
     /// 나무가 처음 심어질 때 호출하는 함수
     /// </summary>
@@ -68,15 +97,6 @@ public class Object_Tree : BasicObject
     {
         // 밭 애니메이션 초기화
         anim.Anim_Init(tree, crop, box);
-
-        // 아이템 종류는 나무
-        type = "Tree";
-
-        // 레벨은 1
-        level = 1;
-
-        // 자동 수확은 off
-        isAuto = false;
 
         anim.Anim_SetLevel(level);
 

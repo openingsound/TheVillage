@@ -9,10 +9,8 @@ public class Test_Json : MonoBehaviour
     // 플레이어 정보 저장
     private PlayerInfo player = null;
 
+    // 닉네임을 입력받을 InputField
     public InputField nicknameField;
-
-    // 그리드 타일 저장
-    private GridTile tile = null;
 
     // 그리드 맵 저장
     public GridMap map = null;
@@ -24,7 +22,6 @@ public class Test_Json : MonoBehaviour
 
 
     private string Json_Player = "";
-    private string Json_Tile = "";
     private string Json_Map = "";
 
 
@@ -32,8 +29,6 @@ public class Test_Json : MonoBehaviour
     void Start()
     {
         savePath = Application.dataPath; ;
-
-        tile = new GridTile("Test", "None", 1, false, "NotState", "yyyyMMddHHmmss");
     }
 
     
@@ -58,18 +53,13 @@ public class Test_Json : MonoBehaviour
         }
 
         Json_Player = JsonUtility.ToJson(player);
-        Json_Tile = JsonUtility.ToJson(tile);
-
-        //Json_Map = JsonUtility.ToJson(map);
         Json_Map = JsonUtility.ToJson(TestMap.GetComponent<GridMap>());
 
         CreateJsonFile(savePath, "PlayerInfoJson", Json_Player);
-        CreateJsonFile(savePath, "GridTileJson", Json_Tile);
         CreateJsonFile(savePath, "GridMapJson", Json_Map);
 
 
         Debug.Log("Player Json ) " + Json_Player);
-        Debug.Log("Tile Json ) " + Json_Tile);
         Debug.Log("Map Json ) " + Json_Map);
     }
 
@@ -79,8 +69,9 @@ public class Test_Json : MonoBehaviour
     {
 
         player = LoadJsonFile<PlayerInfo>(savePath, "PlayerInfoJson");
-        tile = LoadJsonFile<GridTile>(savePath, "GridTileJson");
         LoadMapJsonFile(savePath, "GridMapJson");
+
+
 
     }
 
@@ -192,6 +183,97 @@ public class Test_Json : MonoBehaviour
             JsonUtility.FromJsonOverwrite(jsonData, map);
         }
 
-        map.GenerateGrid();
+        map.LoadGrid();
+        LoadObjectTile();
+    }
+
+
+
+
+    /// <summary>
+    /// 나무 건설하는 함수
+    /// </summary>
+    public void OnCreateTree(GridTile tile, int idx)
+    {
+        // 새 나무 생성
+        GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, map.GettingGridPos(idx).Value, Quaternion.identity);
+        Object_Tree tree = newTree.GetComponent<Object_Tree>();
+
+        Plants_DB.Fruit fruit = (Plants_DB.Fruit)tile.TypeInt;
+
+        switch (fruit)
+        {
+            case Plants_DB.Fruit.Apple:
+                tree.InitTree(tile.Name, 10f, 10f);
+                break;
+
+            default:
+                tree.InitTree(tile.Name.ToString(), 10f, 10f);
+                break;
+        }
+
+        // 새 나무 초기화
+        tree.Planting(Plants_DB.PlantDB.OwnTrees[tile.TypeInt], Plants_DB.PlantDB.Fruits[tile.TypeInt], Plants_DB.PlantDB.FruitBoxes[tile.TypeInt]);
+
+
+    }
+
+
+
+
+    /// <summary>
+    /// 밭을 제작하는 함수
+    /// </summary>
+    public void OnCreateField(GridTile tile, int idx)
+    {
+        // 새 밭 생성
+        GameObject newField = Instantiate(Plants_DB.PlantDB.Field, map.GettingGridPos(idx).Value, Quaternion.identity);
+        Object_Field field = newField.GetComponent<Object_Field>();
+
+        Plants_DB.Crop crop = (Plants_DB.Crop)tile.TypeInt;
+
+        switch (crop)
+        {
+            case Plants_DB.Crop.Watermelon:
+                field.InitField(tile.Name, 10f, 10f);
+                break;
+
+            default:
+                field.InitField(tile.Name, 10f, 10f);
+                break;
+        }
+
+        // 새 밭 초기화
+        field.Plowing(Plants_DB.PlantDB.OwnBushes[tile.TypeInt], Plants_DB.PlantDB.Crops[tile.TypeInt], Plants_DB.PlantDB.CropBoxes[tile.TypeInt]);
+
+
+    }
+
+
+
+    public void LoadObjectTile()
+    {
+        if(map == null)
+        {
+            Debug.LogError("Load Map Error ) 그리드 맵 오브젝트가 연결되지 않았습니다!");
+        }
+
+        for(int idx = 0; idx < map.GridSize * map.GridSize; idx++)
+        {
+
+            switch(map.tiles[idx].Type)
+            {
+                case "Tree":
+                    OnCreateTree(map.tiles[idx], idx);
+                    break;
+
+                case "Field":
+                    OnCreateField(map.tiles[idx], idx);
+                    break;
+
+                default:
+                    continue;
+            } 
+        }
     }
 } 

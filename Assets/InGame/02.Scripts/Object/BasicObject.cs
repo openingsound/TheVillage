@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicObject : MonoBehaviour
+public abstract class BasicObject : MonoBehaviour
 {
     // 오브젝트의 타입
     public string type { get; protected set; }

@@ -31,6 +31,9 @@ public class UIManager : MonoBehaviour
         // 링 UI를 표시할지 확인하는 변수 초기화
         isRing = false;
 
+        // ring 이미지를 리스트의 첫번째로 함
+        ring = ringUIList[0];
+
         /* 터치 시스템 */
 
         // 현재 UI를 켜야 하는가

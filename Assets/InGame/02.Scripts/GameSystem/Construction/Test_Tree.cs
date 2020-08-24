@@ -20,22 +20,22 @@ public class Test_Tree : MonoBehaviour
     /// </summary>
     public void OnClickPlanting()
     {
-        GridTile newGridTile = new GridTile("Tree", selectedFruit.ToString(), 1, false, Object_Tree.TreeState.Bush.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile((int)selectedFruit,"Tree", selectedFruit.ToString(), 1, false, Object_Tree.TreeState.Bush.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
         
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
         // 새 나무 생성
         GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, InputManager.InputSystem.TargetPos, Quaternion.identity);
-        Object_Tree tree;
+        Object_Tree tree = newTree.GetComponent<Object_Tree>();
 
         switch (selectedFruit)
         {
             case Plants_DB.Fruit.Apple:
-                tree = newTree.gameObject.AddComponent<AppleTree>();
+                tree.InitTree(selectedCrop.ToString(), 10f, 10f);
                 break;
 
             default:
-                tree = newTree.gameObject.AddComponent<Object_Tree>();
+                tree.InitTree(selectedCrop.ToString(), 10f, 10f);
                 break;
         }
 
@@ -74,22 +74,22 @@ public class Test_Tree : MonoBehaviour
     /// </summary>
     public void OnClickPlowing()
     {
-        GridTile newGridTile = new GridTile("Field", selectedCrop.ToString(), 1, false, Object_Field.FieldState.Plow.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile((int)selectedCrop, "Field", selectedCrop.ToString(), 1, false, Object_Field.FieldState.Plow.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
 
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
         // 새 밭 생성
         GameObject newField = Instantiate(Plants_DB.PlantDB.Field, InputManager.InputSystem.TargetPos, Quaternion.identity);
-        Object_Field field;
+        Object_Field field = newField.GetComponent<Object_Field>();
 
         switch(selectedCrop)
         {
             case Plants_DB.Crop.Watermelon:
-                field = newField.gameObject.AddComponent<WaterMelon>();
+                field.InitField(selectedCrop.ToString(), 10f, 10f);
                 break;
 
             default:
-                field = newField.gameObject.AddComponent<Object_Field>();
+                field.InitField(selectedCrop.ToString(), 10f, 10f);
                 break;
         }
 
