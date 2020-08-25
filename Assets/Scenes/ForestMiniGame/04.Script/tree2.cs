@@ -29,7 +29,7 @@ public class tree2 : MonoBehaviour
                 GameObject temp = Instantiate(Column);
                 temp.transform.parent = gameObject.transform;
 
-                float randomY = Random.Range(-3.3f, -2.5f);
+                float randomY = UnityEngine.Random.Range(-3.3f, -2.5f);
 
                 temp.transform.localPosition = new Vector3(-gameObject.transform.localPosition.x + 8, randomY, 0);
                 

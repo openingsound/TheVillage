@@ -34,7 +34,7 @@ public class charjump : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             Time.timeScale = 1;
-            Application.LoadLevel("Game");
+            SceneManager.LoadScene("forestminigame___");
         }
     }
     //캐릭터 충돌했을 때 게임오버

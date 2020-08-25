@@ -100,7 +100,7 @@ namespace TMPro.Examples
 
                     // Determine the center of each line
                     Vector3 centerOfLine = (textInfo.characterInfo[first].bottomLeft + textInfo.characterInfo[last].topRight) / 2;
-                    Quaternion rotation = Quaternion.Euler(0, 0, Random.Range(-0.25f, 0.25f));
+                    Quaternion rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(-0.25f, 0.25f));
 
                     // Iterate through each character of the line.
                     for (int j = first; j <= last; j++)
@@ -129,7 +129,7 @@ namespace TMPro.Examples
                         copyOfVertices[materialIndex][vertexIndex + 3] = sourceVertices[vertexIndex + 3] - charCenter;
 
                         // Determine the random scale change for each character.
-                        float randomScale = Random.Range(0.95f, 1.05f);
+                        float randomScale = UnityEngine.Random.Range(0.95f, 1.05f);
 
                         // Setup the matrix for the scale change.
                         matrix = Matrix4x4.TRS(Vector3.one, Quaternion.identity, Vector3.one * randomScale);
