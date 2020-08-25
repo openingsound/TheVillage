@@ -17,6 +17,15 @@ public class Test_Json : MonoBehaviour
 
     public GameObject TestMap;
 
+
+    /// <summary>
+    /// 로드된 그리드 맵에서 오브젝트 생성하는 방식
+    /// 0. Keep - 오브젝트가 이전 상태를 그대로 물려받음
+    /// 1. Skip - 오브젝트가 현재 시간을 반영하여 상태를 계산함
+    /// </summary>
+    public enum LoadWay { Keep, Skip };
+    public LoadWay load;
+
     // json 파일 저장 정보
     private string savePath;
 
@@ -70,9 +79,6 @@ public class Test_Json : MonoBehaviour
 
         player = LoadJsonFile<PlayerInfo>(savePath, "PlayerInfoJson");
         LoadMapJsonFile(savePath, "GridMapJson");
-
-
-
     }
 
 
@@ -183,7 +189,10 @@ public class Test_Json : MonoBehaviour
             JsonUtility.FromJsonOverwrite(jsonData, map);
         }
 
+        // 인게임에서 그리드 타일 생성
         map.LoadGrid();
+
+        // 그리드 타일 내 오브젝트 생성
         LoadObjectTile();
     }
 
@@ -193,7 +202,7 @@ public class Test_Json : MonoBehaviour
     /// <summary>
     /// 나무 건설하는 함수
     /// </summary>
-    public void OnCreateTree(GridTile tile, int idx)
+    public void OnLoadTree(GridTile tile, int idx)
     {
         // 새 나무 생성
         GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, map.GettingGridPos(idx).Value, Quaternion.identity);
@@ -204,18 +213,31 @@ public class Test_Json : MonoBehaviour
         switch (fruit)
         {
             case Plants_DB.Fruit.Apple:
-                tree.InitTree(tile.Name, 10f, 10f);
+                tree.InitTree(tile.Name, 10f, 10f, idx, tile.Level, tile.IsAuto);
                 break;
 
             default:
-                tree.InitTree(tile.Name.ToString(), 10f, 10f);
+                tree.InitTree(tile.Name, 10f, 10f, idx, tile.Level, tile.IsAuto);
                 break;
         }
 
         // 새 나무 초기화
-        tree.Planting(Plants_DB.PlantDB.OwnTrees[tile.TypeInt], Plants_DB.PlantDB.Fruits[tile.TypeInt], Plants_DB.PlantDB.FruitBoxes[tile.TypeInt]);
+        tree.Planting(Plants_DB.PlantDB.OwnBushes[tile.TypeInt], Plants_DB.PlantDB.Crops[tile.TypeInt], Plants_DB.PlantDB.CropBoxes[tile.TypeInt]);
+
+        /*
+        // 나무 애니메이션 초기화
+        tree.anim.Anim_Init(Plants_DB.PlantDB.OwnTrees[tile.TypeInt], Plants_DB.PlantDB.Fruits[tile.TypeInt], Plants_DB.PlantDB.FruitBoxes[tile.TypeInt]);
+
+        // 나무 레벨 애니메이션 초기화
+        tree.anim.Anim_SetLevel(tile.Level);
 
 
+        if(load == LoadWay.Keep)
+        {
+            //tree.treeStateInit((Object_Tree.TreeState)tile.LastStateInt, );
+            //tree.treeStateInit((Object_Tree.TreeState)tile.LastStateInt, )
+        }
+        */
     }
 
 
@@ -224,7 +246,7 @@ public class Test_Json : MonoBehaviour
     /// <summary>
     /// 밭을 제작하는 함수
     /// </summary>
-    public void OnCreateField(GridTile tile, int idx)
+    public void OnLoadField(GridTile tile, int idx)
     {
         // 새 밭 생성
         GameObject newField = Instantiate(Plants_DB.PlantDB.Field, map.GettingGridPos(idx).Value, Quaternion.identity);
@@ -235,11 +257,11 @@ public class Test_Json : MonoBehaviour
         switch (crop)
         {
             case Plants_DB.Crop.Watermelon:
-                field.InitField(tile.Name, 10f, 10f);
+                field.InitField(tile.Name, 10f, 10f, idx, tile.Level, tile.IsAuto);
                 break;
 
             default:
-                field.InitField(tile.Name, 10f, 10f);
+                field.InitField(tile.Name, 10f, 10f, idx, tile.Level, tile.IsAuto);
                 break;
         }
 
@@ -264,11 +286,11 @@ public class Test_Json : MonoBehaviour
             switch(map.tiles[idx].Type)
             {
                 case "Tree":
-                    OnCreateTree(map.tiles[idx], idx);
+                    OnLoadTree(map.tiles[idx], idx);
                     break;
 
                 case "Field":
-                    OnCreateField(map.tiles[idx], idx);
+                    OnLoadField(map.tiles[idx], idx);
                     break;
 
                 default:

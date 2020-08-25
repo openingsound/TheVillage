@@ -14,4 +14,7 @@ public abstract class BasicObject : MonoBehaviour
     public int level { get { return _level; } protected set { _level = value; } }
     [SerializeField, Range(1, 6)]
     private int _level;
+    
+    // 현재 오브젝트의 인덱스
+    public int mapIdx { get; protected set; }
 }
