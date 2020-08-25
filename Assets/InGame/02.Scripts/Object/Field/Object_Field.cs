@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public abstract class Object_Field : BasicObject
+public class Object_Field : BasicObject
 {
     #region Field Basic Property
 
     /* 밭의 상태 관련 프로퍼티 */
 
     // 밭의 상태 열거형
-    public enum FieldState { Plow, Grow, Harvest };
+    public enum FieldState { NULL = -1, Plow, Grow, Harvest };
 
     // 밭의 크기 열거형
     public enum SizeState { S, M, L, NULL };
@@ -38,7 +38,7 @@ public abstract class Object_Field : BasicObject
     /* 밭의 애니메이션 관련 프로퍼티 */
 
     // 애니메이션 스크립트
-    protected Anim_Field anim;
+    public Anim_Field anim;
 
 
     /* 밭의 수확 관련 프로퍼티 */
@@ -53,6 +53,38 @@ public abstract class Object_Field : BasicObject
 
     #region Field Basic Method
 
+
+    /// <summary>
+    /// 밭의 기본적인 수치들을 초기화하는 함수
+    /// </summary>
+    /// <param name="_name"></param>
+    /// <param name="plowTime"></param>
+    /// <param name="cropTime"></param>
+    public void InitField(string _name, float plowTime, float cropTime, int _idx, int _level = 1, bool auto = false)
+    {
+        // 오브젝트 이름 설정
+        name = _name;
+
+        // 오브젝트 종류는 밭
+        type = "Field";
+        
+        // 밭을 가는데 걸리는 시간 설정
+        FieldPlowTime = plowTime;
+
+        // 작물이 자라는 시간 설정
+        CropGrowTime = cropTime;
+
+        // 레벨은 1
+        level = _level;
+
+        // 자동 수확은 off
+        isAuto = auto;
+
+        mapIdx = _idx;
+    }
+
+
+
     /// <summary>
     /// 밭을 처음 만들 때 호출하는 함수
     /// </summary>
@@ -63,15 +95,6 @@ public abstract class Object_Field : BasicObject
     {
         // 밭 애니메이션 초기화
         anim.Anim_Init(bush, crop, box);
-
-        // 아이템 종류는 밭
-        type = "Field";
-
-        // 레벨은 1
-        level = 1;
-
-        // 자동 수확은 off
-        isAuto = false;
 
         // 밭 레벨에 따른 애니메이션 설정
         anim.Anim_SetLevel(level);
@@ -113,6 +136,10 @@ public abstract class Object_Field : BasicObject
     {
         // 상태 변수의 값 변경
         growth = newFieldState;
+
+        GridMap.Map.tiles[mapIdx].LastStateInt = (int)newFieldState;
+
+        GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
 
         // 크기 변수의 값 변경
         size = newSizeState;

@@ -13,15 +13,13 @@ public class Object_Tree : BasicObject
     public enum TreeState { Bush, Fruit, Harvest };
 
     // 나무의 크기 열거형
-    public enum SizeState { S, M, L, NULL };
+    public enum SizeState { NULL, S, M, L };
 
     // 현재 나무의 상태
     public TreeState growth { get; private set; }
     
     // 현재 나무의 크기
     public SizeState size { get; private set; }
-
-    // 현재 나무의 크기
 
     // 나무가 자라나는데 걸리는 시간
     [SerializeField]
@@ -44,7 +42,7 @@ public class Object_Tree : BasicObject
     /* 나무의 애니메이션 관련 프로퍼티 */
 
     // 애니메이션 스크립트
-    protected Anim_Tree anim;
+    public Anim_Tree anim;
 
 
     /* 나무의 수확 관련 프로퍼티 */
@@ -58,6 +56,37 @@ public class Object_Tree : BasicObject
 
     #region Tree Basic Method
 
+
+    /// <summary>
+    /// 나무의 기본적인 수치들을 초기화하는 함수
+    /// </summary>
+    /// <param name="_name"></param>
+    /// <param name="plowTime"></param>
+    /// <param name="cropTime"></param>
+    public void InitTree(string _name, float treeTime, float fruitTime, int _idx, int _level = 1, bool auto = false)
+    {
+        // 오브젝트 이름 설정
+        name = _name;
+
+        // 오브젝트 종류는 밭
+        type = "Tree";
+
+        // 밭을 가는데 걸리는 시간 설정
+        treeGrowTime = treeTime;
+
+        // 작물이 자라는 시간 설정
+        fruitGrowTime = fruitTime;
+
+        // 레벨은 1
+        level = _level;
+
+        // 자동 수확은 off
+        isAuto = auto;
+
+        mapIdx = _idx;
+    }
+
+
     /// <summary>
     /// 나무가 처음 심어질 때 호출하는 함수
     /// </summary>
@@ -66,17 +95,8 @@ public class Object_Tree : BasicObject
     /// <param name="box">수확 시 드랍할 박스 프리팹</param>
     public virtual void Planting(GameObject tree, GameObject crop, GameObject box)
     {
-        // 밭 애니메이션 초기화
+        // 나무 애니메이션 초기화
         anim.Anim_Init(tree, crop, box);
-
-        // 아이템 종류는 나무
-        type = "Tree";
-
-        // 레벨은 1
-        level = 1;
-
-        // 자동 수확은 off
-        isAuto = false;
 
         anim.Anim_SetLevel(level);
 
@@ -111,6 +131,10 @@ public class Object_Tree : BasicObject
     {
         // 상태 변수의 값 변경
         growth = newTreeState;
+
+        GridMap.Map.tiles[mapIdx].LastStateInt = (int)newTreeState;
+
+        GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
 
         // 크기 변수의 값 변경
         size = newSizeState;

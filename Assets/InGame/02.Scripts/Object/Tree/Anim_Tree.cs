@@ -86,7 +86,7 @@ public class Anim_Tree : MonoBehaviour
         // <Item_Tree> 컴포넌트 연결
         thisTree = this.GetComponent<Object_Tree>();
 
-        // 밭 갈기 <Animator> 컴포넌트
+        // 나무 성장 <Animator> 컴포넌트
         treeAnim = this.transform.Find("Bushes").GetChild(0).GetComponent<Animator>();
     }
 
@@ -96,7 +96,7 @@ public class Anim_Tree : MonoBehaviour
     /// </summary>
     /// <param name="state">나무의 상태</param>
     /// <param name="size">나무의 성장 크기 정도</param>
-    public void AnimStateInit(Object_Tree.TreeState state, Object_Tree.SizeState size, bool isHarvest = false)
+    public void AnimStateInit(Object_Tree.TreeState state, Object_Tree.SizeState size = Object_Tree.SizeState.NULL, bool isHarvest = false)
     {
         // 변경된 상태가 Bush(묘목)이라면
         if(state == Object_Tree.TreeState.Bush)

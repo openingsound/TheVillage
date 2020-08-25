@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicObject : MonoBehaviour
+public abstract class BasicObject : MonoBehaviour
 {
     // 오브젝트의 타입
     public string type { get; protected set; }
@@ -14,4 +14,7 @@ public class BasicObject : MonoBehaviour
     public int level { get { return _level; } protected set { _level = value; } }
     [SerializeField, Range(1, 6)]
     private int _level;
+    
+    // 현재 오브젝트의 인덱스
+    public int mapIdx { get; protected set; }
 }

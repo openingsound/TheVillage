@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 [System.Serializable]
 public class AppleTree : Object_Tree
 {
@@ -25,3 +26,4 @@ public class AppleTree : Object_Tree
         base.Planting(tree, crop, box);
     }
 }
+*/

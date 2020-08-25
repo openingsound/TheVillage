@@ -58,3 +58,11 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+
+*.json
+
+Assets/GridMapJson.json.meta
+
+Assets/GridTileJson.json.meta
+
+Assets/PlayerInfoJson.json.meta
