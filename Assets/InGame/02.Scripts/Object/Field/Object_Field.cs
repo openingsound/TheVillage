@@ -10,7 +10,7 @@ public class Object_Field : BasicObject
     /* 밭의 상태 관련 프로퍼티 */
 
     // 밭의 상태 열거형
-    public enum FieldState { Plow, Grow, Harvest };
+    public enum FieldState { NULL = -1, Plow, Grow, Harvest };
 
     // 밭의 크기 열거형
     public enum SizeState { S, M, L, NULL };
@@ -38,7 +38,7 @@ public class Object_Field : BasicObject
     /* 밭의 애니메이션 관련 프로퍼티 */
 
     // 애니메이션 스크립트
-    protected Anim_Field anim;
+    public Anim_Field anim;
 
 
     /* 밭의 수확 관련 프로퍼티 */
@@ -60,7 +60,7 @@ public class Object_Field : BasicObject
     /// <param name="_name"></param>
     /// <param name="plowTime"></param>
     /// <param name="cropTime"></param>
-    public void InitField(string _name, float plowTime, float cropTime)
+    public void InitField(string _name, float plowTime, float cropTime, int _idx, int _level = 1, bool auto = false)
     {
         // 오브젝트 이름 설정
         name = _name;
@@ -75,10 +75,12 @@ public class Object_Field : BasicObject
         CropGrowTime = cropTime;
 
         // 레벨은 1
-        level = 1;
+        level = _level;
 
         // 자동 수확은 off
-        isAuto = false;
+        isAuto = auto;
+
+        mapIdx = _idx;
     }
 
 
@@ -134,6 +136,10 @@ public class Object_Field : BasicObject
     {
         // 상태 변수의 값 변경
         growth = newFieldState;
+
+        GridMap.Map.tiles[mapIdx].LastStateInt = (int)newFieldState;
+
+        GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
 
         // 크기 변수의 값 변경
         size = newSizeState;

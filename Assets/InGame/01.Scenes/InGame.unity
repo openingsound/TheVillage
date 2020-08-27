@@ -755,7 +755,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &173165487
 GameObject:
@@ -924,10 +924,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 236079810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45300040a100e2c4e9128f8f716771ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 51fb6f23aa14b01409879a114aee7a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nowState: 2
+  nowState: 4
   gridSystem: {fileID: 234774459}
 --- !u!4 &236079812
 Transform:
@@ -1261,7 +1261,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 483775243}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 30419906}
@@ -1438,11 +1438,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46acb09d3aeaf7b40a629c8020a34082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetPos: {x: 0, y: 0, z: 0}
-  MoveRate: 3
-  zoomRate: 0.5
-  zoomMin: 5
-  zoomMax: 15
 --- !u!4 &598800731
 Transform:
   m_ObjectHideFlags: 0
@@ -1456,7 +1451,7 @@ Transform:
   m_Children:
   - {fileID: 534669905}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 45, y: 45, z: 0}
 --- !u!1001 &654803018
 PrefabInstance:
@@ -1503,7 +1498,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4761665368518926, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4761665368518926, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1625,7 +1620,7 @@ RectTransform:
   - {fileID: 1444153093}
   - {fileID: 483775246}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1696,7 +1691,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &757476190
 GameObject:
@@ -1930,7 +1925,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 861546546}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 372702537}
@@ -1940,7 +1935,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0}
   m_SizeDelta: {x: 3, y: 3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &861546548
@@ -2446,7 +2441,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1444153090}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1055430037}
@@ -2491,6 +2486,7 @@ MonoBehaviour:
   nicknameField: {fileID: 144026538}
   map: {fileID: 234774459}
   TestMap: {fileID: 234774458}
+  load: 0
 --- !u!4 &1459240835
 Transform:
   m_ObjectHideFlags: 0
@@ -2601,7 +2597,7 @@ RectTransform:
   - {fileID: 69184170}
   - {fileID: 144026539}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3198,10 +3194,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2111009699}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ecd85e4c06c2b8438c77ce40c30c4f8, type: 3}
+  m_Script: {fileID: 11500000, guid: ac43226082ac6d246b8eb0645d910202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ring: {fileID: 861546548}
+  ring: {fileID: 0}
   ringUIList:
   - {fileID: 861546548}
   - {fileID: 1444153091}

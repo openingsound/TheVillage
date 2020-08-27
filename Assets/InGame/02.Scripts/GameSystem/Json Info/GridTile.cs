@@ -35,14 +35,19 @@ public class GridTile
     private string lastState;
     public string LastState { get { return lastState; } private set { lastState = value; } }
 
+    // 마지막 식물의 상태 열거형
+    [SerializeField]
+    private int lastStateInt;
+    public int LastStateInt { get { return lastStateInt; } set { lastStateInt = value; } }
+
     // 마지막으로 상태가 변한 것이 언제인가
     [SerializeField]
     private string lastStateTime;
-    public string LastStateTime { get { return lastStateTime; } private set { lastStateTime = value; } }
+    public string LastStateTime { get { return lastStateTime; } set { lastStateTime = value; } }
 
 
 
-    public GridTile(int _typeInt = -1, string _type = "", string _name = "", int _level = 0, bool _isAuto = false, string _lastState = "", string _lastStateTime = "")
+    public GridTile(string _type = "", string _name = "", int _typeInt = -1, int _level = 0, bool _isAuto = false, string _lastState = "", int _lastStateInt = -1, string _lastStateTime = "")
     {
         typeInt = _typeInt;
         type = _type;
@@ -50,6 +55,7 @@ public class GridTile
         level = _level;
         isAuto = _isAuto;
         lastState = _lastState;
+        lastStateInt = _lastStateInt;
         lastStateTime = _lastStateTime;
     }
 

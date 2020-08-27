@@ -20,7 +20,7 @@ public class Test_Tree : MonoBehaviour
     /// </summary>
     public void OnClickPlanting()
     {
-        GridTile newGridTile = new GridTile((int)selectedFruit,"Tree", selectedFruit.ToString(), 1, false, Object_Tree.TreeState.Bush.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile("Tree", selectedFruit.ToString(), (int)selectedFruit, 1, false, Object_Tree.TreeState.Bush.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
         
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
@@ -31,11 +31,11 @@ public class Test_Tree : MonoBehaviour
         switch (selectedFruit)
         {
             case Plants_DB.Fruit.Apple:
-                tree.InitTree(selectedCrop.ToString(), 10f, 10f);
+                tree.InitTree(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
                 break;
 
             default:
-                tree.InitTree(selectedCrop.ToString(), 10f, 10f);
+                tree.InitTree(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
                 break;
         }
 
@@ -74,7 +74,7 @@ public class Test_Tree : MonoBehaviour
     /// </summary>
     public void OnClickPlowing()
     {
-        GridTile newGridTile = new GridTile((int)selectedCrop, "Field", selectedCrop.ToString(), 1, false, Object_Field.FieldState.Plow.ToString(), System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile( "Field", selectedCrop.ToString(), (int)selectedCrop, 1, false, Object_Field.FieldState.Plow.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
 
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
@@ -85,11 +85,11 @@ public class Test_Tree : MonoBehaviour
         switch(selectedCrop)
         {
             case Plants_DB.Crop.Watermelon:
-                field.InitField(selectedCrop.ToString(), 10f, 10f);
+                field.InitField(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
                 break;
 
             default:
-                field.InitField(selectedCrop.ToString(), 10f, 10f);
+                field.InitField(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
                 break;
         }
 

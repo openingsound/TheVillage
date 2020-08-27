@@ -6,6 +6,9 @@ using UnityEngine;
 [System.Serializable]
 public class GridMap : MonoBehaviour
 {
+    public static GridMap Map { get; private set; } = null;
+
+
     [Header(" - 그리드 설정")]
     public int GridSize;
 
@@ -26,6 +29,8 @@ public class GridMap : MonoBehaviour
 
     private void Awake()
     {
+        Map = this;
+
         // 그리드 맵 초기 설정
         GenerateGrid();
     }

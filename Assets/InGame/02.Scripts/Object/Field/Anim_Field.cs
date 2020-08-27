@@ -100,7 +100,7 @@ public class Anim_Field : MonoBehaviour
     /// </summary>
     /// <param name="state">나무의 상태</param>
     /// <param name="size">나무의 성장 크기 정도</param>
-    public void Anim_StateInit(Object_Field.FieldState state, Object_Field.SizeState size, bool isHarvest = false)
+    public void Anim_StateInit(Object_Field.FieldState state, Object_Field.SizeState size = Object_Field.SizeState.NULL, bool isHarvest = false)
     {
         // 밭 가는 애니메이션 실행
         if(state == Object_Field.FieldState.Plow)
