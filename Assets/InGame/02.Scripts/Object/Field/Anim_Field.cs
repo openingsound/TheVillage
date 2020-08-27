@@ -100,13 +100,14 @@ public class Anim_Field : MonoBehaviour
     /// </summary>
     /// <param name="state">나무의 상태</param>
     /// <param name="size">나무의 성장 크기 정도</param>
-    public void Anim_StateInit(Object_Field.FieldState state, Object_Field.SizeState size = Object_Field.SizeState.NULL, bool isHarvest = false)
+    public void Anim_StateInit(Object_Field.FieldState state, Object_Field.SizeState size = Object_Field.SizeState.NULL, bool isHarvest = false, float startTimeRate = 0)
     {
         // 밭 가는 애니메이션 실행
         if(state == Object_Field.FieldState.Plow)
         {
-            fieldAnim.SetBool("Plow", true);
+            //fieldAnim.SetBool("Plow", true);
             fieldAnim.speed = 1 / thisField.FieldPlowTime;
+            fieldAnim.Play("Plow", 0, startTimeRate);
         }
         else if(state == Object_Field.FieldState.Grow)
         {
@@ -125,8 +126,23 @@ public class Anim_Field : MonoBehaviour
                 {
                     fruits[i, j].SetActive(false);
 
-                    bushAnims[i, j].SetTrigger("Next");
+                    //bushAnims[i, j].SetTrigger("Next");
                     bushAnims[i, j].speed = 3 / thisField.CropGrowTime;
+                    
+                    switch (size)
+                    {
+                        case Object_Field.SizeState.S:
+                            bushAnims[i, j].Play("Crop_S", 0, startTimeRate);
+                            break;
+
+                        case Object_Field.SizeState.M:
+                            bushAnims[i, j].Play("Crop_M", 0, startTimeRate);
+                            break;
+
+                        case Object_Field.SizeState.L:
+                            bushAnims[i, j].Play("Crop_L", 0, startTimeRate);
+                            break;
+                    }
                 }
             }
          
@@ -146,8 +162,8 @@ public class Anim_Field : MonoBehaviour
                 // 다음 성장 상태로 변경
                 for (int j = 0; j < 5; j++)
                 {
-                    bushAnims[i, j].SetTrigger("Next");
-
+                    //bushAnims[i, j].SetTrigger("Next");
+                    bushAnims[i, j].Play("IDLE", 0, startTimeRate);
                     fruits[i, j].SetActive(true);
                 }
             }

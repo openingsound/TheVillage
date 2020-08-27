@@ -10,7 +10,7 @@ public class Object_Tree : BasicObject
     /* 나무의 상태 관련 프로퍼티 */
 
     // 나무의 상태 열거형
-    public enum TreeState { Bush, Fruit, Harvest };
+    public enum TreeState { Bush = 0, Fruit = 10, Harvest = 20 };
 
     // 나무의 크기 열거형
     public enum SizeState { NULL, S, M, L };
@@ -127,14 +127,38 @@ public class Object_Tree : BasicObject
     /// <param name="newTreeState"></param>
     /// <param name="newSizeState"></param>
     /// <param name="endTime"></param>
-    public virtual void treeStateInit(TreeState newTreeState, SizeState newSizeState, float endTime, bool isHarvest = false)
+    public virtual void treeStateInit(TreeState newTreeState, SizeState newSizeState, float endTime, bool isHarvest = false, float startTimeRate = 0)
     {
         // 상태 변수의 값 변경
         growth = newTreeState;
 
-        GridMap.Map.tiles[mapIdx].LastStateInt = (int)newTreeState;
+        GridMap.Map.tiles[mapIdx].LastStateInt = (int)newTreeState + (int)newSizeState;
 
-        GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+        if(startTimeRate != 1)
+        {
+            GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.AddSeconds(
+            (double)(endTime - (endTime / (1 - startTimeRate)))).ToString("yyyy-MM-dd HH:mm:ss");
+        }
+        else
+        {
+            double addSeconds;
+
+            if(newTreeState == TreeState.Bush)
+            {
+                addSeconds = treeGrowTime / 3;
+            }
+            else if(newTreeState == TreeState.Fruit)
+            {
+                addSeconds = fruitGrowTime;
+            }
+            else
+            {
+                addSeconds = 0;
+            }
+
+            GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.AddSeconds(-1 * addSeconds).ToString("yyyy-MM-dd HH:mm:ss");
+        }
+        
 
         // 크기 변수의 값 변경
         size = newSizeState;
@@ -144,7 +168,7 @@ public class Object_Tree : BasicObject
         Debug.Log("State Ending Time : " + stateEndTime);
 
         // 상태 애니메이션 초기화 함수 실행
-        anim.AnimStateInit(newTreeState, newSizeState, isHarvest);
+        anim.AnimStateInit(newTreeState, newSizeState, isHarvest, startTimeRate);
     }    
 
     #endregion
@@ -196,7 +220,7 @@ public class Object_Tree : BasicObject
                         break;
 
                     case SizeState.L:
-                        treeStateInit(TreeState.Fruit, SizeState.NULL, treeGrowTime / 3);
+                        treeStateInit(TreeState.Fruit, SizeState.NULL, fruitGrowTime);
                         break;
                 }
             }
