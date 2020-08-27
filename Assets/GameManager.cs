@@ -6,20 +6,31 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
+
+[System.Serializable]
+public class Serialization<T>
+{
+    public Serialization(List<T> _target) => target = _target;
+    public List<T> target;
+}
 
 [System.Serializable]
 public class Item {
 
-    public string Type, Name, Tree, Land,Levelst;
+    public string Type, Name, Tree, Land,Levelst,IsUisng;
     public int level;
+    public int Using;
+    public int Cost;
     public Image image;
-    public Item(string type, string name, string tree, string land, string levelst)
+    public Item(string type, string name, string tree, string land, string levelst,string isUsing)
     {
         Type = type;
         Name = name;
         Tree = tree;
         Land = land;
         Levelst = levelst;
+        IsUisng = isUsing;
     }
 }
 public class GameManager : MonoBehaviour
@@ -29,7 +40,8 @@ public class GameManager : MonoBehaviour
     string filePath;
     public GameObject Shop;
     public GameObject[] Slot;
-
+    public GameObject ShopPop;
+    public Text ExplainBox;
     void Start()
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
@@ -38,47 +50,81 @@ public class GameManager : MonoBehaviour
         {
             string[] row = line[i].Split('\t');
             //tab으로 나눔
-            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4]));
+            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4],row[5]));
         }
-        print("good");
-        int temcou = 0;
         foreach (Item x in AllItemList)
         {
-            temcou++;
-            if (temcou == 1) continue;
-            print(x.Name+"  : "+ x.Levelst);
+            //print(x.Name+"  : "+ x.Levelst);
             x.level = System.Convert.ToInt32(x.Levelst);
-            print(x.level);
+            x.Using = System.Convert.ToInt32(x.IsUisng);
+            x.Cost = x.level * 10 + x.Name.Length;
         }
         filePath = Application.persistentDataPath + "/MyItemText.txt";
+        ShopUpdate();
+
+        //Load();
+    }
+    public void ShopUpdate()
+    {
         CurItemList = AllItemList.FindAll(x => x.level <= 3);
-        print("Good");
-        for(int i = 1; i < CurItemList.Count; i++)
+        CurItemList = CurItemList.FindAll(x => x.Using == 0);
+        for (int i = 0; i < CurItemList.Count; i++)
         {
             Slot[i].SetActive(i < CurItemList.Count);
             Slot[i].GetComponentInChildren<Text>().text = i < CurItemList.Count ? CurItemList[i].Name : "";
             Transform sun = Slot[i].transform.GetChild(0);
-            int cost = CurItemList[i].level * 10 + CurItemList[i].Name.Length;
-            sun.GetChild(3).GetComponentInChildren<Text>().text = i < CurItemList.Count ? System.Convert.ToString(cost) + "원" : "";
+            sun.GetChild(3).GetComponentInChildren<Text>().text = i < CurItemList.Count ? System.Convert.ToString(CurItemList[i].Cost) + "원" : "";
         }
-        //Load();
     }
-    //void Load()
-    //{
-    //    if (!File.Exists(filePath)) { ResetItemClick(); return; }
-    //    string jdata = File.ReadAllText(filePath);
-    //}
-    //void Save()
-    //{
-    //    File.WriteAllText(filePath,"하이");
-    //}
-    //public void ResetItemClick()
-    //{
-    //    Item BasicItem = AllItemList.Find(x => x.Name == "Apple");
-    //    MyItemList = new List<Item>() { BasicItem };
-    //    Save();
-    //    Load();
-    //}
+    public string curType;
+    public void TabClick(string tabName)
+    {
+        curType = tabName;
+    }
+    public int curSlotNum =0;
+    public void SlotClick(int slotNum)
+    {
+        curSlotNum = slotNum;
+        Item CurItem = CurItemList[slotNum];
+        ShopPop.SetActive(true);
+        ExplainBox.text = "<b>" + CurItem.Name + "을 " + CurItem.Cost + "원에 구매 하시겠습니까? </b>";
+
+    }
+    public void BuyShopPop()
+    {
+        string CurItemName = CurItemList[curSlotNum].Name;
+        Item CurItem = AllItemList.Find(x => x.Name == CurItemName);
+        CurItem.Using = 1;
+        ShopPop.SetActive(false);
+        ShopUpdate();
+    }
+    public void CloseShopPop()
+    {
+        ShopPop.SetActive(false);
+    }
+    void Load()
+    {
+        if (!File.Exists(filePath)) { ResetItemClick(); return; }
+        string jdata = File.ReadAllText(filePath);
+        MyItemList = JsonUtility.FromJson<Serialization<Item>>(jdata).target;
+
+
+    }
+    void Save()
+    {
+        MyItemList.Add(AllItemList[0]);
+        MyItemList.Add(AllItemList[1]);
+        string jdata = JsonUtility.ToJson(new Serialization<Item>(MyItemList));
+        File.WriteAllText(filePath, jdata);
+        
+    }
+    public void ResetItemClick()
+    {
+        Item BasicItem = AllItemList.Find(x => x.Name == "Apple");
+        MyItemList = new List<Item>() { BasicItem };
+        Save();
+        Load();
+    }
     public void shopin()
     {
         Shop.SetActive(true);

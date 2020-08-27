@@ -29,7 +29,7 @@ public class endpoint : MonoBehaviour
             GameObject temp = Instantiate(Column);
             temp.transform.parent = gameObject.transform;
 
-            float randomY = Random.Range(-1.3f, -1.2f);
+            float randomY = UnityEngine.Random.Range(-1.3f, -1.2f);
 
             temp.transform.localPosition = new Vector3(-gameObject.transform.localPosition.x - 5, randomY, 0);
             temp.transform.localScale = new Vector3(1, 1, 1);

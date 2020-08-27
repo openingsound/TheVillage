@@ -51,7 +51,7 @@ namespace TMPro.Examples
                 //m_textMeshPro.fontSharedMaterial = Resources.Load("Fonts & Materials/LiberationSans SDF", typeof(Material)) as Material;
 
                 m_textMeshPro.alignment = TextAlignmentOptions.Center;
-                m_textMeshPro.color = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
+                m_textMeshPro.color = new Color32((byte)UnityEngine.Random.Range(0, 255), (byte)UnityEngine.Random.Range(0, 255), (byte)UnityEngine.Random.Range(0, 255), 255);
                 m_textMeshPro.fontSize = 24;
                 //m_textMeshPro.enableExtraPadding = true;
                 //m_textMeshPro.enableShadows = false;
@@ -70,7 +70,7 @@ namespace TMPro.Examples
                 m_textMesh = m_floatingText.AddComponent<TextMesh>();
                 m_textMesh.font = Resources.Load<Font>("Fonts/ARIAL");
                 m_textMesh.GetComponent<Renderer>().sharedMaterial = m_textMesh.font.material;
-                m_textMesh.color = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
+                m_textMesh.color = new Color32((byte)UnityEngine.Random.Range(0, 255), (byte)UnityEngine.Random.Range(0, 255), (byte)UnityEngine.Random.Range(0, 255), 255);
                 m_textMesh.anchor = TextAnchor.LowerCenter;
                 m_textMesh.fontSize = 24;
 
@@ -102,7 +102,7 @@ namespace TMPro.Examples
         public IEnumerator DisplayTextMeshProFloatingText()
         {
             float CountDuration = 2.0f; // How long is the countdown alive.    
-            float starting_Count = Random.Range(5f, 20f); // At what number is the counter starting at.
+            float starting_Count = UnityEngine.Random.Range(5f, 20f); // At what number is the counter starting at.
             float current_Count = starting_Count;
 
             Vector3 start_pos = m_floatingText_Transform.position;
@@ -147,7 +147,7 @@ namespace TMPro.Examples
 
             //Debug.Log("Done Counting down.");
 
-            yield return new WaitForSeconds(Random.Range(0.1f, 1.0f));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 1.0f));
 
             m_floatingText_Transform.position = start_pos;
 
@@ -158,7 +158,7 @@ namespace TMPro.Examples
         public IEnumerator DisplayTextMeshFloatingText()
         {
             float CountDuration = 2.0f; // How long is the countdown alive.    
-            float starting_Count = Random.Range(5f, 20f); // At what number is the counter starting at.
+            float starting_Count = UnityEngine.Random.Range(5f, 20f); // At what number is the counter starting at.
             float current_Count = starting_Count;
 
             Vector3 start_pos = m_floatingText_Transform.position;
@@ -204,7 +204,7 @@ namespace TMPro.Examples
 
             //Debug.Log("Done Counting down.");
 
-            yield return new WaitForSeconds(Random.Range(0.1f, 1.0f));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 1.0f));
 
             m_floatingText_Transform.position = start_pos;
 
