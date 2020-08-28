@@ -314,6 +314,8 @@ public class Test_Json : MonoBehaviour
         GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, map.GettingGridPos(idx).Value, Quaternion.identity);
         Object_Tree tree = newTree.GetComponent<Object_Tree>();
 
+        newTree.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
+
         Plants_DB.Fruit fruit = (Plants_DB.Fruit)tile.TypeInt;
 
         switch (fruit)
@@ -509,6 +511,8 @@ public class Test_Json : MonoBehaviour
         // 새 밭 생성
         GameObject newField = Instantiate(Plants_DB.PlantDB.Field, map.GettingGridPos(idx).Value, Quaternion.identity);
         Object_Field field = newField.GetComponent<Object_Field>();
+
+        newField.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
 
         Plants_DB.Crop crop = (Plants_DB.Crop)tile.TypeInt;
 

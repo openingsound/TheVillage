@@ -864,9 +864,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7114b0356c266e642b2fad8f9b0fe97e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GridSize: 3
+  GridSize: 7
   zHeight: -0.5
-  cellSize: 3
+  cellSize: 6
   gridTile: {fileID: 7872103730332902320, guid: 5ef391b3c9bfd8543911865a4019889b,
     type: 3}
   tiles: []
@@ -928,7 +928,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nowState: 4
-  gridSystem: {fileID: 234774459}
 --- !u!4 &236079812
 Transform:
   m_ObjectHideFlags: 0
@@ -1435,9 +1434,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 598800729}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46acb09d3aeaf7b40a629c8020a34082, type: 3}
+  m_Script: {fileID: 11500000, guid: 3704b4e36ca994c4596e2f8f84bd4a7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TargetPos: {x: 0, y: 0, z: 0}
+  MoveRate: 1
+  zoomRate: 1
+  zoomMin: 10
+  zoomMax: 20
 --- !u!4 &598800731
 Transform:
   m_ObjectHideFlags: 0
