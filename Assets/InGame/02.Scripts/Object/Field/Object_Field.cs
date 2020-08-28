@@ -44,8 +44,7 @@ public class Object_Field : BasicObject
     /* 밭의 수확 관련 프로퍼티 */
 
     // 자동수확을 할 것인가
-    [SerializeField]
-    public bool isAuto { get; protected set; }
+    public bool isAuto;
 
     #endregion
 
@@ -132,6 +131,8 @@ public class Object_Field : BasicObject
     {
         // 상태 변수의 값 변경
         growth = newFieldState;
+
+        GridMap.Map.tiles[mapIdx].IsAuto = isAuto;
 
         GridMap.Map.tiles[mapIdx].LastStateInt = (int)newFieldState + (int)newSizeState;
 

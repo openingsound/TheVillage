@@ -2486,7 +2486,7 @@ MonoBehaviour:
   nicknameField: {fileID: 144026538}
   map: {fileID: 234774459}
   TestMap: {fileID: 234774458}
-  load: 0
+  load: 1
 --- !u!4 &1459240835
 Transform:
   m_ObjectHideFlags: 0

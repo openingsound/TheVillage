@@ -132,6 +132,8 @@ public class Object_Tree : BasicObject
         // 상태 변수의 값 변경
         growth = newTreeState;
 
+        GridMap.Map.tiles[mapIdx].IsAuto = isAuto;
+
         GridMap.Map.tiles[mapIdx].LastStateInt = (int)newTreeState + (int)newSizeState;
 
         if(startTimeRate != 1)

@@ -111,6 +111,9 @@ public class Anim_Field : MonoBehaviour
         }
         else if(state == Object_Field.FieldState.Grow)
         {
+            // 밭은 다 간 상태로 유지함
+            fieldAnim.Play("Plow", 0, 1);
+
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < 5; i++)
             {
@@ -149,6 +152,10 @@ public class Anim_Field : MonoBehaviour
         }
         else if(state == Object_Field.FieldState.Harvest)
         {
+            // 밭은 다 간 상태로 유지함
+            fieldAnim.Play("Plow", 0, 1);
+
+
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < 5; i++)
             {
