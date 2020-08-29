@@ -29,6 +29,8 @@ public class CamFollow : MonoBehaviour
     [SerializeField]
     private Vector3 TargetPos;
 
+    private Vector3 TargetStartPos;
+
     // 카메라 이동에 걸리는 시간의 정도
     private float smoothTime = 0.2f;
 
@@ -120,7 +122,7 @@ public class CamFollow : MonoBehaviour
         if (InputManager.InputSystem.State == InputManager.InputState.CLICK)
         {
             // 목표 위치는 현재 타겟위치로 설정
-            TargetPos = rigTransform.position;
+            TargetStartPos = rigTransform.position;
         }
         // 마우스 클릭이 일어나는 도중에
         else if (InputManager.InputSystem.State == InputManager.InputState.DRAG)
@@ -137,7 +139,7 @@ public class CamFollow : MonoBehaviour
             Vector3 moveVec = (InputManager.InputSystem.EndPos.Value - InputManager.InputSystem.StartPos.Value) * MoveRate;
 
             // 목표 지점은 시작점에서 방향벡터를 뺀 만큼
-            TargetPos = InputManager.InputSystem.StartPos.Value - moveVec;
+            TargetPos = TargetStartPos - moveVec;
 
             // 목표 지점은 x : -40 ~ 40, z : -40 ~ 40 으로 제한 됨
             if(TargetPos.x < -40f)
