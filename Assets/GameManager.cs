@@ -16,15 +16,16 @@ public class Serialization<T>
 }
 
 [System.Serializable]
-public class Item {
+public class Item
+{
 
-    public string Type, Name, Tree, Land,Levelst,IsUisng,SCycle;
+    public string Type, Name, Tree, Land, Levelst, IsUisng, SCycle;
     public int level;
     public int Using;
     public int Cost;
     public int Cycle;
     public Image image;
-    public Item(string type, string name, string tree, string land, string levelst,string isUsing,string cycle)
+    public Item(string type, string name, string tree, string land, string levelst, string isUsing, string cycle)
     {
         Type = type;
         Name = name;
@@ -38,7 +39,7 @@ public class Item {
 public class GameManager : MonoBehaviour
 {
     public TextAsset ItemDatabase;
-    public List<Item> AllItemList, MyItemList,CurItemList,BuildList;
+    public List<Item> AllItemList, MyItemList, CurItemList, BuildList;
     string filePath;
     public GameObject Shop;
     public GameObject[] ShopSlot;
@@ -50,11 +51,11 @@ public class GameManager : MonoBehaviour
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
         //엑셀로 하면 매 줄마다 '\n'이 들어가 있음
-        for(int i=0; i < line.Length; i++)
+        for (int i = 0; i < line.Length; i++)
         {
             string[] row = line[i].Split('\t');
             //tab으로 나눔
-            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4],row[5],row[6]));
+            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
         }
         foreach (Item x in AllItemList)
         {
@@ -62,7 +63,7 @@ public class GameManager : MonoBehaviour
             x.level = System.Convert.ToInt32(x.Levelst);
             x.Using = System.Convert.ToInt32(x.IsUisng);
             x.Cycle = System.Convert.ToInt32(x.SCycle);
-            x.Cost = x.level * 10 + x.Cycle/10;
+            x.Cost = x.level * 10 + x.Cycle / 10;
         }
         filePath = Application.persistentDataPath + "/MyItemText.txt";
         ShopUpdate();
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < ShopSlot.Length; i++)
         {
             ShopSlot[i].SetActive(i < CurItemList.Count);
-            if(i > CurItemList.Count) continue;
+            if (i > CurItemList.Count) continue;
             ShopSlot[i].GetComponentInChildren<Text>().text = i < CurItemList.Count ? CurItemList[i].Name : "";
             Transform sun = ShopSlot[i].transform.GetChild(0);
             sun.GetChild(3).GetComponentInChildren<Text>().text = i < CurItemList.Count ? System.Convert.ToString(CurItemList[i].Cost) + "원" : "";
@@ -88,7 +89,7 @@ public class GameManager : MonoBehaviour
             BuildSlot[i].transform.GetChild(0).GetComponentInChildren<Text>().text = BuildList[i].Name;//이름
             BuildSlot[i].transform.GetChild(1).GetComponentInChildren<Text>().text = System.Convert.ToString(BuildList[i].Cost) + "원";
             BuildSlot[i].transform.GetChild(3).GetComponentInChildren<Text>().text = System.Convert.ToString(BuildList[i].Cycle / 60) + "시간 " + (BuildList[i].Cycle % 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle % 60) + "분");
-            BuildSlot[i].transform.GetChild(2).GetComponentInChildren<Text>().text = System.Convert.ToString((BuildList[i].Cycle * 3) / 60) + "시간 " + ((BuildList[i].Cycle *3 )% 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle *3% 60) + "분");
+            BuildSlot[i].transform.GetChild(2).GetComponentInChildren<Text>().text = System.Convert.ToString((BuildList[i].Cycle * 3) / 60) + "시간 " + ((BuildList[i].Cycle * 3) % 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle * 3 % 60) + "분");
         }
     }
     public string curType2;
@@ -96,7 +97,7 @@ public class GameManager : MonoBehaviour
     {
         curType2 = tabName;
     }
-    public int curShopSlotNum =0;
+    public int curShopSlotNum = 0;
     public void SlotClick(int ShopSlotNum)
     {
         curShopSlotNum = ShopSlotNum;
@@ -117,12 +118,30 @@ public class GameManager : MonoBehaviour
         ShopPop.SetActive(false);
         ShopUpdate();
     }
+    public void OpenShopPop()
+    {
+        if (BuildPop.activeInHierarchy)
+        {
+            BuildPop.SetActive(false);
+        }
+
+        Shop.SetActive(true);
+
+        //UIManager.UImanager.isShop = true;
+    }
     public void CloseShopPop()
     {
         ShopPop.SetActive(false);
+
+        UIManager.UImanager.isShop = false;
     }
     public void OpenBuildPop()
     {
+        if (UIManager.UImanager.isShop)
+        {
+            return;
+        }
+
         BuildPop.SetActive(true);
     }
     public void CloseBuildPop()
@@ -143,7 +162,7 @@ public class GameManager : MonoBehaviour
         MyItemList.Add(AllItemList[1]);
         string jdata = JsonUtility.ToJson(new Serialization<Item>(MyItemList));
         File.WriteAllText(filePath, jdata);
-        
+
     }
     public void ResetItemClick()
     {
@@ -155,9 +174,13 @@ public class GameManager : MonoBehaviour
     public void shopin()
     {
         Shop.SetActive(true);
+
+        UIManager.UImanager.isShop = true;
     }
     public void shopout()
     {
         Shop.SetActive(false);
+
+        UIManager.UImanager.isShop = false;
     }
 }

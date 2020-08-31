@@ -92,6 +92,17 @@ public class InputManager : MonoBehaviour
 
     private void CheckInput()
     {
+        if(UIManager.UImanager.isShop == true)
+        {
+            if(nowState != InputState.NULL)
+            {
+                nowState = InputState.NULL;
+                State = InputState.NULL;
+            }
+
+            return;
+        }
+
 
 #if UNITY_EDITOR || UNITY_STANDALON
 

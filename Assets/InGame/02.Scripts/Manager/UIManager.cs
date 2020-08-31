@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager UImanager;
+
     /* 땅 클릭 시 UI표시 */
 
     // 링 이미지 오브젝트
@@ -13,7 +15,13 @@ public class UIManager : MonoBehaviour
     public List<Image> ringUIList = new List<Image>();
 
     // 링 오브젝트 표시 여부
-    private bool isRing;
+    public bool[] isRing { get; private set; };
+
+    // 건설모드 UI 표시 여부
+    public bool isBuild { get; private set; }
+
+    // 상점 UI 표시 여부
+    public bool isShop;
 
 
     /* 터치 시스템 */
@@ -21,7 +29,15 @@ public class UIManager : MonoBehaviour
     // 현재 UI를 켜야 하는가
     private bool isUI;
 
+    /* UI관리 GameManager */
+    public GameManager gameManager;
 
+
+
+    private void Awake()
+    {
+        UImanager = this;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +45,16 @@ public class UIManager : MonoBehaviour
         /* 땅 클릭 시 UI표시 */
 
         // 링 UI를 표시할지 확인하는 변수 초기화
-        isRing = false;
+        for(int i = 0; i < ringUIList.Capacity; i++)
+        {
+            isRing[i] = false;
+        }
+
+        // 건설 UI 표시 여부
+        isBuild = false;
+
+        // 상점 UI 표시 여부
+        isShop = false;
 
         // ring 이미지를 리스트의 첫번째로 함
         ring = ringUIList[0];
@@ -59,6 +84,16 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void CheckInput()
     {
+        if(isShop)
+        {
+            if(isUI)
+            {
+                isUI = false;
+            }
+
+            return;
+        }
+
         // 만일 클릭이라면
         if (InputManager.InputSystem.State == InputManager.InputState.CLICK)
         {
@@ -94,11 +129,32 @@ public class UIManager : MonoBehaviour
         if(isUI == false)
         {
             isRing = false;
-            return;
-        }
 
-        // 현재는 UI가 링 하나밖에 없으므로 isUI가 true이면 isRing을 킨다
-        isRing = true;
+            isBuild = false;
+        }
+        else
+        {
+            string type = InputManager.InputSystem.selectedObject.tag;
+
+            switch (type)
+            {
+                case "Boundary":
+                    ring = ringUIList[0];
+                    break;
+
+                case "Tree":
+                    ring = ringUIList[1];
+                    break;
+
+                case "Field":
+                    ring = ringUIList[2];
+                    break;
+            }
+
+            isRing = true;
+
+            isBuild = true;
+        }
     }
 
     /// <summary>
@@ -106,6 +162,8 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void VisualizedUI()
     {
+        /* Ring UI 활성화 여부 */
+
         if(isRing == true)
         {
             string type = InputManager.InputSystem.selectedObject.tag;
@@ -139,6 +197,22 @@ public class UIManager : MonoBehaviour
             if (ring != null & ring.gameObject.activeSelf)
             {
                 ring.gameObject.SetActive(false);
+            }
+        }
+
+
+
+        /* Build UI 활성화 여부 */
+
+        if(isBuild == true)
+        {
+            gameManager.OpenBuildPop();
+        }
+        else
+        {
+            if(gameManager.BuildPop.activeInHierarchy)
+            {
+                gameManager.CloseBuildPop();
             }
         }
     }
