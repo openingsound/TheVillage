@@ -751,6 +751,7 @@ PlayerSettings:
       daydreamIconForeground: {fileID: 0}
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled:
+    Collab: 1
     UNet: 1
   luminIcon:
     m_Name: 
@@ -764,10 +765,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: 0f07a742-8203-4974-ab8b-3fa7d97c9b7c
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: TheVillage
+  organizationId: k_08
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
