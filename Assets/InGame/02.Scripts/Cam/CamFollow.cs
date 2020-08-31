@@ -26,8 +26,7 @@ public class CamFollow : MonoBehaviour
     private Transform rigTransform;
 
     // 카메라가 이동할 목표 위치
-    [SerializeField]
-    private Vector3 TargetPos;
+    public static Vector3 TargetPos;
 
     private Vector3 TargetStartPos;
 

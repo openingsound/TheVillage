@@ -1,105 +1,95 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    // 타이밍 매니저 컴포넌트
-    TimingManager theTimingManager;
+     Note _note;
 
-    // 버튼 오브젝트
-    public GameObject tex;
+    Random rR = new Random();
 
-    // 노트 오브젝트
-    public GameObject _note;
+   TimingManager theTimingManager;
 
-    // 마우스 버튼이 감지된 횟수
-    public int n = 0;
+   public GameObject tex;
 
-    // ???
-    int a = -1;
+    public GameObject button;
 
+    Character _character;
+    
+    bool boly = false;
 
-
-
+    Button1 _button;
+    
     void Start()
     {
-        // 노트 오브젝트 할당
-        _note = GameObject.FindWithTag("Note");
+        _button = FindObjectOfType<Button1>();
 
-        // 버튼 오브젝트 할당
-        tex = GameObject.FindWithTag("Button1");
+        button = GameObject.FindWithTag("Button"); //낚기 버튼
 
+        _note = FindObjectOfType<Note>(); 
+
+        _character = FindObjectOfType<Character>();
+
+         tex = GameObject.FindWithTag("Button1"); //미끼버튼
+      
     }
+    
+   public void OnClick()
+    {      
+       
 
+        tex.SetActive(false);
 
+        _button.ButtonInteractable(boly);  //버튼1 비활성화
 
-    public void OnMouseDown()
-    {
-        // 랜덤 객체 -> 랜덤한 시간 대기
-        Random rR = new Random();
+            boly = true;
 
-        // 마우스 버튼이 내려가는 횟수를 1 증가
-        n++;
+            _character.boly(boly); //캐릭터 움직임
+        
+        
 
-        // 만일 마우스 버튼 클릭이 처음 일어난다면 버튼 오브젝트 비활성화
-        if (n <= 1)
-        {
-            tex.SetActive(false);
-        }
+        Invoke("on",rR.rTime);
 
-        // 랜덤한 시간을 대기 후 버튼 오브젝트 활성화
-        Invoke("on", rR.rTime);
     }
 
     
+    void on()
+    {     
+        tex.SetActive(true);   
+
+         
+
+         _button.ButtonInteractable(boly);  //버튼1 활성화
+
+        _note.aManager(boly); // 노트의 a값 변경을 위함
+
+        boly = false;
+
+    }
+
+    public void OnClick1()
+    {
+                   
+            theTimingManager = FindObjectOfType<TimingManager>();
+
+            theTimingManager.CheckTiming();
+                
+    
+    }
 
     void Update()
     {
-        // 만일 마우스 버튼이 2회이상 일어났다면
-        if (n > 1)
-        {
-            // 마우스 버튼이 내려갔다면
-            if (Input.GetMouseButtonDown(0))
-            {
-                // 타이밍 매니저 객체를 할당
-                theTimingManager = FindObjectOfType<TimingManager>();
-
-                // 
-                theTimingManager.CheckTiming();
+       
+              button = GameObject.FindWithTag("Button");
+    
+       
+       
             }
-        }
+  
+    
 
-        // 만일 노트가 빈 객체가 아니라면
-        if (_note != null)
-        {
-            // 노트를 움직인다
-            GoNote();
-        }
+   
+    
 
-
-    }
-
-    public void GoNote()
-    {
-        Random rRan = new Random();
-        if (n >= 2)
-        {
-            if (_note.transform.localPosition.y <= -400)
-            {
-                a = 1;
-            }
-            _note.transform.localPosition += new Vector3(0, a * rRan.rSpeed, 0) * Time.deltaTime;
-        }
-    }
-
-
-
-    /// <summary>
-    /// 버튼 오브젝트를 다시 활성화시키는  함수
-    /// </summary>
-    void on()
-    {
-        tex.SetActive(true);
-    }
 }

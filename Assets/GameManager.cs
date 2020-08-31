@@ -118,30 +118,12 @@ public class GameManager : MonoBehaviour
         ShopPop.SetActive(false);
         ShopUpdate();
     }
-    public void OpenShopPop()
-    {
-        if (BuildPop.activeInHierarchy)
-        {
-            BuildPop.SetActive(false);
-        }
-
-        Shop.SetActive(true);
-
-        //UIManager.UImanager.isShop = true;
-    }
     public void CloseShopPop()
     {
         ShopPop.SetActive(false);
-
-        UIManager.UImanager.isShop = false;
     }
     public void OpenBuildPop()
     {
-        if (UIManager.UImanager.isShop)
-        {
-            return;
-        }
-
         BuildPop.SetActive(true);
     }
     public void CloseBuildPop()
@@ -174,13 +156,9 @@ public class GameManager : MonoBehaviour
     public void shopin()
     {
         Shop.SetActive(true);
-
-        UIManager.UImanager.isShop = true;
     }
     public void shopout()
     {
         Shop.SetActive(false);
-
-        UIManager.UImanager.isShop = false;
     }
 }
