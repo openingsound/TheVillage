@@ -4,12 +4,15 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Boundary
-  - Field
-  - Tree
   - Note
   - Button1
   - percent1
+  - Line
+  - Coin
+  - Fail
+  - Button
+  - Timing
+  - target
   layers:
   - Default
   - TransparentFX
@@ -46,4 +49,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: 1
+    uniqueID: 4216659203
+    locked: 0
+  - name: 2
+    uniqueID: 3130383073
+    locked: 0
+  - name: 3
+    uniqueID: 3148091651
+    locked: 0
+  - name: 4
+    uniqueID: 2034999669
     locked: 0

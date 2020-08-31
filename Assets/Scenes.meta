@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 3d66f4fc1396d484f9846b62968669aa
+=======
+guid: ffea81e43a1202f4cb40d21f190a07ce
+>>>>>>> origin/Song
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
