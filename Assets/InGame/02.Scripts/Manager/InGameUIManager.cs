@@ -30,7 +30,7 @@ public class InGameUIManager : MonoBehaviour
     public enum UI_BitFlag : byte { NONE = 0, SHOP = 1, BUILD = 2, TREE = 4, FIELD = 8 };
 
     // UI의 전체적인 활성화가 필요한가
-    public bool isUI { get; private set; }
+    public static bool isUI { get; private set; }
 
     /*  Shop, Build UI관리 GameManager */
     public GameManager gameManager;
@@ -49,8 +49,15 @@ public class InGameUIManager : MonoBehaviour
         UICheck = (int) UI_BitFlag.NONE;
 
         isUI = false;
+
+        VisualizedUI();
+
+        buildTargetUI.SetActive(false);
+
+        buildTargetUI.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
+
     }
-    
+
     private void LateUpdate()
     {
         // 터치 및 클릭 인식
@@ -124,9 +131,17 @@ public class InGameUIManager : MonoBehaviour
             switch (type)
             {
                 case "Boundary":
-                    // 건설 UI 실행
-                    UICheck = (int)UI_BitFlag.BUILD;
-                    break;
+                    if(GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos) > -1)
+                    {
+                        // 건설 UI 실행
+                        UICheck = (int)UI_BitFlag.BUILD;
+                    }
+                    else
+                    {
+                        isUI = false;
+                    }
+
+                    break;  
 
                 case "Tree":
                     // 나무 수확 UI 실행
@@ -169,16 +184,9 @@ public class InGameUIManager : MonoBehaviour
                     if(!buildUI.activeInHierarchy)
                     {
                         buildUI.SetActive(true);
-
-                        buildTargetUI.SetActive(true);
-
-                        buildTargetUI.transform.position = InputManager.InputSystem.TargetPos;
-
-                        buildTargetUI.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
-
                     }
 
-                    CamFollow.TargetPos = InputManager.InputSystem.TargetPos + new Vector3(6, 0, -6);
+                    
 
                     break;
 
@@ -186,12 +194,6 @@ public class InGameUIManager : MonoBehaviour
                     if (!treeUI.activeInHierarchy)
                     {
                         treeUI.SetActive(true);
-
-                        buildTargetUI.SetActive(true);
-
-                        buildTargetUI.transform.position = InputManager.InputSystem.TargetPos;
-
-                        buildTargetUI.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
                     }
 
                     break;
@@ -200,14 +202,26 @@ public class InGameUIManager : MonoBehaviour
                     if (!fieldUI.activeInHierarchy)
                     {
                         fieldUI.SetActive(true);
-
-                        buildTargetUI.SetActive(true);
-
-                        buildTargetUI.transform.position = InputManager.InputSystem.TargetPos;
-
-                        buildTargetUI.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
                     }
                     break;
+            }
+
+            if (UICheck != (int)UI_BitFlag.SHOP)
+            {
+                if(!buildTargetUI.activeInHierarchy)
+                {
+                    buildTargetUI.gameObject.SetActive(true);
+
+                    Debug.Log("Build Target UI Activate : " + (buildTargetUI.activeInHierarchy).ToString());
+                }
+                
+
+                buildTargetUI.transform.position = InputManager.InputSystem.TargetPos;
+
+                
+                //Debug.Log("Build Target UI position : " + buildTargetUI.transform.position.ToString());
+
+                CamFollow.TargetPos = InputManager.InputSystem.TargetPos + new Vector3(10, 0, -2.5f);
             }
         }
 
@@ -234,7 +248,6 @@ public class InGameUIManager : MonoBehaviour
                         if (buildUI.activeInHierarchy)
                         {
                             buildUI.SetActive(false);
-                            buildTargetUI.SetActive(false);
                         }
                         break;
 
@@ -242,19 +255,24 @@ public class InGameUIManager : MonoBehaviour
                         if(treeUI.activeInHierarchy)
                         {
                             treeUI.SetActive(false);
-                            buildTargetUI.SetActive(false);
                         }
-                        
                         break;
 
                     case UI_BitFlag.FIELD:
                         if (fieldUI.activeInHierarchy)
                         {
                             fieldUI.SetActive(false);
-                            buildTargetUI.SetActive(false);
                         }
                         break;
                 }
+            }
+        }
+
+        if (UICheck < (int)UI_BitFlag.BUILD)
+        {
+            if (buildTargetUI.activeInHierarchy)
+            {
+                buildTargetUI.SetActive(false);
             }
         }
     }
@@ -268,10 +286,15 @@ public class InGameUIManager : MonoBehaviour
         isUI = true;
     }
 
-    public void OnClickExit()
+    public static void OnClickExit()
     {
         UICheck = (int)UI_BitFlag.NONE;
 
         isUI = false;
+    }
+
+    public void Btn_OnClickExit()
+    {
+        OnClickExit();
     }
 }

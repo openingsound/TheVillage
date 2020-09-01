@@ -126,6 +126,12 @@ public class CamFollow : MonoBehaviour
         // 마우스 클릭이 일어나는 도중에
         else if (InputManager.InputSystem.State == InputManager.InputState.DRAG)
         {
+
+            if (InputManager.InputSystem.EndPos.Value == InputManager.InputSystem.StartPos.Value)
+            {
+                return;
+            }
+
             /*
             // 드래그 길이가 인식 최저 길이를 넘지 않는다면 인식을 끝냄
             if ((InputManager.InputSystem.EndPos - InputManager.InputSystem.StartPos).Value.sqrMagnitude < dragMinLimit)
@@ -184,8 +190,8 @@ public class CamFollow : MonoBehaviour
     /// </summary>
     private void MoveCamera(Vector3 pos)
     {
-        Vector3 smoothPosition = Vector3.SmoothDamp(transform.position, pos, ref lastMovingVelocity, smoothTime);
-        transform.position = smoothPosition;
+        Vector3 smoothPosition = Vector3.SmoothDamp(rigTransform.position, pos, ref lastMovingVelocity, smoothTime);
+        rigTransform.position = smoothPosition;
     }
 
 
@@ -193,7 +199,7 @@ public class CamFollow : MonoBehaviour
     private void checkCamMove()
     {
         // 현재 카메라 위치와 목표 위치간 차이
-        Vector3 posError = transform.position - TargetPos;
+        Vector3 posError = rigTransform.position - TargetPos;
 
         // 오차 한계 범위 내까지 이동이 되었다면
         // 이동을 완료 및 드래그 이동 종료
