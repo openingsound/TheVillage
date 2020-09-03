@@ -45,6 +45,8 @@ public class Anim_Tree : MonoBehaviour
         // 나무 오브젝트를 이 나무 게임 오브젝트의 자식으로 설정
         treeObject.transform.parent = this.gameObject.transform;
 
+        treeObject.transform.localScale = new Vector3(1, 1, 1);
+
         // 나무 오브젝트 비활성화
         treeObject.SetActive(false);
 
@@ -96,7 +98,7 @@ public class Anim_Tree : MonoBehaviour
     /// </summary>
     /// <param name="state">나무의 상태</param>
     /// <param name="size">나무의 성장 크기 정도</param>
-    public void AnimStateInit(Object_Tree.TreeState state, Object_Tree.SizeState size = Object_Tree.SizeState.NULL, bool isHarvest = false)
+    public void AnimStateInit(Object_Tree.TreeState state, Object_Tree.SizeState size = Object_Tree.SizeState.NULL, bool isHarvest = false, float startTimeRate = 0)
     {
         // 변경된 상태가 Bush(묘목)이라면
         if(state == Object_Tree.TreeState.Bush)
@@ -105,7 +107,23 @@ public class Anim_Tree : MonoBehaviour
             treeAnim.speed = 3 / thisTree.treeGrowTime;
 
             // 다음 성장 애니메이션 실행
-            treeAnim.SetTrigger("Next");
+            //treeAnim.SetTrigger("Next");
+
+            switch(size)
+            {
+                case Object_Tree.SizeState.S:
+                    treeAnim.Play("Bush_S", 0, startTimeRate);
+                    break;
+
+                case Object_Tree.SizeState.M:
+                    treeAnim.Play("Bush_M", 0, startTimeRate);
+                    break;
+
+                case Object_Tree.SizeState.L:
+                    treeAnim.Play("Bush_L", 0, startTimeRate);
+                    break;
+            }
+            
         }
         // 변경된 상태가 Fruit(과일)이라면
         else if (state == Object_Tree.TreeState.Fruit)
@@ -153,11 +171,38 @@ public class Anim_Tree : MonoBehaviour
                 // 과일 성장 시작
                 fruitAnims[i].SetTrigger("Grow");
                 fruitAnims[i].speed = 1 / thisTree.fruitGrowTime;
+                fruitAnims[i].Play("Grow", 0, startTimeRate);
             }
 
         }
+        else
+        {
+            // 만일 나무 오브젝트가 비활성화 되어있다면
+            if (treeObject.activeInHierarchy == false)
+            {
+                // 묘목 오브젝트 비활성화
+                treeAnim.gameObject.SetActive(false);
 
-        Debug.Log("Animation Start to " + state.ToString() + " " + size.ToString());
+                // 나무 오브젝트 활성화
+                treeObject.SetActive(true);
+            }
+
+            // 각 레벨별 작물 스폰포인트를 순회
+            for (int i = 0; i < 6; i++)
+            {
+                // 해당 라인이 비활성화되어 있다면
+                if (spawnpoints[i].gameObject.activeInHierarchy == false)
+                {
+                    // 처리를 건너뜀
+                    continue;
+                }
+
+                // 과일 성장 시작
+                fruitAnims[i].Play("Grow", 0, 1f);
+            }
+        }
+
+        Debug.Log("Animation Start to " + state.ToString() + " " + ((int)size));
     }
 
 

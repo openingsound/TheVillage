@@ -389,12 +389,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7114b0356c266e642b2fad8f9b0fe97e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xSize: 31
-  ySize: 31
+  GridSize: 3
   zHeight: -0.5
   cellSize: 3
   gridTile: {fileID: 7872103730332902320, guid: 5ef391b3c9bfd8543911865a4019889b,
     type: 3}
+  tiles: []
 --- !u!4 &234774462
 Transform:
   m_ObjectHideFlags: 0
@@ -1598,11 +1598,6 @@ MonoBehaviour:
   - {fileID: 4463328381083045700, guid: 1880af7bc73b16342824e32346cc7570, type: 3}
   FruitBoxes:
   - {fileID: 2415746095826044218, guid: 736b9f4f012fa2846be7dc1941bff489, type: 3}
-  fieldComps:
-  - {fileID: 0}
-  - {fileID: 0}
-  treeComps:
-  - {fileID: 0}
 --- !u!4 &1434493338
 Transform:
   m_ObjectHideFlags: 0

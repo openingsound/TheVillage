@@ -39,6 +39,8 @@ public class Test_Tree : MonoBehaviour
                 break;
         }
 
+        newTree.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
+
         // 새 나무 초기화
         tree.Planting(Plants_DB.PlantDB.OwnTrees[(int) selectedFruit], Plants_DB.PlantDB.Fruits[(int)selectedFruit], Plants_DB.PlantDB.FruitBoxes[(int)selectedFruit]);
 
@@ -92,6 +94,8 @@ public class Test_Tree : MonoBehaviour
                 field.InitField(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
                 break;
         }
+
+        newField.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f);
 
         // 새 밭 초기화
         field.Plowing(Plants_DB.PlantDB.OwnBushes[(int) selectedCrop], Plants_DB.PlantDB.Crops[(int)selectedCrop], Plants_DB.PlantDB.CropBoxes[(int)selectedCrop]);

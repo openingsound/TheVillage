@@ -9,6 +9,8 @@ public class GridMap : MonoBehaviour
     public static GridMap Map { get; private set; } = null;
 
 
+    public const float BasicCellSize = 3f;
+
     [Header(" - 그리드 설정")]
     public int GridSize;
 
@@ -17,6 +19,7 @@ public class GridMap : MonoBehaviour
 
     [SerializeField]
     private float cellSize = 3f;
+    public float CellSize { get { return cellSize; } private set { cellSize = value; } }
 
     [Header(" - 그리드 타일")]
 
@@ -146,11 +149,13 @@ public class GridMap : MonoBehaviour
     {
         // 위치 설정
         // 그리드 좌표 : (((xSize - 1) / 2f - x) * cellSize, zHeight, ((ySize - 1) / 2f - y) * cellSize)
-        Vector3 pos = new Vector3(((size - 1) / 2f - x) * cellSize, zHeight, ((size - 1) / 2f - y) * cellSize);
+        Vector3 pos = GettingGridPos(y * GridSize + x).Value;
         Quaternion rot = Quaternion.Euler(90, 0, 0);
 
         // 그리드 타일 생성
         GameObject tile = Instantiate(gridTile, pos, rot);
+
+        tile.transform.localScale = new Vector3(cellSize, cellSize, cellSize);
 
         tile.name = "Grid(" + x + "," + y + ")";
         //gridObjects[y * size + x] = tile;

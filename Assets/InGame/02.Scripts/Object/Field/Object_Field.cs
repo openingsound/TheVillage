@@ -10,10 +10,10 @@ public class Object_Field : BasicObject
     /* 밭의 상태 관련 프로퍼티 */
 
     // 밭의 상태 열거형
-    public enum FieldState { NULL = -1, Plow, Grow, Harvest };
+    public enum FieldState { NULL = -1, Plow = 0, Grow = 10, Harvest = 20 };
 
     // 밭의 크기 열거형
-    public enum SizeState { S, M, L, NULL };
+    public enum SizeState { NULL, S, M, L };
 
     // 현재 밭의 상태
     public FieldState growth { get; protected set; }
@@ -44,8 +44,7 @@ public class Object_Field : BasicObject
     /* 밭의 수확 관련 프로퍼티 */
 
     // 자동수확을 할 것인가
-    [SerializeField]
-    public bool isAuto { get; protected set; }
+    public bool isAuto;
 
     #endregion
 
@@ -101,8 +100,6 @@ public class Object_Field : BasicObject
 
         // 나무의 상태 초기화
         fieldStateInit(FieldState.Plow, SizeState.NULL, FieldPlowTime);
-
-        
     }
 
 
@@ -121,8 +118,6 @@ public class Object_Field : BasicObject
 
         // 다시 열매 성장 상태로 초기화
         fieldStateInit(FieldState.Grow, SizeState.S, CropGrowTime / 3, true);
-
-        
     }
 
 
@@ -132,14 +127,39 @@ public class Object_Field : BasicObject
     /// <param name="newTreeState"></param>
     /// <param name="newSizeState"></param>
     /// <param name="endTime"></param>
-    public virtual void fieldStateInit(FieldState newFieldState, SizeState newSizeState, float endTime, bool isHarvest = false)
+    public virtual void fieldStateInit(FieldState newFieldState, SizeState newSizeState, float endTime, bool isHarvest = false, float startTimeRate = 0)
     {
         // 상태 변수의 값 변경
         growth = newFieldState;
 
-        GridMap.Map.tiles[mapIdx].LastStateInt = (int)newFieldState;
+        GridMap.Map.tiles[mapIdx].IsAuto = isAuto;
 
-        GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+        GridMap.Map.tiles[mapIdx].LastStateInt = (int)newFieldState + (int)newSizeState;
+
+        if (startTimeRate != 1)
+        {
+            GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.AddSeconds(
+            (double)(endTime - (endTime / (1 - startTimeRate)))).ToString("yyyy-MM-dd HH:mm:ss");
+        }
+        else
+        {
+            double addSeconds;
+
+            if (newFieldState == FieldState.Plow)
+            {
+                addSeconds = FieldPlowTime;
+            }
+            else if (newFieldState == FieldState.Grow)
+            {
+                addSeconds = CropGrowTime / 3;
+            }
+            else
+            {
+                addSeconds = 0;
+            }
+
+            GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.AddSeconds(-1 * addSeconds).ToString("yyyy-MM-dd HH:mm:ss");
+        }
 
         // 크기 변수의 값 변경
         size = newSizeState;
@@ -149,7 +169,7 @@ public class Object_Field : BasicObject
         Debug.Log("State Ending Time : " + stateEndTime);
 
         // 상태 애니메이션 초기화 함수 실행
-        anim.Anim_StateInit(newFieldState, newSizeState, isHarvest);
+        anim.Anim_StateInit(newFieldState, newSizeState, isHarvest, startTimeRate);
     }
 
     #endregion

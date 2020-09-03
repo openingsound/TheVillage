@@ -69,12 +69,18 @@ public class Anim_Field : MonoBehaviour
                 // 각각의 작물 애니메이터를 배열에 저장
                 bushAnims[i, j] = Instantiate(bush, spawnpoints[i, j].position, Quaternion.identity).GetComponent<Animator>();
 
+                bushAnims[i, j].transform.localScale 
+                    = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f);
+
                 bushAnims[i, j].transform.parent = spawnpoints[i, j];
 
                 // 각각의 다 자란 작물 오브젝트를 배열에 저장
-                fruits[i, j] = Instantiate(crop, spawnpoints[i, j].position + new Vector3(0, 0.25f, 0), Quaternion.identity);
+                fruits[i, j] = Instantiate(crop, spawnpoints[i, j].position, Quaternion.identity);
 
                 fruits[i, j].transform.parent = spawnpoints[i, j];
+
+                fruits[i, j].transform.localScale 
+                    = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f);
 
                 fruits[i, j].SetActive(false);
 
@@ -100,16 +106,20 @@ public class Anim_Field : MonoBehaviour
     /// </summary>
     /// <param name="state">나무의 상태</param>
     /// <param name="size">나무의 성장 크기 정도</param>
-    public void Anim_StateInit(Object_Field.FieldState state, Object_Field.SizeState size = Object_Field.SizeState.NULL, bool isHarvest = false)
+    public void Anim_StateInit(Object_Field.FieldState state, Object_Field.SizeState size = Object_Field.SizeState.NULL, bool isHarvest = false, float startTimeRate = 0)
     {
         // 밭 가는 애니메이션 실행
         if(state == Object_Field.FieldState.Plow)
         {
-            fieldAnim.SetBool("Plow", true);
+            //fieldAnim.SetBool("Plow", true);
             fieldAnim.speed = 1 / thisField.FieldPlowTime;
+            fieldAnim.Play("Plow", 0, startTimeRate);
         }
         else if(state == Object_Field.FieldState.Grow)
         {
+            // 밭은 다 간 상태로 유지함
+            fieldAnim.Play("Plow", 0, 1);
+
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < 5; i++)
             {
@@ -125,14 +135,33 @@ public class Anim_Field : MonoBehaviour
                 {
                     fruits[i, j].SetActive(false);
 
-                    bushAnims[i, j].SetTrigger("Next");
+                    //bushAnims[i, j].SetTrigger("Next");
                     bushAnims[i, j].speed = 3 / thisField.CropGrowTime;
+                    
+                    switch (size)
+                    {
+                        case Object_Field.SizeState.S:
+                            bushAnims[i, j].Play("Crop_S", 0, startTimeRate);
+                            break;
+
+                        case Object_Field.SizeState.M:
+                            bushAnims[i, j].Play("Crop_M", 0, startTimeRate);
+                            break;
+
+                        case Object_Field.SizeState.L:
+                            bushAnims[i, j].Play("Crop_L", 0, startTimeRate);
+                            break;
+                    }
                 }
             }
          
         }
         else if(state == Object_Field.FieldState.Harvest)
         {
+            // 밭은 다 간 상태로 유지함
+            fieldAnim.Play("Plow", 0, 1);
+
+
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < 5; i++)
             {
@@ -146,8 +175,8 @@ public class Anim_Field : MonoBehaviour
                 // 다음 성장 상태로 변경
                 for (int j = 0; j < 5; j++)
                 {
-                    bushAnims[i, j].SetTrigger("Next");
-
+                    //bushAnims[i, j].SetTrigger("Next");
+                    bushAnims[i, j].Play("IDLE", 0, startTimeRate);
                     fruits[i, j].SetActive(true);
                 }
             }

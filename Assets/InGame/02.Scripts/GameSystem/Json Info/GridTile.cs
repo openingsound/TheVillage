@@ -28,7 +28,7 @@ public class GridTile
     // 농작물 관련 오브젝트의 경우 자동수확인가
     [SerializeField]
     private bool isAuto;
-    public bool IsAuto { get { return isAuto; } private set { isAuto = value; } }
+    public bool IsAuto { get { return isAuto; } set { isAuto = value; } }
 
     // 마지막 상태가 무엇인가
     [SerializeField]

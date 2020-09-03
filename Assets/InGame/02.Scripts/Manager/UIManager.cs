@@ -129,6 +129,8 @@ public class UIManager : MonoBehaviour
 
             ring.gameObject.transform.position = InputManager.InputSystem.TargetPos;
 
+            ring.gameObject.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
+
             //Debug.Log("ring Pos - " + ring.gameObject.transform.position.ToString());
 
         }

@@ -76,10 +76,10 @@ public class GameManager : MonoBehaviour
             sun.GetChild(3).GetComponentInChildren<Text>().text = i < CurItemList.Count ? System.Convert.ToString(CurItemList[i].Cost) + "원" : "";
         }
     }
-    public string curType;
+    public string curType2;
     public void TabClick(string tabName)
     {
-        curType = tabName;
+        curType2 = tabName;
     }
     public int curSlotNum =0;
     public void SlotClick(int slotNum)
