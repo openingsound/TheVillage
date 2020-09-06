@@ -69,12 +69,18 @@ public class Anim_Field : MonoBehaviour
                 // 각각의 작물 애니메이터를 배열에 저장
                 bushAnims[i, j] = Instantiate(bush, spawnpoints[i, j].position, Quaternion.identity).GetComponent<Animator>();
 
+                bushAnims[i, j].transform.localScale 
+                    = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f);
+
                 bushAnims[i, j].transform.parent = spawnpoints[i, j];
 
                 // 각각의 다 자란 작물 오브젝트를 배열에 저장
-                fruits[i, j] = Instantiate(crop, spawnpoints[i, j].position + new Vector3(0, 0.25f, 0), Quaternion.identity);
+                fruits[i, j] = Instantiate(crop, spawnpoints[i, j].position, Quaternion.identity);
 
                 fruits[i, j].transform.parent = spawnpoints[i, j];
+
+                fruits[i, j].transform.localScale 
+                    = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f);
 
                 fruits[i, j].SetActive(false);
 
@@ -111,6 +117,9 @@ public class Anim_Field : MonoBehaviour
         }
         else if(state == Object_Field.FieldState.Grow)
         {
+            // 밭은 다 간 상태로 유지함
+            fieldAnim.Play("Plow", 0, 1);
+
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < 5; i++)
             {
@@ -149,6 +158,10 @@ public class Anim_Field : MonoBehaviour
         }
         else if(state == Object_Field.FieldState.Harvest)
         {
+            // 밭은 다 간 상태로 유지함
+            fieldAnim.Play("Plow", 0, 1);
+
+
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < 5; i++)
             {

@@ -24,8 +24,8 @@ public class InputManager : MonoBehaviour
     // 외부에서 확인하는 입력 상태
     // 이 프로퍼티의 값 변경은 외부 클래스에서는 하지 않아야 함.
     /// <summary>현재 입력 상태</summary>
-    public InputState State{ get; private set; }
-    
+    public InputState State { get; private set; }
+
 
 
 
@@ -59,10 +59,6 @@ public class InputManager : MonoBehaviour
     // 멀티 터치 시 이전 입력 간 거리
     private float m_lastTouchLenth = 0;
 
-
-    public GridMap gridSystem;
-
-
     private void Awake()
     {
         // Scene에 이미 InputSystem 싱글톤이 존재하는지 검사함
@@ -83,7 +79,7 @@ public class InputManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -96,6 +92,17 @@ public class InputManager : MonoBehaviour
 
     private void CheckInput()
     {
+        if(InGameUIManager.UICheck == (int)InGameUIManager.UI_BitFlag.SHOP)
+        {
+            if(nowState != InputState.NULL)
+            {
+                nowState = InputState.NULL;
+                State = InputState.NULL;
+            }
+
+            return;
+        }
+
 
 #if UNITY_EDITOR || UNITY_STANDALON
 
@@ -119,7 +126,7 @@ public class InputManager : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             // 만일 현재 상태가 클릭상태였다면
-            if(nowState == InputState.CLICK)
+            if (nowState == InputState.CLICK)
             {
                 // 외부에서 보여지는 상태는 뗄때가 클릭 상태임
                 State = InputState.CLICK;
@@ -129,33 +136,33 @@ public class InputManager : MonoBehaviour
 
                 float targetX, targetZ;
 
-                if(StartPos.Value.x > -1.5f)
+                if (StartPos.Value.x > -1 * 0.5f * GridMap.Map.CellSize)
                 {
-                    targetX = (((int)(StartPos.Value.x + 1.5f)) / 3) * 3;
+                    targetX = (((int)(StartPos.Value.x + 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
                 }
                 else
                 {
-                    targetX = (((int)(StartPos.Value.x - 1.5f)) / 3) * 3;
+                    targetX = (((int)(StartPos.Value.x - 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
                 }
 
                 if (StartPos.Value.z > -1.5f)
                 {
-                    targetZ = (((int)(StartPos.Value.z + 1.5f)) / 3) * 3;
+                    targetZ = (((int)(StartPos.Value.z + 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
                 }
                 else
                 {
-                    targetZ = (((int)(StartPos.Value.z - 1.5f)) / 3) * 3;
+                    targetZ = (((int)(StartPos.Value.z - 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
                 }
 
                 TargetPos = new Vector3(targetX, StartPos.Value.y, targetZ);
 
                 Debug.Log(" - TargetPos : " + TargetPos.ToString());
 
-                int idx = gridSystem.GettingGridIdx(TargetPos);
-                Debug.Log(" - Grid[" + (idx % gridSystem.GridSize) + ", " + (idx / gridSystem.GridSize) + "]");
+                int idx = GridMap.Map.GettingGridIdx(TargetPos);
+                Debug.Log(" - Grid[" + (idx % GridMap.Map.GridSize) + ", " + (idx / GridMap.Map.GridSize) + "]");
             }
 
-            
+
         }
         // 마우스가 눌리고 있다면
         else if (Input.GetMouseButton(0))
@@ -185,7 +192,7 @@ public class InputManager : MonoBehaviour
 
 
             // 시작점과 끝점의 차이가 없다면 일반 클릭으로 인식
-            if(StartPos.Value == EndPos.Value)
+            if (StartPos.Value == EndPos.Value)
             {
                 return;
             }
@@ -202,7 +209,7 @@ public class InputManager : MonoBehaviour
             float wheelInput = Input.GetAxis("Mouse ScrollWheel");
 
             // 휠을 올렸을 때 처리 ↑
-            if(wheelInput > 0)
+            if (wheelInput > 0)
             {
                 nowState = InputState.ZOOM_IN;
                 State = InputState.ZOOM_IN;
@@ -218,7 +225,7 @@ public class InputManager : MonoBehaviour
                 nowState = InputState.NULL;
                 State = InputState.NULL;
             }
-            
+
         }
 
 

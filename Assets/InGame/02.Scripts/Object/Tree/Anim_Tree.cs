@@ -45,6 +45,8 @@ public class Anim_Tree : MonoBehaviour
         // 나무 오브젝트를 이 나무 게임 오브젝트의 자식으로 설정
         treeObject.transform.parent = this.gameObject.transform;
 
+        treeObject.transform.localScale = new Vector3(1, 1, 1);
+
         // 나무 오브젝트 비활성화
         treeObject.SetActive(false);
 
@@ -57,6 +59,8 @@ public class Anim_Tree : MonoBehaviour
 
         // 상자 아이템을 이 나무 오브젝트의 자식으로 설정
         fruitBox.transform.parent = this.gameObject.transform;
+
+        fruitBox.transform.localScale = new Vector3(1, 1, 1);
 
         // 상자 아이템 비활성화
         fruitBox.SetActive(false);
