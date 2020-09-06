@@ -81,6 +81,7 @@ public class GridMap : MonoBehaviour
                     // 타일 오브젝트 연결
                     newgridObjects[y * GridSize + x] = gridObjects[idx];
                     newgridObjects[y * GridSize + x].name = "Grid(" + x + "," + y + ")";
+                    newgridObjects[y * GridSize + x].transform.localScale = new Vector3(cellSize, cellSize, cellSize);
                     idx++;
                 }
                 else
@@ -121,6 +122,7 @@ public class GridMap : MonoBehaviour
                     newTiles[y * newGridSize + x] = tiles[idx];
                     newgridObjects[y * newGridSize + x] = gridObjects[idx];
                     newgridObjects[y * newGridSize + x].name = "Grid(" + x + "," + y + ")";
+                    newgridObjects[y * newGridSize + x].transform.localScale = new Vector3(cellSize, cellSize, cellSize);
                     idx++;
                 }
                 else

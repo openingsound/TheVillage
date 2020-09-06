@@ -44,7 +44,8 @@ public class Test_Tree : MonoBehaviour
         // 새 나무 초기화
         tree.Planting(Plants_DB.PlantDB.OwnTrees[(int) selectedFruit], Plants_DB.PlantDB.Fruits[(int)selectedFruit], Plants_DB.PlantDB.FruitBoxes[(int)selectedFruit]);
 
-        
+
+        InGameUIManager.OnClickExit();
     }
 
 
@@ -100,7 +101,8 @@ public class Test_Tree : MonoBehaviour
         // 새 밭 초기화
         field.Plowing(Plants_DB.PlantDB.OwnBushes[(int) selectedCrop], Plants_DB.PlantDB.Crops[(int)selectedCrop], Plants_DB.PlantDB.CropBoxes[(int)selectedCrop]);
 
-        
+
+        InGameUIManager.OnClickExit();
     }
 
 

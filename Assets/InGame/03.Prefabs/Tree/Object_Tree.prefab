@@ -214,6 +214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _level: 0
   stateEndTime: 
+  anim: {fileID: 0}
   isAuto: 0
 --- !u!1 &2742956894822279922
 GameObject:
