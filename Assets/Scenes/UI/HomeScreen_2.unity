@@ -72829,6 +72829,35 @@ MonoBehaviour:
   - {fileID: 691110159}
   - {fileID: 971173131}
   - {fileID: 862573672}
+  ImageSlot:
+  - {fileID: 21300000, guid: 39c31be025ad224469357e3a68663d1d, type: 3}
+  - {fileID: 21300000, guid: 83dd1ab1612d0824c97ab5f42983bfb7, type: 3}
+  - {fileID: 21300000, guid: 212ae77edb9ba7f41a45e21731e1b734, type: 3}
+  - {fileID: 21300000, guid: 6bf74c83f5af7cb47a7a0f545ee3e0fa, type: 3}
+  - {fileID: 21300000, guid: 69d8b65bd57fec74ebd142fe8001f064, type: 3}
+  - {fileID: 21300000, guid: 48753582f0247064eb10b476f55503b6, type: 3}
+  - {fileID: 21300000, guid: a95d5a6383d9698449d99af02a5ef428, type: 3}
+  - {fileID: 21300000, guid: 05b3930ef61e16c4da176f61194a9c66, type: 3}
+  - {fileID: 21300000, guid: 1a591e810b4e4624b90963cb0197df15, type: 3}
+  - {fileID: 21300000, guid: dfe5d61673f6c06438ae618a0f82f52d, type: 3}
+  - {fileID: 21300000, guid: 0e12c86ced0df7c4aac39069f682ce6a, type: 3}
+  - {fileID: 21300000, guid: 881ad7ec399ffda4782faa1032e5f48c, type: 3}
+  - {fileID: 21300000, guid: f588914631f6d9a4991884eae5aa25f4, type: 3}
+  - {fileID: 21300000, guid: a4c3359cb72eb4c45b0ec605d13dee41, type: 3}
+  - {fileID: 21300000, guid: aa2eace874a539745b8dfcf2b75ace73, type: 3}
+  - {fileID: 21300000, guid: eaea29030e1514c47b7a0a761498c6d1, type: 3}
+  - {fileID: 21300000, guid: e28cc4430bebd1f47bea91df539ce57e, type: 3}
+  - {fileID: 21300000, guid: 6483d31fd07629a428ec53210083bafc, type: 3}
+  - {fileID: 21300000, guid: 360517621877aca4a8ca93fe76e40663, type: 3}
+  - {fileID: 21300000, guid: 9b4c11ed9de748a4dbafef3be179bd31, type: 3}
+  - {fileID: 21300000, guid: d596b98db179460418d4394286516b68, type: 3}
+  - {fileID: 21300000, guid: 3bf1c9565f7686241838f0b04f250568, type: 3}
+  - {fileID: 21300000, guid: 0745be39fc4ed2346bdf215f8507a2e1, type: 3}
+  - {fileID: 21300000, guid: ed93eecbfc82f2b4b9290f2cb8fdc7fd, type: 3}
+  - {fileID: 21300000, guid: c4191b261d7b14548a1d6293903455f5, type: 3}
+  - {fileID: 21300000, guid: 25b0ef3d7dd4a3a4c90832ba2a9947d7, type: 3}
+  - {fileID: 21300000, guid: fa677a46032f00c45b46f7fca386e463, type: 3}
+  - {fileID: 21300000, guid: 555971d9b754b8a45a17cebc79622d60, type: 3}
   ShopPop: {fileID: 1786466589}
   BuildPop: {fileID: 1239776017}
   SellPop: {fileID: 1079299695}
