@@ -43,7 +43,9 @@ public class GameManager : MonoBehaviour
     public TextAsset Now_Cost;
     public TextAsset Item_Amount;
     public List<Item> AllItemList, MyItemList,CurItemList,BuildList,SellList;
-    public List<int> PrePrice,NowPrice,ItemAmount,SellAmount;
+    public List<int> PrePrice, NowPrice, ItemAmount;//지금 가지고 있는 총 량
+    public List<int> SellAmount;//현재 팔 양
+
     string filePath;
     public GameObject Shop;
     public GameObject[] ShopSlot;
@@ -52,8 +54,10 @@ public class GameManager : MonoBehaviour
     public Sprite[] ImageSlot;
     public GameObject ShopPop;
     public GameObject BuildPop;
+    public GameObject BuildPopUp;
+    public GameObject AutionPopup;
     public GameObject SellPop;
-    public Text ExplainBox;
+    public Text ExplainBox, Build_ExplainBox, Auction_ExplainBox;
     void Start()
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
@@ -114,7 +118,7 @@ public class GameManager : MonoBehaviour
     }
     public void ShopUpdate()
     {
-        CurItemList = AllItemList.FindAll(x => x.level <= 1);
+        CurItemList = AllItemList.FindAll(x => x.level <= 5);
         BuildList = AllItemList.FindAll(x => x.Using == 1);
         CurItemList = CurItemList.FindAll(x => x.Using == 0);
         
@@ -208,7 +212,10 @@ public class GameManager : MonoBehaviour
 
         SellUpdate();
     }
-
+    public void Aution_Sell_Btn(int num)
+    {
+        SellUpdate();
+    }
     public string curType2;
     public void TabClick(string tabName)
     {
@@ -220,7 +227,58 @@ public class GameManager : MonoBehaviour
         curShopSlotNum = ShopSlotNum;
         Item CurItem = CurItemList[ShopSlotNum];
         ShopPop.SetActive(true);
-        ExplainBox.text = "<b>" + CurItem.Name + "을 " + CurItem.Cost + "원에 구매 하시겠습니까? </b>";
+        ExplainBox.text = "<b>" + CurItem.Name + "을(를) " + CurItem.Cost + "원에 구매 하시겠습니까? </b>";
+
+    }
+    public void Build_SlotClick(int BuildSlotNum)
+    {
+        Item CurItem = BuildList[BuildSlotNum];
+        BuildPopUp.SetActive(true);
+        Build_ExplainBox.text = "<b>" + CurItem.Name + "을(를) " + CurItem.Cost + "원에 건설 하시겠습니까? </b>";
+
+    }
+    int NowSellNum = 0;
+    public void Aution_SlotClick(int AuctionSlotNum)
+    {
+        Item CurItem = BuildList[AuctionSlotNum];
+        NowSellNum = AuctionSlotNum;
+        int itemp = NowPrice[CurItem.num];
+        AutionPopup.SetActive(true);
+        Auction_ExplainBox.text =  CurItem.Name + "을(를) " + "개당 "+ itemp + "원에 판매 하시겠습니까?(총 " + itemp * SellAmount[CurItem.num] + "원)";
+        
+    }
+    public void AutionPopup_Sell()
+    {
+        NowSellNum = BuildList[NowSellNum].num;
+
+        //itemp * SellAmount[NowSellNum]만큼 돈 증가 
+
+        //SellAmount[CurItem.num] 만큼 ItemAmount[NowSellNum]에서 아이템 감소
+        ItemAmount[NowSellNum] -= SellAmount[NowSellNum];
+
+        for (int i = 0; i < SellAmount.Count; i++)
+        {
+            SellAmount[i] = 0;
+        }
+        SellUpdate();
+        AutionPopup.SetActive(false);
+    }
+    public void AutionPopup_Close()
+    {
+        AutionPopup.SetActive(false);
+
+    }
+    public void BuildPopup_Build()
+    {
+        //건설 행동 추가
+        //돈 빠져나가기
+        //건설 하기
+        BuildPopUp.SetActive(false);
+
+    }
+    public void BuildPopup_Close()
+    {
+        BuildPopUp.SetActive(false);
 
     }
     public void BuildClick(int BuildSlotNum)
