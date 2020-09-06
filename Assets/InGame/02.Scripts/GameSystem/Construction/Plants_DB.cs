@@ -57,10 +57,11 @@ public class Plants_DB : MonoBehaviour
     /* 밭, 나무 작물들의 이름, 종류들을 열거한 열거형 */
 
     // 밭 열거형
-    public enum Crop { NULL = -1, Asparagus, Watermelon };
+    public enum Crop { NULL = -1, Asparagus, Been, Beetroot, Broccoli, Cabbage, Carrot, Corn, 
+        Cucumber, Eggplant, Lettuce, Onion, Potato, Strawberry, Tomato, Watermelon };
 
     // 나무열매 열거형
-    public enum Fruit { NULL = -1, Apple };
+    public enum Fruit { NULL = -1, Apple, Apricot, Banana, Cherry, Orange };
 
 
 
