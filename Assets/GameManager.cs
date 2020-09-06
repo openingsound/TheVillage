@@ -24,7 +24,7 @@ public class Item {
     public int Cost;
     public int Cycle;
     public int num;
-    public Image image;
+    public Sprite image;
     public Item(string type, string name, string tree, string land, string levelst,string isUsing,string cycle)
     {
         Type = type;
@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] ShopSlot;
     public GameObject[] BuildSlot;
     public GameObject[] SellSlot;
+    public Sprite[] ImageSlot;
     public GameObject ShopPop;
     public GameObject BuildPop;
     public GameObject SellPop;
@@ -71,6 +72,7 @@ public class GameManager : MonoBehaviour
             x.Using = System.Convert.ToInt32(x.IsUisng);
             x.Cycle = System.Convert.ToInt32(x.SCycle);
             x.Cost = x.level * 10 + x.Cycle/10;
+            x.image = ImageSlot[n];
             x.num = n++;
         }
         filePath = Application.persistentDataPath + "/MyItemText.txt";
@@ -112,16 +114,17 @@ public class GameManager : MonoBehaviour
     }
     public void ShopUpdate()
     {
-        CurItemList = AllItemList.FindAll(x => x.level <= 3);
+        CurItemList = AllItemList.FindAll(x => x.level <= 1);
         BuildList = AllItemList.FindAll(x => x.Using == 1);
         CurItemList = CurItemList.FindAll(x => x.Using == 0);
         
         for (int i = 0; i < ShopSlot.Length; i++)
         {
             ShopSlot[i].SetActive(i < CurItemList.Count);
-            if(i > CurItemList.Count) continue;
+            if (i >= CurItemList.Count) continue;
             ShopSlot[i].GetComponentInChildren<Text>().text = i < CurItemList.Count ? CurItemList[i].Name : "";
             Transform sun = ShopSlot[i].transform.GetChild(0);
+            sun.GetChild(0).GetComponentInChildren<Image>().sprite = ImageSlot[CurItemList[i].num];
             sun.GetChild(3).GetComponentInChildren<Text>().text = i < CurItemList.Count ? System.Convert.ToString(CurItemList[i].Cost) + "원" : "";
         }
         for (int i = 0; i < BuildList.Count; i++)
@@ -131,6 +134,7 @@ public class GameManager : MonoBehaviour
             BuildSlot[i].transform.GetChild(1).GetComponentInChildren<Text>().text = System.Convert.ToString(BuildList[i].Cost) + "원";
             BuildSlot[i].transform.GetChild(3).GetComponentInChildren<Text>().text = System.Convert.ToString(BuildList[i].Cycle / 60) + "시간 " + (BuildList[i].Cycle % 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle % 60) + "분");
             BuildSlot[i].transform.GetChild(2).GetComponentInChildren<Text>().text = System.Convert.ToString((BuildList[i].Cycle * 3) / 60) + "시간 " + ((BuildList[i].Cycle *3 )% 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle *3% 60) + "분");
+            BuildSlot[i].transform.GetChild(5).GetComponentInChildren<Image>().sprite = ImageSlot[BuildList[i].num];
         }
     }
 
@@ -146,6 +150,7 @@ public class GameManager : MonoBehaviour
             SellSlot[i].transform.GetChild(0).GetComponentInChildren<Text>().text = BuildList[i].Name;//이름
             SellSlot[i].transform.GetChild(1).GetComponentInChildren<Text>().text = System.Convert.ToString(PPrice);
             SellSlot[i].transform.GetChild(2).GetComponentInChildren<Text>().text = System.Convert.ToString(NPrice);
+            SellSlot[i].transform.GetChild(12).GetComponentInChildren<Image>().sprite = ImageSlot[BuildList[i].num];//이름
             if (PPrice == NPrice)
                 SellSlot[i].transform.GetChild(3).gameObject.SetActive(false);
             else {
@@ -236,6 +241,7 @@ public class GameManager : MonoBehaviour
     }
     public void OpenBuildPop()
     {
+        ShopUpdate();
         BuildPop.SetActive(true);
     }
     public void CloseBuildPop()
