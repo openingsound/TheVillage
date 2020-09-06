@@ -42,11 +42,15 @@ public class InputManager : MonoBehaviour
     /* 입력 위치 */
 
     // 입력이 시작된 위치 - null값 허용
-    public Vector3? StartPos { get; private set; }
+    public Vector3 StartPos { get; private set; }
 
     // 입력이 종료된 위치 - null값 허용
-    public Vector3? EndPos { get; private set; }
+    public Vector3 EndPos { get; private set; }
 
+    // 입력 Raycast 위치
+    public Vector3 selectPos { get; private set; }
+
+    // 타겟 위치
     public Vector3 TargetPos { get; private set; }
 
     // 입력에 들어온 오브젝트
@@ -86,6 +90,8 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         CheckInput();
+
+        CamFollow.TouchManager.OnDrag();
     }
 
 
@@ -111,7 +117,8 @@ public class InputManager : MonoBehaviour
         {
 
             // 시작점은 현재 마우스 클릭을 시작한 위치로 함
-            StartPos = TouchScreen(Input.mousePosition).point;
+            StartPos = Input.mousePosition;
+            selectPos = TouchScreen(Input.mousePosition).point;
 
             // 시작점이 null이면 인식을 끝내도 됨
             if (StartPos == null)
@@ -131,30 +138,32 @@ public class InputManager : MonoBehaviour
                 // 외부에서 보여지는 상태는 뗄때가 클릭 상태임
                 State = InputState.CLICK;
 
+                selectPos = TouchScreen(Input.mousePosition).point;
+
                 selectedObject = TouchScreen(Input.mousePosition).collider.gameObject;
                 Debug.Log("Select Object : " + selectedObject.tag);
 
                 float targetX, targetZ;
 
-                if (StartPos.Value.x > -1 * 0.5f * GridMap.Map.CellSize)
+                if (selectPos.x > -1 * 0.5f * GridMap.Map.CellSize)
                 {
-                    targetX = (((int)(StartPos.Value.x + 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
+                    targetX = (((int)(selectPos.x + 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
                 }
                 else
                 {
-                    targetX = (((int)(StartPos.Value.x - 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
+                    targetX = (((int)(selectPos.x - 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
                 }
 
-                if (StartPos.Value.z > -1.5f)
+                if (selectPos.z > -1.5f)
                 {
-                    targetZ = (((int)(StartPos.Value.z + 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
+                    targetZ = (((int)(selectPos.z + 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
                 }
                 else
                 {
-                    targetZ = (((int)(StartPos.Value.z - 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
+                    targetZ = (((int)(selectPos.z - 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
                 }
 
-                TargetPos = new Vector3(targetX, StartPos.Value.y, targetZ);
+                TargetPos = new Vector3(targetX, selectPos.y, targetZ);
 
                 Debug.Log(" - TargetPos : " + TargetPos.ToString());
 
@@ -169,7 +178,7 @@ public class InputManager : MonoBehaviour
         {
 
             // 끝점은 현재 마우스가 있는 위치로 함
-            EndPos = TouchScreen(Input.mousePosition).point;
+            EndPos = Input.mousePosition;
 
             // 시작점이 null이면 인식을 끝내도 됨
             if (StartPos == null)
@@ -192,7 +201,7 @@ public class InputManager : MonoBehaviour
 
 
             // 시작점과 끝점의 차이가 없다면 일반 클릭으로 인식
-            if (StartPos.Value == EndPos.Value)
+            if (StartPos == EndPos)
             {
                 return;
             }

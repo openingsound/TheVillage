@@ -28,7 +28,11 @@ public class CamFollow : MonoBehaviour
     // 카메라가 이동할 목표 위치
     public static Vector3 TargetPos;
 
+    // 카메라 이동의 시작 위치
     private Vector3 TargetStartPos;
+
+    // 화면 - 인게임 간 화면 비율의 정도
+    private const float ScreenToWorldConvert = 0.025f;
 
     // 카메라 이동에 걸리는 시간의 정도
     private float smoothTime = 0.2f;
@@ -95,7 +99,7 @@ public class CamFollow : MonoBehaviour
     private void FixedUpdate()
     {
         // 실제로 좌표를 계산하는 함수 실행
-        OnDrag();
+        //OnDrag();
 
         // 타겟 위치가 표적 위치와 일치하지 않으면
         if (TargetPos != rigTransform.transform.position)
@@ -115,10 +119,10 @@ public class CamFollow : MonoBehaviour
     /// <summary>
     /// 시작점과 끝점의 좌표를 계산하는 함수
     /// </summary>
-    private void OnDrag()
+    public void OnDrag()
     {
         // 마우스 클릭이 일어났을 시에
-        if (InputManager.InputSystem.State == InputManager.InputState.CLICK)
+        if (Input.GetMouseButtonDown(0))
         {
             // 목표 위치는 현재 타겟위치로 설정
             TargetStartPos = rigTransform.position;
@@ -127,7 +131,7 @@ public class CamFollow : MonoBehaviour
         else if (InputManager.InputSystem.State == InputManager.InputState.DRAG)
         {
 
-            if (InputManager.InputSystem.EndPos.Value == InputManager.InputSystem.StartPos.Value)
+            if (InputManager.InputSystem.EndPos == InputManager.InputSystem.StartPos)
             {
                 return;
             }
@@ -141,10 +145,12 @@ public class CamFollow : MonoBehaviour
             */
 
             // 드래그로 움직이는 정도 (드래그와 반대 방향으로 움직임)
-            Vector3 moveVec = (InputManager.InputSystem.EndPos.Value - InputManager.InputSystem.StartPos.Value) * MoveRate;
+            Vector3 dragVec = (InputManager.InputSystem.EndPos - InputManager.InputSystem.StartPos) * ScreenToWorldConvert;
+
+            Vector3 moveVec = new Vector3(1, 0, -1).normalized * dragVec.x + new Vector3(1, 0, 1).normalized * dragVec.y; 
 
             // 목표 지점은 시작점에서 방향벡터를 뺀 만큼
-            TargetPos = TargetStartPos - moveVec;
+            TargetPos = TargetStartPos - moveVec * MoveRate;
 
             // 목표 지점은 x : -40 ~ 40, z : -40 ~ 40 으로 제한 됨
             if(TargetPos.x < -40f)
