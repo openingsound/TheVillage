@@ -27,6 +27,7 @@ public class MiniGame2GM : MonoBehaviour
     // Start is called before the first frame update
     new bool enabled = true;
     public GameObject Successpanel;
+    public GameObject rewardCanvas;
     public GameObject Failpanel;
     void Start()
     {
@@ -310,7 +311,7 @@ public class MiniGame2GM : MonoBehaviour
         lineOnEdit = null;
         lineOnEditRcts = null;
         foodOnEdit = null;
-        Successpanel.SetActive(true);
+        rewardCanvas.SetActive(true);
     }
     void dfs2(int y,int x)
     {
