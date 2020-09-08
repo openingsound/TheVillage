@@ -7,6 +7,7 @@ public class charjump : MonoBehaviour
 {
     public GameObject gameOverCanvas;
     public GameObject congratsCanvas;
+    public GameObject rewardCanvas;
     public AudioSource tapAudio;
     public AudioSource winAudio;
     public AudioSource collideAudio;
@@ -60,7 +61,7 @@ public class charjump : MonoBehaviour
         if(collision.CompareTag("ScorePlus"))
         {
             winAudio.Play();
-            congratsCanvas.SetActive(true);
+            rewardCanvas.SetActive(true);
             Debug.Log("Player wins");
             Time.timeScale = 0;
             gameObject.GetComponent<Animator>().Play("win");
