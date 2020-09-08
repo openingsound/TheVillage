@@ -15,9 +15,9 @@ public class Serialization<T>
     public List<T> target;
 }
 
+
 [System.Serializable]
 public class Item {
-
     public string Type, Name, Tree, Land,Levelst,IsUisng,SCycle;
     public int level;
     public int Using;
@@ -58,6 +58,9 @@ public class GameManager : MonoBehaviour
     public GameObject AutionPopup;
     public GameObject SellPop;
     public Text ExplainBox, Build_ExplainBox, Auction_ExplainBox;
+    int UserMoney, UserExp, UserLevel;
+    public Text Money_t,Exp_t, Level_t;
+
     void Start()
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
@@ -136,8 +139,8 @@ public class GameManager : MonoBehaviour
             BuildSlot[i].SetActive(true);
             BuildSlot[i].transform.GetChild(0).GetComponentInChildren<Text>().text = BuildList[i].Name;//이름
             BuildSlot[i].transform.GetChild(1).GetComponentInChildren<Text>().text = System.Convert.ToString(BuildList[i].Cost) + "원";
-            BuildSlot[i].transform.GetChild(3).GetComponentInChildren<Text>().text = System.Convert.ToString(BuildList[i].Cycle / 60) + "시간 " + (BuildList[i].Cycle % 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle % 60) + "분");
-            BuildSlot[i].transform.GetChild(2).GetComponentInChildren<Text>().text = System.Convert.ToString((BuildList[i].Cycle * 3) / 60) + "시간 " + ((BuildList[i].Cycle *3 )% 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle *3% 60) + "분");
+            BuildSlot[i].transform.GetChild(3).GetComponentInChildren<Text>().text = "  " + System.Convert.ToString(BuildList[i].Cycle / 60) + "시간 " + (BuildList[i].Cycle % 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle % 60) + "분");
+            BuildSlot[i].transform.GetChild(2).GetComponentInChildren<Text>().text = "  " + System.Convert.ToString((BuildList[i].Cycle * 3) / 60) + "시간 " + ((BuildList[i].Cycle *3 )% 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle *3% 60) + "분");
             BuildSlot[i].transform.GetChild(5).GetComponentInChildren<Image>().sprite = ImageSlot[BuildList[i].num];
         }
     }
