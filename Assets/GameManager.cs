@@ -61,8 +61,10 @@ public class GameManager : MonoBehaviour
     int UserMoney, UserExp, UserLevel;
     public Text Money_t,Exp_t, Level_t;
 
+    
     void Start()
     {
+        Read_sta();
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
         //엑셀로 하면 매 줄마다 '\n'이 들어가 있음
         for(int i=0; i < line.Length; i++)
@@ -108,8 +110,32 @@ public class GameManager : MonoBehaviour
             ItemAmount.Add(System.Convert.ToInt32(row[0]));
             SellAmount.Add(0);
         }
+
+        
+
     }
 
+    void Read_sta()
+    {
+        //정보들 파일에서 읽기
+        UserMoney = 20000;
+        UserExp = 100;
+        UserLevel = 4;
+        
+        Exp_t.text = System.Convert.ToString(UserExp);
+        Level_t.text = System.Convert.ToString(UserLevel);
+        Money_t.text = System.Convert.ToString(UserMoney);
+    }
+
+    void Write_sta(int money,int exp)
+    {
+        UserMoney += money;
+        UserExp += exp;
+        //정보들 파일에 쓰기
+        Exp_t.text = System.Convert.ToString(UserExp);
+        Level_t.text = System.Convert.ToString(UserLevel);
+        Money_t.text = System.Convert.ToString(UserMoney);
+    }
 
     public void ChangePrice()
     {
@@ -121,7 +147,7 @@ public class GameManager : MonoBehaviour
     }
     public void ShopUpdate()
     {
-        CurItemList = AllItemList.FindAll(x => x.level <= 5);
+        CurItemList = AllItemList.FindAll(x => x.level <= UserLevel);
         BuildList = AllItemList.FindAll(x => x.Using == 1);
         CurItemList = CurItemList.FindAll(x => x.Using == 0);
         
@@ -288,12 +314,13 @@ public class GameManager : MonoBehaviour
     {
         Item CurItem = BuildList[BuildSlotNum];
     }
-    public void BuyShopPop()
+    public void BuyShopPop()//구매하는 버튼
     {
         string CurItemName = CurItemList[curShopSlotNum].Name;
         Item CurItem = AllItemList.Find(x => x.Name == CurItemName);
         CurItem.Using = 1;
         ShopPop.SetActive(false);
+        Write_sta(-CurItem.Cost, 0);
         ShopUpdate();
     }
     public void CloseShopPop()
@@ -328,8 +355,6 @@ public class GameManager : MonoBehaviour
         if (!File.Exists(filePath)) { ResetItemClick(); return; }
         string jdata = File.ReadAllText(filePath);
         MyItemList = JsonUtility.FromJson<Serialization<Item>>(jdata).target;
-
-
     }
     void Save()
     {
