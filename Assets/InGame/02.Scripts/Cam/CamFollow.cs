@@ -45,10 +45,30 @@ public class CamFollow : MonoBehaviour
     /* 드래그 관련 프로퍼티 */
 
     // 드래그로 움직이는 비율
-    public float MoveRate;
+    private float moveSpeedGradient;
+
+    // 드래그 최소 속도
+    public float moveSpeedMin = 1f;
+
+    // 드래그 최대 속도
+    public float moveSpeedMax = 5f;
 
     // 드래그가 완료되었다고 허용할 오차 길이 한계점
     private float errorLimit;
+
+
+
+    // 카메라 크기에 대한 맵의 경계 좌표의 비율
+    private float endOfPointGradient;
+
+    // 맵의 경계 좌표
+    private float endOfPoint;
+
+    // 맵의 최대 경계
+    public float endOfPointMax = 90f;
+
+    // 맵의 최소 경계
+    public float endOfPointMin = 40f;
 
 
 
@@ -56,15 +76,15 @@ public class CamFollow : MonoBehaviour
 
     // 줌 인, 아웃 되는 정도
     [SerializeField]
-    private float zoomRate = 0.3f;
+    private float zoomRate = 1f;
 
     // 카메라 크기의 최저 사이즈
     [SerializeField]
-    private float zoomMin = 5f;
+    private float zoomMin = 8f;
 
     // 카메라 크기의 최대 사이즈
     [SerializeField]
-    private float zoomMax = 15f;
+    private float zoomMax = 40f;
 
     //------------------[캠 이동 관련 기본  루틴]-------------------
 
@@ -86,6 +106,12 @@ public class CamFollow : MonoBehaviour
 
         // 드래그 완료 허용 오차 길이 한계점 설정
         errorLimit = 0.01f;
+
+        // 드래그 시 카메라 움직임의 기울기
+        moveSpeedGradient = (moveSpeedMax - moveSpeedMin) / (zoomMax - zoomMin);
+
+        // 카메라 크기에 대한 드래그의 한계점의 기울기
+        endOfPointGradient = (endOfPointMax - endOfPointMin) / (zoomMax - zoomMin) * -1;
 
         // 드래그 인식 최저길이 설정
         //dragMinLimit = 1.0f;
@@ -150,25 +176,28 @@ public class CamFollow : MonoBehaviour
             Vector3 moveVec = new Vector3(1, 0, -1).normalized * dragVec.x + new Vector3(1, 0, 1).normalized * dragVec.y; 
 
             // 목표 지점은 시작점에서 방향벡터를 뺀 만큼
-            TargetPos = TargetStartPos - moveVec * MoveRate;
+            TargetPos = TargetStartPos - moveVec * (moveSpeedGradient * (cam.orthographicSize - zoomMin) + moveSpeedMin);
 
-            // 목표 지점은 x : -40 ~ 40, z : -40 ~ 40 으로 제한 됨
-            if(TargetPos.x < -40f)
+            // 목표 지점은 "x : -40 ~ 40, z : -40 ~ 40"(최대 축소 시) 으로 제한 됨
+            // 확대 크기에 따라 값이 달라짐 - 최대 -90 ~ 90 (최대 확대 시)
+            endOfPoint = endOfPointGradient * (cam.orthographicSize - zoomMin) + endOfPointMax;
+
+            if(TargetPos.x < -1 * endOfPoint)
             {
-                TargetPos.x = -40f;
+                TargetPos.x = -1 * endOfPoint;
             }
-            else if (TargetPos.x > 40f)
+            else if (TargetPos.x > endOfPoint)
             {
-                TargetPos.x = 40f;
+                TargetPos.x = endOfPoint;
             }
 
-            if (TargetPos.z < -40f)
+            if (TargetPos.z < -1 * endOfPoint)
             {
-                TargetPos.z = -40f;
+                TargetPos.z = -1 * endOfPoint;
             }
-            else if (TargetPos.z > 40f)
+            else if (TargetPos.z > endOfPoint)
             {
-                TargetPos.z = 40f;
+                TargetPos.z = endOfPoint;
             }
         }
         // 만일 줌인이 일어났다면
