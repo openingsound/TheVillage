@@ -16,7 +16,7 @@ public class SceneChange2 : MonoBehaviour
     }
     public void toGame2()
     {
-        SceneManager.LoadScene("HomeScreen");
+        SceneManager.LoadScene("HomeScreen_2");
     }
 
     public void toMiniGame2_1()
