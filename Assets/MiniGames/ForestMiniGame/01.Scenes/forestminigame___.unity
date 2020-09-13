@@ -3175,7 +3175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04edc38871ac3fe49ba3d3343124b990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameStartCanvas: {fileID: 0}
+  gameStartCanvas: {fileID: 1959189368}
 --- !u!114 &1086177662
 MonoBehaviour:
   m_ObjectHideFlags: 0

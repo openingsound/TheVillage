@@ -105,21 +105,23 @@ public class Test_Json : MonoBehaviour
 
     public void OnCreateJson()
     {
-        // 만일 플레이어 객체가 생성되지 않았다면
-        if(player == null)
-        {
-            // 저장하지 않음
-            Debug.LogError("Error - Json ) 플레이어 정보 오브젝트가 생성되지 않았습니다!");
-            return;
-        }
-
         // 만일 그리드 맵 객체가 연결되지 않았다면
-        if(map == null)
+        if (map == null)
         {
             // 저장하지 않음
             Debug.LogError("Error - Json ) 그리드 맵 오브젝트가 연결되지 않았습니다!");
             return;
         }
+
+
+        // 만일 플레이어 객체가 생성되지 않았다면
+        if (player == null)
+        {
+            // 저장하지 않음
+            Debug.LogError("Error - Json ) 플레이어 정보 오브젝트가 생성되지 않았습니다! 기본 플레이어 정보 생성 중...");
+            player = new PlayerInfo("ADSF"); 
+        }
+        
         
         /* Json 문자열 생성 */
 
@@ -177,7 +179,18 @@ public class Test_Json : MonoBehaviour
     public void CreateJsonFile(string path, string fileName, string jsonData)
     {
         // 파일 쓰기를 위한 파일 스트림 객체 생성
-        FileStream fileStream = new FileStream(string.Format("{0}/{1}.json", path, fileName), FileMode.Truncate, FileAccess.Write);
+        FileStream fileStream; 
+            
+        if(new FileInfo(string.Format("{0}/{1}.json", path, fileName)).Exists)
+        {
+            fileStream = new FileStream(string.Format("{0}/{1}.json", path, fileName), FileMode.Truncate, FileAccess.Write);
+        }
+        else
+        {
+            fileStream = new FileStream(string.Format("{0}/{1}.json", path, fileName), FileMode.CreateNew, FileAccess.Write);
+        }
+
+        
 
         // 쓸 데이터를 byte형식으로 변환
         byte[] data = System.Text.Encoding.UTF8.GetBytes(jsonData);

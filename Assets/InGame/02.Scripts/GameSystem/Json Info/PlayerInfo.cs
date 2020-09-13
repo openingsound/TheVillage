@@ -16,19 +16,19 @@ public class PlayerInfo
     ///<summary>
     /// 플레이어의 현재 재화 보유량
     ///</summary>
-    private int money;
+    private int _money;
 
     [SerializeField]
     ///<summary>
     /// 플레이어의 누적 경험치
     ///</summary>
-    private int exp;
+    private int _exp;
 
     [SerializeField]
     ///<summary>
     /// 픞레이어의 레벨
     ///</summary>
-    private int level;
+    private int _level;
 
     /// <summary>
     /// 플레이어의 마지막 접속 시각
@@ -41,22 +41,22 @@ public class PlayerInfo
     /// 플레이어의 정보를 저장하는 객체 생성자
     /// </summary>
     /// <param name="_name">플레이어의 닉네임</param>
-    public PlayerInfo(string _name)
+    public PlayerInfo(string _name, int money = 0, int exp = 0, int level = 1)
     {
         nickname = _name;
 
-        money = 0;
-        exp = 0;
-        level = 1;
+        _money = money;
+        _exp = exp;
+        _level = level ;
         lastConnectTime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
     }
 
     public override string ToString()
     {
         return "nickname : " + nickname 
-            + " / money : " + money 
-            + " / exp : " + exp 
-            + " / level : " + level 
+            + " / money : " + _money 
+            + " / exp : " + _exp 
+            + " / level : " + _level 
             + " / lastConnectTime : " + lastConnectTime;
     }
 }
