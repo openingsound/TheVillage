@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
     public List<int> SellAmount;//현재 팔 양
     public List<int> MoneyAndExpList;
 
-    string filePath, filePath_MnE, filePath_pre, filePath_Amount;
+    string filePath, filePath_MnE, filePath_pre, filePath_Amount, filePath_now;
     public GameObject Shop;
     public GameObject[] ShopSlot;
     public GameObject[] BuildSlot;
@@ -93,7 +93,8 @@ public class GameManager : MonoBehaviour
         filePath = Application.persistentDataPath + "/MyItemText.txt";
         filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
         filePath_pre = Application.persistentDataPath + "/PreCost.txt";
-        filePath_Amount = Application.persistentDataPath + "/NowCost.txt";
+        filePath_now = Application.persistentDataPath + "/NowCost.txt";
+        filePath_Amount = Application.persistentDataPath + "/Amount.txt";
         print(filePath);
         ShopUpdate();
 
@@ -167,6 +168,8 @@ public class GameManager : MonoBehaviour
             PrePrice[i] = NowPrice[i];
             NowPrice[i] = AllItemList[i].Cost + UnityEngine.Random.Range(-(AllItemList[i].Cost / 3), (AllItemList[i].Cost / 3));
         }
+        Save();
+        Load();
     }
     public void ShopUpdate()
     {
@@ -408,13 +411,15 @@ public class GameManager : MonoBehaviour
 
     void Load()
     {
-        if (!File.Exists(filePath)) { ResetItemClick(); }
+        if (!File.Exists(filePath)) { ResetItemClick(); ChangePrice(); ChangePrice(); }
         string jdata = File.ReadAllText(filePath);
         AllItemList = JsonUtility.FromJson<Serialization<Item>>(jdata).target;
         jdata = File.ReadAllText(filePath_MnE);
         MoneyAndExpList = JsonUtility.FromJson<Serialization<int>>(jdata).target;
         jdata = File.ReadAllText(filePath_pre);
         PrePrice = JsonUtility.FromJson<Serialization<int>>(jdata).target;
+        jdata = File.ReadAllText(filePath_now);
+        NowPrice = JsonUtility.FromJson<Serialization<int>>(jdata).target;
         jdata = File.ReadAllText(filePath_Amount);
         ItemAmount = JsonUtility.FromJson<Serialization<int>>(jdata).target;
         print(filePath);
@@ -428,6 +433,8 @@ public class GameManager : MonoBehaviour
         File.WriteAllText(filePath_MnE, jdata);
         jdata = JsonUtility.ToJson(new Serialization<int>(PrePrice));
         File.WriteAllText(filePath_pre, jdata);
+        jdata = JsonUtility.ToJson(new Serialization<int>(NowPrice));
+        File.WriteAllText(filePath_now, jdata);
         jdata = JsonUtility.ToJson(new Serialization<int>(ItemAmount));
         File.WriteAllText(filePath_Amount, jdata);
     }
