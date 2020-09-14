@@ -9,21 +9,21 @@ public class TimingManager : MonoBehaviour
     [SerializeField] RectTransform[] timingRect = null;
     Vector2[] timingBoxs = null;
 
+    
 
+   public GameObject _timing;
 
-    public GameObject _timing;
-
-    ppo _ppo;
-
+   ppo _ppo;
+    
     public int drawNum = 0;
-    public int num = 0;
-
+   public int num = 0;
+   
     bool reStart = false;
-
+  
     PlayerController _playerController;
 
     Note _note;
-
+    
     Character _character;
     bool boly = true;
 
@@ -35,7 +35,7 @@ public class TimingManager : MonoBehaviour
         Center = _timing.transform;
 
         _note = FindObjectOfType<Note>();
-
+      
         _playerController = FindObjectOfType<PlayerController>();
 
         _ppo = FindObjectOfType<ppo>();
@@ -45,8 +45,8 @@ public class TimingManager : MonoBehaviour
         _character = FindObjectOfType<Character>();
 
         timingBoxs = new Vector2[timingRect.Length];
-
-        for (int i = 0; i < timingRect.Length; i++)
+        
+        for(int i = 0; i < timingRect.Length; i++)
         {
             timingBoxs[i].Set(Center.localPosition.y - timingRect[i].rect.height / 2
                 , Center.localPosition.y + timingRect[i].rect.height / 2);
@@ -54,19 +54,18 @@ public class TimingManager : MonoBehaviour
     }
 
 
-
+   
 
 
     public void CheckTiming()
     {
+        
 
-
-        for (int i = 0; i < timingBoxs.Length; i++)
+        for(int i = 0; i< timingBoxs.Length; i++)
         {
             float _posY = transform.localPosition.y;
 
-            if (_posY <= timingBoxs[i].y && _posY >= timingBoxs[i].x)
-            {
+            if(_posY <= timingBoxs[i].y && _posY >= timingBoxs[i].x ){
                 num++;
                 Debug.Log("HIt");
 
@@ -74,109 +73,105 @@ public class TimingManager : MonoBehaviour
 
                 Random rD = new Random();
 
+               
 
-
-                if (num == 1)
-                {
-
+                if(num == 1) { 
+                
                     drawNum += rD.rDraw;
                     OnDraw();
                 }
-                if (num > 1)
+                if(num > 1)
                 {
                     drawNum += rD.rDraw;
-
+                   
                     OnDraw();
-
+                    
                     reStart = true;
 
                     boly = false;
-
+                    
                     _character.boly(boly);
                 }
                 return;
-            }
+        }
 
         }
 
-        _ppo.dro0();
+       _ppo.dro0();
 
         num++;
         Debug.Log("MISS");
-        if (num > 1)
-        {
-            boly = false;
-            _character.boly(boly);
-
-            OnDraw();
-            reStart = true;
-
+        if(num > 1)
+                {
+                     boly = false;
+                    _character.boly(boly);
+                    
+                    OnDraw();
+             reStart = true;
+           
+                }   
+        
         }
 
-    }
-
-
-
+   
+    
     public void OnDraw()
     {
 
-        if (num > 1)
-        {
+        if (num > 1) { 
 
             Random rD = new Random();
 
             int dD = rD.rNum;
 
-            if (drawNum != 0)
-            {
+        if(drawNum != 0) { 
 
-                Debug.Log(dD);
-
-                if (drawNum >= dD)
-                {
-                    uIManager.Success();
-
-
-                }
-                else
-                {
-
+    Debug.Log(dD);        
+            
+                    if(drawNum >= dD)
+                    {
+                        uIManager.Success();
+                        
+                      
+                    }
+                else { 
+                    
                     uIManager.Fail();
+                    
+                        
+                    }
 
-
-                }
-
-
-            }
-            else
-            {
-                uIManager.Fail();
-                Debug.Log("FAil");
-
-            }
+    
         }
+        else
+        {
+                uIManager.Fail();
+            Debug.Log("FAil");
+               
+        }
+    }
     }
 
     private void Update()
     {
-
+        
 
         if (reStart)
         {
             Debug.Log(drawNum);
 
-
+            
 
             drawNum = 0;
 
             num = 0;
 
             reStart = false;
-
+          
         }
 
-
-
-
+         
+     
+        
     }
 }

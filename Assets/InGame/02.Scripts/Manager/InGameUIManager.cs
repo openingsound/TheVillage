@@ -9,28 +9,17 @@ public class InGameUIManager : MonoBehaviour
 
     /* 땅 클릭 시 UI표시 */
 
-    // 링 이미지 오브젝트
-    //public Image ring;
-
-    public GameObject buildTargetUI;
-
-    public GameObject buildUI;
-
-    public GameObject treeUI;
-
-    public GameObject fieldUI;
+    // 타겟 표시 UI 오브젝트
+    public GameObject TargetUI;
+    
 
     /// <summary>
     /// UI 활성화 상태 비트 플래그
     /// 1 : 상점 / 2 : 건설 / 4 : 나무 / 8 : 밭
     /// </summary>
-    public static int UICheck;
+    public enum UI_BitFlag : int { NONE = 0, TREE = 1, FIELD = 2, BUILD = 4, SHOP = 8, AUCTION = 16 };
 
-    //[System.Flags]
-    public enum UI_BitFlag : byte { NONE = 0, SHOP = 1, BUILD = 2, TREE = 4, FIELD = 8 };
-
-    // UI의 전체적인 활성화가 필요한가
-    public static bool isUI { get; private set; }
+    public static UI_BitFlag UICheck;
 
     /*  Shop, Build UI관리 GameManager */
     public GameManager gameManager;
@@ -39,7 +28,7 @@ public class InGameUIManager : MonoBehaviour
 
     private void Awake()
     {
-        //UImanager = this;
+        
     }
 
     // Start is called before the first frame update
@@ -48,15 +37,13 @@ public class InGameUIManager : MonoBehaviour
         // UI 활성화 상태 비트 플래그 
         UICheck = (int) UI_BitFlag.NONE;
 
-        isUI = false;
-
-        VisualizedUI();
-
-        buildTargetUI.SetActive(false);
-
-        buildTargetUI.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
+        // 타겟 표시 UI 비활성화 및 크기를 그리드 셀 크기에 맞게 조절
+        TargetUI.SetActive(false);
+        TargetUI.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
 
     }
+
+    /*
 
     private void LateUpdate()
     {
@@ -70,6 +57,8 @@ public class InGameUIManager : MonoBehaviour
         VisualizedUI();
     }
 
+
+    
 
     /// <summary>
     /// 입력을 감지하여 ui의 활성화 여부 결정
@@ -297,4 +286,5 @@ public class InGameUIManager : MonoBehaviour
     {
         OnClickExit();
     }
+    */
 }

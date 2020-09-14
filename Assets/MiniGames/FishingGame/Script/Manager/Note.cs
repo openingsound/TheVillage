@@ -12,6 +12,14 @@ public class Note : MonoBehaviour
 
     public GameObject _target;
 
+    public Vector3 notePos;
+
+
+    private void Awake()
+    {
+        notePos = _note.transform.localPosition;
+    }
+
     private void Update()
     {
        
@@ -49,7 +57,7 @@ public class Note : MonoBehaviour
         if (collision.CompareTag("Note"))
         {
 
-           _note.transform.position = _target.transform.position;
+            _note.transform.localPosition = notePos;
             a = 0;
             
         }

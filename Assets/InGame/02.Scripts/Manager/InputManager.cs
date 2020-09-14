@@ -98,7 +98,7 @@ public class InputManager : MonoBehaviour
 
     private void CheckInput()
     {
-        if(InGameUIManager.UICheck == (int)InGameUIManager.UI_BitFlag.SHOP)
+        if(InGameUIManager.UICheck == InGameUIManager.UI_BitFlag.SHOP)
         {
             if(nowState != InputState.NULL)
             {
