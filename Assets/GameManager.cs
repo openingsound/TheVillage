@@ -25,8 +25,9 @@ public class Item
     public int Cost;
     public int Cycle;
     public int num;
+    public int Exp;
     public Sprite image;
-    public Item(string type, string name, string tree, string land, string levelst, string isUsing, string cycle)
+    public Item(string type, string name, string tree, string land, string levelst, string isUsing, string cycle,int exp)
     {
         Type = type;
         Name = name;
@@ -35,6 +36,7 @@ public class Item
         Levelst = levelst;
         IsUisng = isUsing;
         SCycle = cycle;
+        Exp = exp;
     }
 }
 public class GameManager : MonoBehaviour
@@ -43,11 +45,14 @@ public class GameManager : MonoBehaviour
     public TextAsset Pre_Cost;
     public TextAsset Now_Cost;
     public TextAsset Item_Amount;
+    public TextAsset MoneyAndExp;
     public List<Item> AllItemList, MyItemList, CurItemList, BuildList, SellList;
     public List<int> PrePrice, NowPrice, ItemAmount;//지금 가지고 있는 총 량
+    public List<int> Explist;
     public List<int> SellAmount;//현재 팔 양
+    public List<int> MoneyAndExpList;
 
-    string filePath;
+    string filePath, filePath_MnE, filePath_pre, filePath_Amount;
     public GameObject Shop;
     public GameObject[] ShopSlot;
     public GameObject[] BuildSlot;
@@ -58,21 +63,21 @@ public class GameManager : MonoBehaviour
     public GameObject BuildPopUp;
     public GameObject AutionPopup;
     public GameObject SellPop;
+    public GameObject NoMoneyPop;
     public Text ExplainBox, Build_ExplainBox, Auction_ExplainBox;
-    int UserMoney, UserExp, UserLevel;
+    public int UserMoney, UserExp, UserLevel;
     public Text Money_t, Exp_t, Level_t;
-
+    public Image Exp_Fill;
 
     void Start()
     {
-        Read_sta();
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
         //엑셀로 하면 매 줄마다 '\n'이 들어가 있음
         for (int i = 0; i < line.Length; i++)
         {
             string[] row = line[i].Split('\t');
             //tab으로 나눔
-            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
+            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4], row[5], row[6], System.Convert.ToInt32(row[7])));
         }
         int n = 0;
         foreach (Item x in AllItemList)
@@ -86,6 +91,10 @@ public class GameManager : MonoBehaviour
             x.num = n++;
         }
         filePath = Application.persistentDataPath + "/MyItemText.txt";
+        filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
+        filePath_pre = Application.persistentDataPath + "/PreCost.txt";
+        filePath_Amount = Application.persistentDataPath + "/NowCost.txt";
+        print(filePath);
         ShopUpdate();
 
         line = Pre_Cost.text.Substring(0, Pre_Cost.text.Length - 1).Split('\n');
@@ -111,35 +120,48 @@ public class GameManager : MonoBehaviour
             ItemAmount.Add(System.Convert.ToInt32(row[0]));
             SellAmount.Add(0);
         }
-
-
+        line = MoneyAndExp.text.Substring(0, MoneyAndExp.text.Length - 1).Split('\n');
+        for (int i = 0; i < line.Length; i++)
+        {
+            string[] row = line[i].Split('\t');
+            //tab으로 나눔
+            MoneyAndExpList.Add(System.Convert.ToInt32(row[0]));
+        }
+        Load();
+        Read_sta();
+        ShopUpdate();
+        SellUpdate();
+       
+        //Save();
+        //print(filePath);
 
     }
 
     void Read_sta()
     {
         //정보들 파일에서 읽기
-        UserMoney = 2000;
-        UserExp = 100;
-        UserLevel = 4;
-
-        Exp_t.text = System.Convert.ToString(UserExp);
-        Level_t.text = System.Convert.ToString(UserLevel);
+        UserMoney = MoneyAndExpList[0];
+        UserExp = MoneyAndExpList[1];
+        setLevel(MoneyAndExpList[1]);
         Money_t.text = System.Convert.ToString(UserMoney);
     }
+
+ 
 
     void Write_sta(int money, int exp)
     {
         UserMoney += money;
         UserExp += exp;
         //정보들 파일에 쓰기
-        Exp_t.text = System.Convert.ToString(UserExp);
-        Level_t.text = System.Convert.ToString(UserLevel);
-        Money_t.text = System.Convert.ToString(UserMoney);
+        MoneyAndExpList[0] = UserMoney;
+        MoneyAndExpList[1] = UserExp;
+        Save();
+        Read_sta();
     }
 
     public void ChangePrice()
     {
+        //날이 바뀌거나 날이 바뀌고 입장하면 업데이트
         for (int i = 0; i < PrePrice.Count; i++)
         {
             PrePrice[i] = NowPrice[i];
@@ -159,13 +181,13 @@ public class GameManager : MonoBehaviour
             ShopSlot[i].GetComponentInChildren<Text>().text = i < CurItemList.Count ? CurItemList[i].Name : "";
             Transform sun = ShopSlot[i].transform.GetChild(0);
             sun.GetChild(0).GetComponentInChildren<Image>().sprite = ImageSlot[CurItemList[i].num];
-            sun.GetChild(3).GetComponentInChildren<Text>().text = i < CurItemList.Count ? System.Convert.ToString(CurItemList[i].Cost) + "원" : "";
+            sun.GetChild(3).GetComponentInChildren<Text>().text = i < CurItemList.Count ? System.Convert.ToString(CurItemList[i].Cost * 10) + "원" : "";
         }
         for (int i = 0; i < BuildList.Count; i++)
         {
             BuildSlot[i].SetActive(true);
             BuildSlot[i].transform.GetChild(0).GetComponentInChildren<Text>().text = BuildList[i].Name;//이름
-            BuildSlot[i].transform.GetChild(1).GetComponentInChildren<Text>().text = System.Convert.ToString(BuildList[i].Cost) + "원";
+            BuildSlot[i].transform.GetChild(1).GetComponentInChildren<Text>().text = System.Convert.ToString(BuildList[i].Cost*3) + "원";
             BuildSlot[i].transform.GetChild(3).GetComponentInChildren<Text>().text = "  " + System.Convert.ToString(BuildList[i].Cycle / 60) + "시간 " + (BuildList[i].Cycle % 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle % 60) + "분");
             BuildSlot[i].transform.GetChild(2).GetComponentInChildren<Text>().text = "  " + System.Convert.ToString((BuildList[i].Cycle * 3) / 60) + "시간 " + ((BuildList[i].Cycle * 3) % 60 == 0 ? "" : System.Convert.ToString(BuildList[i].Cycle * 3 % 60) + "분");
             BuildSlot[i].transform.GetChild(5).GetComponentInChildren<Image>().sprite = ImageSlot[BuildList[i].num];
@@ -259,15 +281,16 @@ public class GameManager : MonoBehaviour
         curShopSlotNum = ShopSlotNum;
         Item CurItem = CurItemList[ShopSlotNum];
         ShopPop.SetActive(true);
-        ExplainBox.text = "<b>" + CurItem.Name + "을(를) " + CurItem.Cost + "원에 구매 하시겠습니까? </b>";
+        ExplainBox.text = "<b>" + CurItem.Name + "을(를) " + CurItem.Cost*10 + "원에 구매 하시겠습니까? </b>";
 
     }
-    public void Build_SlotClick(int BuildSlotNum)
+    public int curBuildSlotNum = 0;
+    public void Build_SlotClick(int BuildSlotNum)//건설 구매창 띄우기
     {
+        curBuildSlotNum = BuildSlotNum;
         Item CurItem = BuildList[BuildSlotNum];
         BuildPopUp.SetActive(true);
-        Build_ExplainBox.text = "<b>" + CurItem.Name + "을(를) " + CurItem.Cost + "원에 건설 하시겠습니까? </b>";
-
+        Build_ExplainBox.text = "<b>" + CurItem.Name + "을(를) " + CurItem.Cost*3 + "원에 건설 하시겠습니까? </b>";
     }
     int NowSellNum = 0;
     public void Aution_SlotClick(int AuctionSlotNum)
@@ -277,13 +300,11 @@ public class GameManager : MonoBehaviour
         int itemp = NowPrice[CurItem.num];
         AutionPopup.SetActive(true);
         Auction_ExplainBox.text = CurItem.Name + "을(를) " + "개당 " + itemp + "원에 판매 하시겠습니까?(총 " + itemp * SellAmount[CurItem.num] + "원)";
-
     }
     public void AutionPopup_Sell()
     {
         NowSellNum = BuildList[NowSellNum].num;
-
-        //itemp * SellAmount[NowSellNum]만큼 돈 증가 
+        Write_sta(NowPrice[NowSellNum] * SellAmount[NowSellNum], 0);
 
         //SellAmount[CurItem.num] 만큼 ItemAmount[NowSellNum]에서 아이템 감소
         ItemAmount[NowSellNum] -= SellAmount[NowSellNum];
@@ -292,7 +313,10 @@ public class GameManager : MonoBehaviour
         {
             SellAmount[i] = 0;
         }
+        Save();
+        Load();
         SellUpdate();
+       
         AutionPopup.SetActive(false);
     }
     public void AutionPopup_Close()
@@ -300,11 +324,19 @@ public class GameManager : MonoBehaviour
         AutionPopup.SetActive(false);
 
     }
-    public void BuildPopup_Build()
+    public void BuildPopup_Build()//딱 건설을 하는 버튼
     {
-        //건설 행동 추가
-        //돈 빠져나가기
-        //건설 하기
+        string CurItemName = BuildList[curBuildSlotNum].Name;
+        Item CurItem = AllItemList.Find(x => x.Name == CurItemName);
+        if (UserMoney >= CurItem.Cost*3)
+        {
+            Write_sta(-CurItem.Cost*3, 0);
+            //건설 하기
+        }
+        else
+        {
+            NomoneyOpen();
+        }
         BuildPopUp.SetActive(false);
 
     }
@@ -321,10 +353,20 @@ public class GameManager : MonoBehaviour
     {
         string CurItemName = CurItemList[curShopSlotNum].Name;
         Item CurItem = AllItemList.Find(x => x.Name == CurItemName);
-        CurItem.Using = 1;
+        
         ShopPop.SetActive(false);
-        Write_sta(-CurItem.Cost, 0);
+        if (UserMoney >= CurItem.Cost*10)
+        {
+            Write_sta(-CurItem.Cost*10, 0);
+            CurItem.Using = 1;
+            //구매 하기
+        }
+        else
+        {
+            NomoneyOpen();
+        }
         ShopUpdate();
+        Save();
     }
     public void CloseShopPop()
     {
@@ -345,37 +387,53 @@ public class GameManager : MonoBehaviour
         {
             SellAmount[i] = 0;
         }
-        print("good1");
         SellUpdate();
-        print("good2");
         SellPop.SetActive(true);
-        print("good3");
     }
     public void CloseSellPop()
     {
         SellUpdate();
         SellPop.SetActive(false);
     }
+    void NomoneyOpen() {
+        NoMoneyPop.SetActive(true);
+    }
+    public void NoMoneyClose()
+    {
+        print("끄기");
+        NoMoneyPop.SetActive(false);
+    }
+
+
+
     void Load()
     {
-        if (!File.Exists(filePath)) { ResetItemClick(); return; }
+        if (!File.Exists(filePath)) { ResetItemClick(); }
         string jdata = File.ReadAllText(filePath);
-        MyItemList = JsonUtility.FromJson<Serialization<Item>>(jdata).target;
+        AllItemList = JsonUtility.FromJson<Serialization<Item>>(jdata).target;
+        jdata = File.ReadAllText(filePath_MnE);
+        MoneyAndExpList = JsonUtility.FromJson<Serialization<int>>(jdata).target;
+        jdata = File.ReadAllText(filePath_pre);
+        PrePrice = JsonUtility.FromJson<Serialization<int>>(jdata).target;
+        jdata = File.ReadAllText(filePath_Amount);
+        ItemAmount = JsonUtility.FromJson<Serialization<int>>(jdata).target;
+        print(filePath);
     }
     void Save()
     {
-        MyItemList.Add(AllItemList[0]);
-        MyItemList.Add(AllItemList[1]);
-        string jdata = JsonUtility.ToJson(new Serialization<Item>(MyItemList));
+        print("저장");
+        string jdata = JsonUtility.ToJson(new Serialization<Item>(AllItemList));
         File.WriteAllText(filePath, jdata);
-
+        jdata = JsonUtility.ToJson(new Serialization<int>(MoneyAndExpList));
+        File.WriteAllText(filePath_MnE, jdata);
+        jdata = JsonUtility.ToJson(new Serialization<int>(PrePrice));
+        File.WriteAllText(filePath_pre, jdata);
+        jdata = JsonUtility.ToJson(new Serialization<int>(ItemAmount));
+        File.WriteAllText(filePath_Amount, jdata);
     }
     public void ResetItemClick()
     {
-        Item BasicItem = AllItemList.Find(x => x.Name == "Apple");
-        MyItemList = new List<Item>() { BasicItem };
         Save();
-        Load();
     }
     public void shopin()
     {
@@ -384,5 +442,30 @@ public class GameManager : MonoBehaviour
     public void shopout()
     {
         Shop.SetActive(false);
+    }
+
+    void setLevel(int exp)
+    {
+        for(int i = 1; i <= 10; i++)
+        {
+            if (exp < Explist[i])
+            {
+                Level_t.text = System.Convert.ToString(i);
+                Exp_t.text = System.Convert.ToString(exp);
+                Exp_Fill.fillAmount = (float)exp / (float)Explist[i];
+                UserLevel = i;
+                print("Level : " + UserLevel);
+                break;
+            }
+            else
+            {
+                exp -= Explist[i];
+            }
+        }
+
+        if(UserLevel == 10)
+        {
+            Exp_Fill.fillAmount = 1;
+        }
     }
 }
