@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
 {
@@ -63,6 +64,10 @@ public class InputManager : MonoBehaviour
     // 멀티 터치 시 이전 입력 간 거리
     private float m_lastTouchLenth = 0;
 
+
+    // 옵션 창 오브젝트
+    public GameObject optionUI;
+
     private void Awake()
     {
         // Scene에 이미 InputSystem 싱글톤이 존재하는지 검사함
@@ -98,7 +103,8 @@ public class InputManager : MonoBehaviour
 
     private void CheckInput()
     {
-        if(InGameUIManager.UICheck == InGameUIManager.UI_BitFlag.SHOP)
+        if(InGameUIManager.UICheck >= InGameUIManager.UI_BitFlag.SHOP 
+            || optionUI.activeInHierarchy == true)
         {
             if(nowState != InputState.NULL)
             {
@@ -115,6 +121,12 @@ public class InputManager : MonoBehaviour
         // 마우스가 누르기 시작하면
         if (Input.GetMouseButtonDown(0))
         {
+            // 현재 마우스가 UI 위에 있으면 입력값을 받지 않음
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                Debug.Log("Pointer is on UI");
+                return;
+            }
 
             // 시작점은 현재 마우스 클릭을 시작한 위치로 함
             StartPos = Input.mousePosition;
@@ -132,6 +144,13 @@ public class InputManager : MonoBehaviour
         // 마우스 클릭을 뗀다면
         else if (Input.GetMouseButtonUp(0))
         {
+            // 현재 마우스가 UI 위에 있으면 입력값을 받지 않음
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                Debug.Log("Pointer is on UI");
+                return;
+            }
+
             // 만일 현재 상태가 클릭상태였다면
             if (nowState == InputState.CLICK)
             {
@@ -176,6 +195,13 @@ public class InputManager : MonoBehaviour
         // 마우스가 눌리고 있다면
         else if (Input.GetMouseButton(0))
         {
+
+            // 현재 마우스가 UI 위에 있으면 입력값을 받지 않음
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                Debug.Log("Pointer is on UI");
+                return;
+            }
 
             // 끝점은 현재 마우스가 있는 위치로 함
             EndPos = Input.mousePosition;
@@ -374,7 +400,7 @@ public class InputManager : MonoBehaviour
         RaycastHit hit;
 
         // Ray가 100거리 내에 물체에 부딪힌다면
-        if (Physics.Raycast(ray, out hit, 100.0f))
+        if (Physics.Raycast(ray, out hit))
         {
             return hit;
         }

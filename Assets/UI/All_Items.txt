@@ -1,28 +1,28 @@
-Crop	사과	Tree	잔디	1	0	120
-Crop	감자	Ground	밭	1	0	120
-Crop	밀	Ground	밭	1	0	120
-Crop	당근	Ground	밭	1	0	140
-Crop	양파	Ground	밭	1	0	140
-Crop	양배추	Ground	밭	1	0	160
-Crop	오이	SM_Prop_Plant_Bush_01	밭	2	0	180
-Crop	딸기	SM_Prop_Plant_Bush_03	잔디	2	0	180
-Crop	가지	SM_Prop_Plant_Bush_02	밭	2	0	210
-Crop	양상추	Ground	밭	2	0	210
-Crop	바나나	SM_Prop_Plant_Corn_01	밭	2	0	240
-Crop	오렌지	Tree	잔디	2	0	240
-Crop	강낭콩	SM_Prop_Plant_Bush_01	밭	3	0	240
-Crop	비트	Ground	밭	3	0	240
-Crop	브로콜리	Ground	밭	3	0	240
-Crop	토마토	SM_Prop_Plant_Bush_02	잔디	3	0	300
-Crop	체리	Tree	잔디	3	0	330
-Crop	옥수수	Ground	밭	3	0	420
-Crop	배	Tree	잔디	4	0	420
-Crop	레몬	Tree	잔디	4	0	450
-Crop	복숭아	Tree	잔디	4	0	480
-Crop	호박	Ground	밭	4	0	510
-Crop	살구	Tree	잔디	4	0	540
-Crop	칠리	SM_Prop_Plant_Bush_03	밭	5	0	600
-Crop	자두	Tree	잔디	5	0	600
-Crop	수박	Ground	밭	5	0	600
-Crop	아스파라거스	Ground	밭	5	0	720
-Crop	후추	SM_Prop_Plant_Bush_01	밭	5	0	720
+Crop	사과	Tree	잔디	1	0	120	Apple
+Crop	감자	Ground	밭	1	0	120	Potato
+Crop	밀	Ground	밭	1	0	120	Wheat
+Crop	당근	Ground	밭	1	0	140	Carrot
+Crop	양파	Ground	밭	1	0	140	Onion
+Crop	양배추	Ground	밭	1	0	160	Cabbage
+Crop	오이	SM_Prop_Plant_Bush_01	밭	2	0	180	Cucumber
+Crop	딸기	SM_Prop_Plant_Bush_03	잔디	2	0	180	Strawberry
+Crop	가지	SM_Prop_Plant_Bush_02	밭	2	0	210	Eggplant
+Crop	양상추	Ground	밭	2	0	210	Lettuce
+Crop	바나나	SM_Prop_Plant_Corn_01	밭	2	0	240	Banana
+Crop	오렌지	Tree	잔디	2	0	240	Orange
+Crop	강낭콩	SM_Prop_Plant_Bush_01	밭	3	0	240	Been
+Crop	비트	Ground	밭	3	0	240	Beetroot
+Crop	브로콜리	Ground	밭	3	0	240	Broccoli
+Crop	토마토	SM_Prop_Plant_Bush_02	잔디	3	0	300	Tomato
+Crop	체리	Tree	잔디	3	0	330	Cherry
+Crop	옥수수	Ground	밭	3	0	420	Corn
+Crop	배	Tree	잔디	4	0	420	Pear
+Crop	레몬	Tree	잔디	4	0	450	Lemon
+Crop	복숭아	Tree	잔디	4	0	480	Peach
+Crop	호박	Ground	밭	4	0	510	Pumpkin
+Crop	살구	Tree	잔디	4	0	540	Apricot
+Crop	칠리	SM_Prop_Plant_Bush_03	밭	5	0	600	Chili
+Crop	자두	Tree	잔디	5	0	600	Plum
+Crop	수박	Ground	밭	5	0	600	Watermelon
+Crop	아스파라거스	Ground	밭	5	0	720	Asparagus
+Crop	후추	SM_Prop_Plant_Bush_01	밭	5	0	720	Pepper

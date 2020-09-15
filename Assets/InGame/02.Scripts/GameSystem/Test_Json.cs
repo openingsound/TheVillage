@@ -118,7 +118,7 @@ public class Test_Json : MonoBehaviour
         if (player == null)
         {
             // 저장하지 않음
-            Debug.LogError("Error - Json ) 플레이어 정보 오브젝트가 생성되지 않았습니다! 기본 플레이어 정보 생성 중...");
+            Debug.Log("Error - Json ) 플레이어 정보 오브젝트가 생성되지 않았습니다! 기본 플레이어 정보 생성 중...");
             player = new PlayerInfo("ADSF"); 
         }
         

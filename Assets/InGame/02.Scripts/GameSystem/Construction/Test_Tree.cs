@@ -7,18 +7,18 @@ public class Test_Tree : MonoBehaviour
     [Header(" - 그리드 시스템")]
     public GridMap gridSystem;
 
-    [Header(" - 나무 오브젝트")]
-    public Plants_DB.Fruit selectedFruit;
+    //[Header(" - 나무 오브젝트")]
+    //public Plants_DB.Fruit selectedFruit;
 
-    [Header(" - 밭 오브젝트")]
-    public Plants_DB.Crop selectedCrop;
+    //[Header(" - 밭 오브젝트")]
+    //public Plants_DB.Crop selectedCrop;
 
 
 
     /// <summary>
     /// 나무 건설하는 함수
     /// </summary>
-    public void OnClickPlanting()
+    public void OnClickPlanting(Plants_DB.Fruit selectedFruit, int growtime)
     {
         GridTile newGridTile = new GridTile("Tree", selectedFruit.ToString(), (int)selectedFruit, 1, false, Object_Tree.TreeState.Bush.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
         
@@ -28,16 +28,7 @@ public class Test_Tree : MonoBehaviour
         GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, InputManager.InputSystem.TargetPos, Quaternion.identity);
         Object_Tree tree = newTree.GetComponent<Object_Tree>();
 
-        switch (selectedFruit)
-        {
-            case Plants_DB.Fruit.Apple:
-                tree.InitTree(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
-                break;
-
-            default:
-                tree.InitTree(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
-                break;
-        }
+        tree.InitTree(selectedFruit.ToString(), growtime * 2, growtime, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
 
         newTree.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
 
@@ -75,7 +66,7 @@ public class Test_Tree : MonoBehaviour
     /// <summary>
     /// 밭을 제작하는 함수
     /// </summary>
-    public void OnClickPlowing()
+    public void OnClickPlowing(Plants_DB.Crop selectedCrop, int growtime)
     {
         GridTile newGridTile = new GridTile( "Field", selectedCrop.ToString(), (int)selectedCrop, 1, false, Object_Field.FieldState.Plow.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
 
@@ -85,16 +76,7 @@ public class Test_Tree : MonoBehaviour
         GameObject newField = Instantiate(Plants_DB.PlantDB.Field, InputManager.InputSystem.TargetPos, Quaternion.identity);
         Object_Field field = newField.GetComponent<Object_Field>();
 
-        switch(selectedCrop)
-        {
-            case Plants_DB.Crop.Watermelon:
-                field.InitField(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
-                break;
-
-            default:
-                field.InitField(selectedCrop.ToString(), 10f, 10f, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
-                break;
-        }
+        field.InitField(selectedCrop.ToString(), growtime * 2, growtime, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
 
         newField.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f);
 
