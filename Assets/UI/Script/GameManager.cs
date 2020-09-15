@@ -19,7 +19,7 @@ public class Serialization<T>
 [System.Serializable]
 public class Item
 {
-    public string Type, Name, Tree, Land, Levelst, IsUisng, SCycle, EngName;
+    public string Type, Name, Tree, Land, Levelst, IsUsing, SCycle, EngName;
     public int level;
     public int Using;
     public int Cost;
@@ -33,10 +33,24 @@ public class Item
         Tree = tree;
         Land = land;
         Levelst = levelst;
-        IsUisng = isUsing;
+        IsUsing = isUsing;
         SCycle = cycle;
 
         EngName = engName;
+    }
+
+    public override string ToString()
+    {
+        string str = "";
+        str += "Type : " + Type + " / ";
+        str += "Name : " + Name + " / ";
+        str += "Land : " + Land + " / ";
+        str += "Level : " + Levelst + " / ";
+        str += "isUsing : " + IsUsing + " / ";
+        str += "SCycle : " + SCycle + " / ";
+        str += "English_Name : " + EngName;
+
+        return str;
     }
 }
 public class GameManager : MonoBehaviour
@@ -83,7 +97,7 @@ public class GameManager : MonoBehaviour
         {
             //print(x.Name+"  : "+ x.Levelst);
             x.level = System.Convert.ToInt32(x.Levelst);
-            x.Using = System.Convert.ToInt32(x.IsUisng);
+            x.Using = System.Convert.ToInt32(x.IsUsing);
             x.Cycle = System.Convert.ToInt32(x.SCycle);
             x.Cost = x.level * 10 + x.Cycle / 10;
             x.image = ImageSlot[n];
@@ -313,6 +327,7 @@ public class GameManager : MonoBehaviour
     public void BuildPopup_Build()
     {
         //건설 행동 추가
+        Debug.Log("Selected Item - " + _selectedItem.ToString());
         InGameManager.inGameManager.Build(_selectedItem);
 
         //돈 빠져나가기

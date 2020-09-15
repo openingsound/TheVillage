@@ -18,9 +18,9 @@ public class Test_Tree : MonoBehaviour
     /// <summary>
     /// 나무 건설하는 함수
     /// </summary>
-    public void OnClickPlanting(Plants_DB.Fruit selectedFruit, int growtime)
+    public void OnClickPlanting(int selectedFruit, float growtime)
     {
-        GridTile newGridTile = new GridTile("Tree", selectedFruit.ToString(), (int)selectedFruit, 1, false, Object_Tree.TreeState.Bush.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile("Tree", selectedFruit.ToString(), selectedFruit, 1, false, Object_Tree.TreeState.Bush.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
         
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
@@ -33,7 +33,7 @@ public class Test_Tree : MonoBehaviour
         newTree.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
 
         // 새 나무 초기화
-        tree.Planting(Plants_DB.PlantDB.OwnTrees[(int) selectedFruit], Plants_DB.PlantDB.Fruits[(int)selectedFruit], Plants_DB.PlantDB.FruitBoxes[(int)selectedFruit]);
+        tree.Planting(Plants_DB.PlantDB.OwnTrees[selectedFruit], Plants_DB.PlantDB.Fruits[selectedFruit], Plants_DB.PlantDB.FruitBoxes[selectedFruit]);
 
 
         //InGameUIManager.OnClickExit();
@@ -66,9 +66,9 @@ public class Test_Tree : MonoBehaviour
     /// <summary>
     /// 밭을 제작하는 함수
     /// </summary>
-    public void OnClickPlowing(Plants_DB.Crop selectedCrop, int growtime)
+    public void OnClickPlowing(int selectedCrop, float growtime)
     {
-        GridTile newGridTile = new GridTile( "Field", selectedCrop.ToString(), (int)selectedCrop, 1, false, Object_Field.FieldState.Plow.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile( "Field", selectedCrop.ToString(), selectedCrop, 1, false, Object_Field.FieldState.Plow.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
 
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
@@ -81,7 +81,7 @@ public class Test_Tree : MonoBehaviour
         newField.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f);
 
         // 새 밭 초기화
-        field.Plowing(Plants_DB.PlantDB.OwnBushes[(int) selectedCrop], Plants_DB.PlantDB.Crops[(int)selectedCrop], Plants_DB.PlantDB.CropBoxes[(int)selectedCrop]);
+        field.Plowing(Plants_DB.PlantDB.OwnBushes[selectedCrop], Plants_DB.PlantDB.Crops[selectedCrop], Plants_DB.PlantDB.CropBoxes[selectedCrop]);
 
 
         //InGameUIManager.OnClickExit();

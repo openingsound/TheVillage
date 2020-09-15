@@ -40,7 +40,9 @@ public class Test_Json : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        savePath = Application.dataPath; ;
+        savePath = Application.dataPath;
+
+        OnLoadJson();
     }
 
 

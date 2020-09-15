@@ -17,21 +17,24 @@ public class TimeManager : MonoBehaviour
     {
         _gameOver.SetActive(false);
     }
-    void Update () {
+    void Update()
+    {
 
-if(done>0F){
+        if (done > 0F)
+        {
 
-done-=Time.deltaTime; //시간 -1
+            done -= Time.deltaTime; //시간 -1
 
-_time.text = ""+done;
+            _time.text = "" + (int)done;
 
-}
+        }
 
-else{
+        else
+        {
 
-_gameOver.SetActive(true);
+            _gameOver.SetActive(true);
 
-}
+        }
 
 
 
