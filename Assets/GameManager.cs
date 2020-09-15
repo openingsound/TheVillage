@@ -19,7 +19,7 @@ public class Serialization<T>
 [System.Serializable]
 public class Item
 {
-    public string Type, Name, Tree, Land, Levelst, IsUisng, SCycle;
+    public string Type, Name, Tree, Land, Levelst, IsUisng, SCycle,EName;
     public int level;
     public int Using;
     public int Cost;
@@ -27,7 +27,7 @@ public class Item
     public int num;
     public int Exp;
     public Sprite image;
-    public Item(string type, string name, string tree, string land, string levelst, string isUsing, string cycle,int exp)
+    public Item(string type, string name, string tree, string land, string levelst, string isUsing, string cycle,int exp,string ename)
     {
         Type = type;
         Name = name;
@@ -37,6 +37,7 @@ public class Item
         IsUisng = isUsing;
         SCycle = cycle;
         Exp = exp;
+        EName = ename;
     }
 }
 public class GameManager : MonoBehaviour
@@ -64,6 +65,9 @@ public class GameManager : MonoBehaviour
     public GameObject AutionPopup;
     public GameObject SellPop;
     public GameObject NoMoneyPop;
+    public GameObject UpgradeAndDel;
+    public GameObject UpgradeAndDelPanel;
+    public GameObject PannelArrow;
     public Text ExplainBox, Build_ExplainBox, Auction_ExplainBox;
     public int UserMoney, UserExp, UserLevel;
     public Text Money_t, Exp_t, Level_t;
@@ -77,7 +81,7 @@ public class GameManager : MonoBehaviour
         {
             string[] row = line[i].Split('\t');
             //tab으로 나눔
-            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4], row[5], row[6], System.Convert.ToInt32(row[7])));
+            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4], row[5], row[6], System.Convert.ToInt32(row[7]), row[8]));
         }
         int n = 0;
         foreach (Item x in AllItemList)
@@ -132,10 +136,8 @@ public class GameManager : MonoBehaviour
         Read_sta();
         ShopUpdate();
         SellUpdate();
-       
         //Save();
         //print(filePath);
-
     }
 
     void Read_sta()
@@ -230,6 +232,56 @@ public class GameManager : MonoBehaviour
             }
             SellSlot[i].transform.GetChild(4).GetComponentInChildren<Text>().text = System.Convert.ToString(SellAmount[BuildList[i].num]) + " / " + System.Convert.ToString(ItemAmount[BuildList[i].num]) + " 개";
         }
+    }
+
+    string timetostring(int t)
+    {
+        return System.Convert.ToString(t / 60) + "시간 " + (t % 60 == 0 ? "" : System.Convert.ToString(t % 60) + "분");
+    }
+
+    string autohar(int lev)
+    {
+        if (lev <= 2) return "없음";
+        else
+        {
+            return (lev - 2) * 2 + "회";
+        }
+    }
+    int upgradeCost;
+    int DigCost;
+    public void UpgradeUpdate(string name,int NowLevel)
+    {
+
+        Item CurItem = AllItemList.Find(x => x.EName == name);
+        UpgradeAndDel.SetActive(true);
+        int nowcycle = CurItem.Cycle - (CurItem.Cycle / 10) * (NowLevel - 1);
+        int nextcycle = CurItem.Cycle - (CurItem.Cycle / 10) * (NowLevel);
+        upgradeCost = 3 * CurItem.Cost + CurItem.Cost * NowLevel;
+        DigCost = CurItem.Cost * NowLevel;
+        PannelArrow.SetActive(true);
+        if (NowLevel == 5) { //만렙
+            UpgradeAndDelPanel.transform.GetChild(0).GetComponent<Text>().text = "최고 레벨";
+            UpgradeAndDelPanel.transform.GetChild(1).GetComponent<Text>().text = timetostring(nowcycle);
+            UpgradeAndDelPanel.transform.GetChild(2).gameObject.SetActive(false);
+            UpgradeAndDelPanel.transform.GetChild(4).gameObject.SetActive(false);
+            UpgradeAndDelPanel.transform.GetChild(3).GetComponent<Text>().text = autohar(NowLevel);
+            UpgradeAndDelPanel.transform.GetChild(5).GetComponent<Text>().text = "강화가 불가능 합니다";
+            UpgradeAndDelPanel.transform.GetChild(6).GetComponent<Text>().text = DigCost + "원";
+            PannelArrow.SetActive(false);
+        }
+        else
+        {
+            UpgradeAndDelPanel.transform.GetChild(2).gameObject.SetActive(true);
+            UpgradeAndDelPanel.transform.GetChild(4).gameObject.SetActive(true);
+            UpgradeAndDelPanel.transform.GetChild(0).GetComponent<Text>().text = NowLevel + " Level";
+            UpgradeAndDelPanel.transform.GetChild(1).GetComponent<Text>().text = timetostring(nowcycle);
+            UpgradeAndDelPanel.transform.GetChild(2).GetComponent<Text>().text = timetostring(nextcycle);
+            UpgradeAndDelPanel.transform.GetChild(3).GetComponent<Text>().text = autohar(NowLevel);
+            UpgradeAndDelPanel.transform.GetChild(4).GetComponent<Text>().text = autohar(NowLevel+1);
+            UpgradeAndDelPanel.transform.GetChild(5).GetComponent<Text>().text = upgradeCost + "원";
+            UpgradeAndDelPanel.transform.GetChild(6).GetComponent<Text>().text = DigCost + "원";
+        }
+
     }
 
 
@@ -327,10 +379,12 @@ public class GameManager : MonoBehaviour
         AutionPopup.SetActive(false);
 
     }
+
     public void BuildPopup_Build()//딱 건설을 하는 버튼
     {
         string CurItemName = BuildList[curBuildSlotNum].Name;
         Item CurItem = AllItemList.Find(x => x.Name == CurItemName);
+        string EnglishName = BuildList[curBuildSlotNum].EName;
         if (UserMoney >= CurItem.Cost*3)
         {
             Write_sta(-CurItem.Cost*3, 0);
@@ -346,7 +400,6 @@ public class GameManager : MonoBehaviour
     public void BuildPopup_Close()
     {
         BuildPopUp.SetActive(false);
-
     }
     public void BuildClick(int BuildSlotNum)
     {
@@ -405,6 +458,39 @@ public class GameManager : MonoBehaviour
     {
         print("끄기");
         NoMoneyPop.SetActive(false);
+    }
+    public void UpgradeUp()
+    {
+        if (UserMoney >= upgradeCost)
+        {
+            //업그레이드 하는 함수 추가해 주세요!
+            Write_sta(-upgradeCost, 0);
+            Save();
+            UpgradeAndDel.SetActive(false);
+        }
+        else
+        {
+            NomoneyOpen();
+        }
+    }
+    public void UpgradeDig()
+    {
+        //철거하는 함수 추가해주세요!
+        Write_sta(DigCost, 0);
+        Save();
+        UpgradeAndDel.SetActive(false);
+    }
+    public void UpgradeClose()
+    {
+        UpgradeAndDel.SetActive(false);
+    }
+
+    public void harvest(string name,int cou)
+    {
+        Item CurItem = AllItemList.Find(x => x.EName == name);
+        int Itemnum = CurItem.num;
+        ItemAmount[Itemnum] += cou;//인벤토리 수확물 증가
+        Write_sta(0, CurItem.Exp * cou);
     }
 
 
