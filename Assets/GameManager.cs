@@ -259,6 +259,8 @@ public class GameManager : MonoBehaviour
         upgradeCost = 3 * CurItem.Cost + CurItem.Cost * NowLevel;
         DigCost = CurItem.Cost * NowLevel;
         PannelArrow.SetActive(true);
+        UpgradeAndDelPanel.transform.GetChild(7).GetComponent<Text>().text = CurItem.Name;
+        UpgradeAndDelPanel.transform.GetChild(9).GetComponent<Image>().sprite = CurItem.image;
         if (NowLevel == 5) { //만렙
             UpgradeAndDelPanel.transform.GetChild(0).GetComponent<Text>().text = "최고 레벨";
             UpgradeAndDelPanel.transform.GetChild(1).GetComponent<Text>().text = timetostring(nowcycle);
