@@ -31,7 +31,9 @@ public class tapToStart : MonoBehaviour
 
     void Resume()
     {
+        print("good1");
         gameStartCanvas.SetActive(false);
+        print("good2");
         Time.timeScale = 1f;
 
     }
