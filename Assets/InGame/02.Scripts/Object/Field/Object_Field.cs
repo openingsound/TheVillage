@@ -201,7 +201,7 @@ public class Object_Field : BasicObject
 
         // 현재 시각
         string now = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        Debug.Log("Now Time : " + now);
+        //Debug.Log("Now Time : " + now);
 
         // 현재 시각이 상태 종료 시각과 일치하는가
         if(now == stateEndTime)

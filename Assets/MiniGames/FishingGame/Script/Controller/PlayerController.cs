@@ -5,62 +5,61 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-     Note _note;
+    Note _note;
 
     Random rR = new Random();
 
-   TimingManager theTimingManager;
+    TimingManager theTimingManager;
 
-   public GameObject tex;
+    public GameObject tex;
 
     public GameObject button;
 
     Character _character;
-    
+
     bool boly = false;
 
     Button1 _button;
-    
+
     void Start()
     {
         _button = FindObjectOfType<Button1>();
 
         button = GameObject.FindWithTag("Button"); //낚기 버튼
 
-        _note = FindObjectOfType<Note>(); 
+        _note = FindObjectOfType<Note>();
 
         _character = FindObjectOfType<Character>();
 
-         tex = GameObject.FindWithTag("Button1"); //미끼버튼
-      
+        tex = GameObject.FindWithTag("Button1"); //미끼버튼
+
     }
-    
-   public void OnClick()
-    {      
-       
+
+    public void OnClick()
+    {
+
 
         tex.SetActive(false);
 
         _button.ButtonInteractable(boly);  //버튼1 비활성화
 
-            boly = true;
+        boly = true;
 
-            _character.boly(boly); //캐릭터 움직임
-        
-        
+        _character.boly(boly); //캐릭터 움직임
 
-        Invoke("on",rR.rTime);
+
+
+        Invoke("on", rR.rTime);
 
     }
 
-    
+
     void on()
-    {     
-        tex.SetActive(true);   
+    {
+        tex.SetActive(true);
 
-         
 
-         _button.ButtonInteractable(boly);  //버튼1 활성화
+        _button.ButtonInteractable(boly);  //버튼1 활성화
 
         _note.aManager(boly); // 노트의 a값 변경을 위함
 
@@ -68,28 +67,24 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    int n = 0; //버튼 1 비 활성화 정수
+
     public void OnClick1()
     {
-                   
-            theTimingManager = FindObjectOfType<TimingManager>();
+        theTimingManager = FindObjectOfType<TimingManager>();
 
-            theTimingManager.CheckTiming();
-                
-    
+        theTimingManager.CheckTiming();
+
+        n++;
+
+        if (n % 2 == 0)
+        {
+            _button.ButtonInteractable(false);
+        }
     }
 
     void Update()
     {
-       
-              button = GameObject.FindWithTag("Button");
-    
-       
-       
-            }
-  
-    
-
-   
-    
-
+        button = GameObject.FindWithTag("Button");
+    }
 }

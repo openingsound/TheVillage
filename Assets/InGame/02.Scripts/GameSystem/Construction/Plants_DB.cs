@@ -54,6 +54,9 @@ public class Plants_DB : MonoBehaviour
     // 나무 열매 수확물 박스 프리팹
     public GameObject[] FruitBoxes;
 
+    [Header(" - 아이템 데이터베이스")]
+    TextAsset ItemDatabase;
+
     /* 밭, 나무 작물들의 이름, 종류들을 열거한 열거형 */
 
     // 밭 열거형
@@ -62,9 +65,6 @@ public class Plants_DB : MonoBehaviour
 
     // 나무열매 열거형
     public enum Fruit { NULL = -1, Apple, Apricot, Banana, Cherry, Orange };
-
-
-
 
     private void Awake()
     {

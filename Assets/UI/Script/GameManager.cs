@@ -19,22 +19,38 @@ public class Serialization<T>
 [System.Serializable]
 public class Item
 {
-    public string Type, Name, Tree, Land, Levelst, IsUisng, SCycle;
+    public string Type, Name, Tree, Land, Levelst, IsUsing, SCycle, EngName;
     public int level;
     public int Using;
     public int Cost;
     public int Cycle;
     public int num;
     public Sprite image;
-    public Item(string type, string name, string tree, string land, string levelst, string isUsing, string cycle)
+    public Item(string type, string name, string tree, string land, string levelst, string isUsing, string cycle, string engName)
     {
         Type = type;
         Name = name;
         Tree = tree;
         Land = land;
         Levelst = levelst;
-        IsUisng = isUsing;
+        IsUsing = isUsing;
         SCycle = cycle;
+
+        EngName = engName;
+    }
+
+    public override string ToString()
+    {
+        string str = "";
+        str += "Type : " + Type + " / ";
+        str += "Name : " + Name + " / ";
+        str += "Land : " + Land + " / ";
+        str += "Level : " + Levelst + " / ";
+        str += "isUsing : " + IsUsing + " / ";
+        str += "SCycle : " + SCycle + " / ";
+        str += "English_Name : " + EngName;
+
+        return str;
     }
 }
 public class GameManager : MonoBehaviour
@@ -62,6 +78,8 @@ public class GameManager : MonoBehaviour
     int UserMoney, UserExp, UserLevel;
     public Text Money_t, Exp_t, Level_t;
 
+    private Item _selectedItem;
+
 
     void Start()
     {
@@ -72,14 +90,14 @@ public class GameManager : MonoBehaviour
         {
             string[] row = line[i].Split('\t');
             //tab으로 나눔
-            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
+            AllItemList.Add(new Item(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
         }
         int n = 0;
         foreach (Item x in AllItemList)
         {
             //print(x.Name+"  : "+ x.Levelst);
             x.level = System.Convert.ToInt32(x.Levelst);
-            x.Using = System.Convert.ToInt32(x.IsUisng);
+            x.Using = System.Convert.ToInt32(x.IsUsing);
             x.Cycle = System.Convert.ToInt32(x.SCycle);
             x.Cost = x.level * 10 + x.Cycle / 10;
             x.image = ImageSlot[n];
@@ -116,6 +134,7 @@ public class GameManager : MonoBehaviour
 
     }
 
+    [System.Obsolete("There is no script for loading player info!")]
     void Read_sta()
     {
         //정보들 파일에서 읽기
@@ -128,6 +147,7 @@ public class GameManager : MonoBehaviour
         Money_t.text = System.Convert.ToString(UserMoney);
     }
 
+    [System.Obsolete("There is no script for saving player info!")]
     void Write_sta(int money, int exp)
     {
         UserMoney += money;
@@ -264,9 +284,9 @@ public class GameManager : MonoBehaviour
     }
     public void Build_SlotClick(int BuildSlotNum)
     {
-        Item CurItem = BuildList[BuildSlotNum];
+        _selectedItem = BuildList[BuildSlotNum];
         BuildPopUp.SetActive(true);
-        Build_ExplainBox.text = "<b>" + CurItem.Name + "을(를) " + CurItem.Cost + "원에 건설 하시겠습니까? </b>";
+        Build_ExplainBox.text = "<b>" + _selectedItem.Name + "을(를) " + _selectedItem.Cost + "원에 건설 하시겠습니까? </b>";
 
     }
     int NowSellNum = 0;
@@ -279,6 +299,8 @@ public class GameManager : MonoBehaviour
         Auction_ExplainBox.text = CurItem.Name + "을(를) " + "개당 " + itemp + "원에 판매 하시겠습니까?(총 " + itemp * SellAmount[CurItem.num] + "원)";
 
     }
+
+    [System.Obsolete("There is no script for Increasing Money after sell!")]
     public void AutionPopup_Sell()
     {
         NowSellNum = BuildList[NowSellNum].num;
@@ -300,9 +322,14 @@ public class GameManager : MonoBehaviour
         AutionPopup.SetActive(false);
 
     }
+
+    [System.Obsolete("There is no script for Decreasing Money after Build!")]
     public void BuildPopup_Build()
     {
         //건설 행동 추가
+        Debug.Log("Selected Item - " + _selectedItem.ToString());
+        InGameManager.inGameManager.Build(_selectedItem);
+
         //돈 빠져나가기
         //건설 하기
         BuildPopUp.SetActive(false);
