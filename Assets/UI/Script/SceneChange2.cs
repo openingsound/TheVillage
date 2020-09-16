@@ -23,4 +23,9 @@ public class SceneChange2 : MonoBehaviour
     {
         SceneManager.LoadScene("MiniGame2");
     }
+
+    public void toFishing()
+    {
+        SceneManager.LoadScene("fish");
+    }
 }
