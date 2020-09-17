@@ -22,6 +22,6 @@ public class SceneChange1 : MonoBehaviour
 
     public void toGame1()
     {
-        SceneManager.LoadScene("HomeScreen_2");
+        SceneManager.LoadScene("InGame");
     }
 }

@@ -180,6 +180,13 @@ public class Test_Json : MonoBehaviour
 
         Debug.Log("Player Info ) " + player.ToString());
 
+        InGameManager.inGameManager.BackGround[Mathf.Max((player.level - 1), 0)].gameObject.SetActive(true);
+
+        InGameManager.inGameManager.gridSystem.ResizeGrid(2 * player.level + 1);
+
+        if (System.DateTime.Now.Day != System.DateTime.Parse(player.lastConnectTime).Day)
+            InGameManager.inGameManager.ItemGameManager.ChangePrice();
+
         // GridMap은 MonoBehaviour을 상속하는 컴포넌트이므로 별도로 불러온다
         LoadMapJsonFile(savePath, "GridMapJson");
     }

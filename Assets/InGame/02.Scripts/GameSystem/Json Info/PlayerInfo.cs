@@ -17,19 +17,27 @@ public class PlayerInfo
     /// 플레이어의 현재 재화 보유량
     ///</summary>
     private int _money;
+    public int money { get { return _money; } set { _money = value; } }
 
     [SerializeField]
     ///<summary>
     /// 플레이어의 누적 경험치
     ///</summary>
     private int _exp;
+    public int exp { get { return _exp; } set { _exp = value; } }
 
     [SerializeField]
     ///<summary>
     /// 픞레이어의 레벨
     ///</summary>
     private int _level;
-    public int level { get { return _level; } private set { _level = value; } }
+    public int level { get { return _level; }
+        set {
+            InGameManager.inGameManager.BackGround[Mathf.Max((level - 1), 0)].SetActive(false);
+            _level = value;
+            ChangeLevel();
+        }
+    }
 
     /// <summary>
     /// 플레이어의 마지막 접속 시각
@@ -59,5 +67,11 @@ public class PlayerInfo
             + " / exp : " + _exp 
             + " / level : " + _level 
             + " / lastConnectTime : " + lastConnectTime;
+    }
+
+    private void ChangeLevel()
+    {
+        InGameManager.inGameManager.BackGround[(level - 1)].SetActive(true);
+        InGameManager.inGameManager.gridSystem.ResizeGrid(2 * level + 1);
     }
 }

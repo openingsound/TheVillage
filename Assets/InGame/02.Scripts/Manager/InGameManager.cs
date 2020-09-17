@@ -12,12 +12,30 @@ public class InGameManager : MonoBehaviour
 
     public Test_Json Json;
 
+    public GameObject[] BackGround = new GameObject[9];
 
     private void Awake()
     {
         inGameManager = this;
+
+        for(int i = 1; i < 10; i++)
+        {
+            BackGround[i-1] = GameObject.Find("lv_" + i);
+            BackGround[i-1].SetActive(false);
+        }
+
+        StartCoroutine("resetPrice");
     }
 
+    IEnumerator resetPrice()
+    {
+        if (System.DateTime.Now.Hour == 0 && System.DateTime.Now.Minute == 0 && System.DateTime.Now.Second == 0)
+        {
+            ItemGameManager.ChangePrice();
+        }
+
+        yield return new WaitWhile(() => System.DateTime.Now.Hour == 0 && System.DateTime.Now.Minute == 0 && System.DateTime.Now.Second == 0);
+    }
 
 
     /// <summary>
@@ -164,7 +182,7 @@ public class InGameManager : MonoBehaviour
     /// <param name="item">심고 싶은 아이템</param>
     public void Build(Item item)
     {
-        Debug.Log("Build() - Item : " + item.ToString());
+        Debug.Log("Build() - Item : " + item.Name);
         
 
         // 만일 해당 작물이 나무에서 자란다면
