@@ -7,7 +7,7 @@ public class TimeManager : MonoBehaviour
 {
 
 
-    private float done = 30.0f; // 시간 제한 30초
+    private float done = 80.0f; // 시간 제한 30초
 
     public Text _time; //시간 텍스트
 

@@ -9,7 +9,7 @@ public class TimingManager : MonoBehaviour
     [SerializeField] RectTransform[] timingRect = null;
     Vector2[] timingBoxs = null;
 
-    
+    int winT = 0; //성공 횟수 정수
 
    public GameObject _timing;
 
@@ -131,7 +131,7 @@ public class TimingManager : MonoBehaviour
                     if(drawNum >= dD)
                     {
                         uIManager.Success();
-                        
+                        winT++; //성공 횟수 증가
                       
                     }
                 else { 
@@ -172,6 +172,13 @@ public class TimingManager : MonoBehaviour
 
          
      
+        
+    }
+
+    public void Restart(int a)
+    {
+        drawNum = a;
+        num = a;
         
     }
 }

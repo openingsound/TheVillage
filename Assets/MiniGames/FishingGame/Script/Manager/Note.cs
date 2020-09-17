@@ -14,9 +14,14 @@ public class Note : MonoBehaviour
 
     public Vector3 notePos;
 
+    TimingManager _timingManager;
+
+    PlayerController _playerController;
 
     private void Awake()
     {
+        _playerController = FindObjectOfType<PlayerController>();
+        _timingManager = FindObjectOfType<TimingManager>();
         notePos = _note.transform.localPosition;
     }
 
@@ -45,21 +50,16 @@ public class Note : MonoBehaviour
 
     }
 
-    public void Spawn()
-    {
-       GameObject n_note = Instantiate(_note,new Vector3(-820,320,0),Quaternion.identity);
 
-        n_note.transform.SetParent(_note.transform);
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Note"))
         {
 
             _note.transform.localPosition = notePos;
             a = 0;
-            
+            _timingManager.Restart(0);
+            _playerController.NRe();
         }
     }
 
