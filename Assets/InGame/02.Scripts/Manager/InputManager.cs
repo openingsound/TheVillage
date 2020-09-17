@@ -82,9 +82,6 @@ public class InputManager : MonoBehaviour
 
         // 이 인스턴스를 유효한 유일 오브젝트로 만든다
         InputSystem = this;
-
-        // InputSystem이 지속되도록 한다
-        DontDestroyOnLoad(gameObject);
     }
 
     // Start is called before the first frame update
@@ -105,7 +102,7 @@ public class InputManager : MonoBehaviour
 
     private void CheckInput()
     {
-        if(InGameUIManager.UICheck >= InGameUIManager.UI_BitFlag.SHOP 
+        if(InGameUIManager.UICheck > InGameUIManager.UI_BitFlag.NONE
             || optionUI.activeInHierarchy == true)
         {
             if(nowState != InputState.NULL)
@@ -123,15 +120,6 @@ public class InputManager : MonoBehaviour
         // 마우스가 누르기 시작하면
         if (Input.GetMouseButtonDown(0))
         {
-            if (InGameUIManager.UICheck == InGameUIManager.UI_BitFlag.NONE && EventSystem.current.IsPointerOverGameObject() == true)
-                return;
-
-            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-            {
-                if (hit.collider.gameObject.layer == 5)
-                    return;
-            }
-
             // 시작점은 현재 마우스 클릭을 시작한 위치로 함
             StartPos = Input.mousePosition;
             selectPos = TouchScreen(Input.mousePosition).point;
@@ -148,15 +136,6 @@ public class InputManager : MonoBehaviour
         // 마우스 클릭을 뗀다면
         else if (Input.GetMouseButtonUp(0))
         {
-            if (InGameUIManager.UICheck == InGameUIManager.UI_BitFlag.NONE && EventSystem.current.IsPointerOverGameObject() == true)
-                return;
-
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-            {
-                if (hit.collider.gameObject.layer == 5)
-                    return;
-            }
-
             // 만일 현재 상태가 클릭상태였다면
             if (nowState == InputState.CLICK)
             {
@@ -201,15 +180,6 @@ public class InputManager : MonoBehaviour
         // 마우스가 눌리고 있다면
         else if (Input.GetMouseButton(0))
         {
-            if (InGameUIManager.UICheck == InGameUIManager.UI_BitFlag.NONE && EventSystem.current.IsPointerOverGameObject() == true)
-                return;
-
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-            {
-                if (hit.collider.gameObject.layer == 5)
-                    return;
-            }
-
             // 끝점은 현재 마우스가 있는 위치로 함
             EndPos = Input.mousePosition;
 

@@ -80,7 +80,7 @@ public class InGameUIManager : MonoBehaviour
         }
 
         // 이 아래는 빈땅, 나무, 밭 클릭 시 나타나는 UI 표시
-        if (UICheck != UI_BitFlag.NONE && UICheck != UI_BitFlag.BUILD)
+        if (UICheck != UI_BitFlag.NONE)
             return;
 
 
@@ -342,6 +342,8 @@ public class InGameUIManager : MonoBehaviour
         {
             // 상태를 변경하고 건설을 끈다
             UICheck = UI_BitFlag.NONE;
+
+            InGameManager.inGameManager.ItemGameManager.BuildPopUp.SetActive(false);
 
             // 건설 UI 비활성화
             gameManager.CloseBuildPop();

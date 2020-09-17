@@ -167,6 +167,10 @@ public class GameManager : MonoBehaviour
         UserExp += exp;
 
         //정보들 파일에 쓰기
+        InGameManager.inGameManager.Json.player.level = UserLevel;
+        InGameManager.inGameManager.Json.player.exp = UserExp;
+        InGameManager.inGameManager.Json.player.money = UserMoney;
+
 
         MoneyAndExpList[0] = UserMoney;
         MoneyAndExpList[1] = UserExp;
@@ -299,7 +303,7 @@ public class GameManager : MonoBehaviour
         }
 
     }
-
+    ///*
     public void CropUpdate(string name, int NowLevel)
     {
         Item CurItem = AllItemList.Find(x => x.EName == name);
@@ -343,7 +347,7 @@ public class GameManager : MonoBehaviour
             harvest.GetComponent<Image>().color = new Color(originColor.r, originColor.g, originColor.b, 1f);
         }
     }
-
+    //*/
 
     public void fun0(int num)
     {
@@ -539,6 +543,7 @@ public class GameManager : MonoBehaviour
     {
         //철거하는 함수
         InGameManager.inGameManager.Destroy();
+        Debug.Log("Destroy() 실행");
 
         Write_sta(DigCost, 0);
         Save();
@@ -603,14 +608,16 @@ public class GameManager : MonoBehaviour
 
     void setLevel(int exp)
     {
-        for(int i = 1; i <= 10; i++)
+        for (int i = 1; i <= 10; i++)
         {
             if (exp < Explist[i])
             {
                 Level_t.text = System.Convert.ToString(i);
                 Exp_t.text = System.Convert.ToString(exp);
                 Exp_Fill.fillAmount = (float)exp / (float)Explist[i];
+                
                 UserLevel = i;
+
                 print("Level : " + UserLevel);
                 break;
             }
@@ -623,6 +630,7 @@ public class GameManager : MonoBehaviour
         if(UserLevel == 10)
         {
             Exp_Fill.fillAmount = 1;
+            InGameManager.inGameManager.gridSystem.ResizeGrid(19);
         }
     }
 }
