@@ -5,8 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class charjump : MonoBehaviour
 {
-    public GameObject gameOverCanvas;
-    public GameObject congratsCanvas;
     public GameObject rewardCanvas;
     public AudioSource tapAudio;
     public AudioSource winAudio;
@@ -43,7 +41,7 @@ public class charjump : MonoBehaviour
     {
      
             collideAudio.Play();
-            gameOverCanvas.SetActive(true);
+            rewardCanvas.SetActive(true);
             Debug.Log("GameOver");
             Time.timeScale = 0;
             gameObject.GetComponent<Animator>().Play("die");
