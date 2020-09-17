@@ -173,21 +173,33 @@ public class Object_Tree : BasicObject
     /// <summary>
     /// 작물을 업그레이드하는 함수
     /// </summary>
-    public override void Upgrade(int newCycle)
+    public void Upgrade(int newCycle)
     {
-        if(level == MaxLevel)
+        if (level == MaxLevel)
         {
-            Debug.LogError("Error) 해당 오브젝트는 이미 최대 레벨입니다!");
+            Debug.Log("Error) 해당 오브젝트는 이미 최대 레벨입니다!");
             return;
         }
 
         // 최고 레벨이 아니면 레벨을 1 올린다
         level++;
 
+        Debug.Log("현재 레벨 : " + level);
+
+        // GridMap에 레벨 저장
+        InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Level++;
+
+        float startRate = 1 - (((float)(System.DateTime.Parse(stateEndTime) - System.DateTime.Now).TotalSeconds) / cycle);
+
+        System.DateTime newStateStartTime = System.DateTime.Now.AddSeconds(-1 * startRate * newCycle);
+
         // 완전히 성장하지 않았을 때
-        System.DateTime newStateEndTime = System.DateTime.Now.AddSeconds(((newCycle / cycle) * (System.DateTime.Now - System.DateTime.Parse(stateEndTime)).TotalSeconds));
+        System.DateTime newStateEndTime = System.DateTime.Now.AddSeconds((1 - startRate) * newCycle);
 
         stateEndTime = newStateEndTime.ToString("yyyy-MM-dd HH:mm:ss");
+
+        InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].LastStateTime
+            = newStateStartTime.ToString("yyyy-MM-dd HH:mm:ss");
 
         // 수확 시 필요한 성장 시간 새로 대입
         cycle = newCycle;
@@ -195,18 +207,9 @@ public class Object_Tree : BasicObject
         // 레벨별 초기화 애니메이션 실행
         anim.Anim_SetLevel(level);
 
-        float totalTime;
+        anim.Anim_StateInit(growth, size, false, startRate);
 
-        if (growth != TreeState.Harvest)
-        {
-            totalTime = cycle;
-        }
-        else
-        {
-            totalTime = 0;
-        }
-
-        anim.Anim_StateInit(growth, size, false, (cycle - ((float)(newStateEndTime - System.DateTime.Now).TotalSeconds)) / totalTime);
+        
     }
 
     #endregion

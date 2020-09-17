@@ -35,7 +35,7 @@ public class GridMap : MonoBehaviour
         Map = this;
 
         // 그리드 맵 초기 설정
-        GenerateGrid();
+        //GenerateGrid();
     }
 
 
@@ -151,7 +151,10 @@ public class GridMap : MonoBehaviour
     {
         // 위치 설정
         // 그리드 좌표 : (((xSize - 1) / 2f - x) * cellSize, zHeight, ((ySize - 1) / 2f - y) * cellSize)
-        Vector3 pos = GettingGridPos(y * GridSize + x).Value;
+        if (GettingGridPos(y * size + x, size) == null)
+            return null;
+
+        Vector3 pos = GettingGridPos(y * size + x, size).Value;
         Quaternion rot = Quaternion.Euler(90, 0, 0);
 
         // 그리드 타일 생성
@@ -203,33 +206,33 @@ public class GridMap : MonoBehaviour
     }
 
 
-    public Vector3? GettingGridPos(int idx)
+    public Vector3? GettingGridPos(int idx, int size)
     {
-        if(idx < 0 || idx > GridSize * GridSize)
+        if(idx < 0 || idx > size * size)
         {
             return null;
         }
 
-        int x = idx % GridSize;
-        int y = idx / GridSize;
+        int x = idx % size;
+        int y = idx / size;
 
-        return new Vector3(((GridSize - 1) / 2f - x) * cellSize, zHeight, ((GridSize - 1) / 2f - y) * cellSize);
+        return new Vector3(((size - 1) / 2f - x) * cellSize, zHeight, ((size - 1) / 2f - y) * cellSize);
     }
 
 
-    public Vector3? GettingGridPos(int x, int y)
+    public Vector3? GettingGridPos(int x, int y, int size)
     {
-        if(x < 0 || x >= GridSize)
+        if(x < 0 || x >= size)
         {
             return null;
         }
 
-        if(y < 0 || y >= GridSize)
+        if(y < 0 || y >= size)
         {
             return null;
         }
 
-        return new Vector3(((GridSize - 1) / 2f - x) * cellSize, zHeight, ((GridSize - 1) / 2f - y) * cellSize);
+        return new Vector3(((size - 1) / 2f - x) * cellSize, zHeight, ((size - 1) / 2f - y) * cellSize);
     }
 
 

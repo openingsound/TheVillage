@@ -1,5 +1,5 @@
-Crop	사과	Tree	잔디	1	0	120	25	Apple	Apple
-Crop	감자	Ground	밭	1	0	120	25	Potato	Potato
+Crop	사과	Tree	잔디	1	0	1	25	Apple	Apple
+Crop	감자	Ground	밭	1	0	1	25	Potato	Potato
 Crop	밀	Ground	밭	1	0	120	25	Wheat	Wheat
 Crop	당근	Ground	밭	2	0	140	30	Carrot	Carrot
 Crop	양파	Ground	밭	2	0	140	30	Onion	Onion

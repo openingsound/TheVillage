@@ -54,7 +54,40 @@ public class Test_Json : MonoBehaviour
 
         Debug.Log("첫 Json Data 로딩 중...");
 
-        OnLoadJson();
+        // 플레이어 객체에 Json 파일 정보 불러오기
+        //player = LoadJsonFile<PlayerInfo>(savePath, "PlayerInfoJson");
+
+        player = new PlayerInfo("ASDF", InGameManager.inGameManager.ItemGameManager.UserMoney,
+            InGameManager.inGameManager.ItemGameManager.UserExp, InGameManager.inGameManager.ItemGameManager.UserLevel);
+
+        Debug.Log("Player Info ) " + player.ToString());
+
+        if (player.level == 0)
+        {
+            player.level = 1;
+        }
+
+        for (int i = 1; i <= 10; i++)
+        {
+            if (i == player.level)
+            {
+                InGameManager.inGameManager.BackGround[(i == 10) ? (i - 2) : (i - 1)].gameObject.SetActive(true);
+            }
+            else
+            {
+                InGameManager.inGameManager.BackGround[Mathf.Min(i - 1, 8)].gameObject.SetActive(false);
+            }
+        }
+
+        InGameManager.inGameManager.gridSystem.GenerateGrid();
+
+        LoadMapJsonFile(savePath, "GridMapJson");
+
+        InGameManager.inGameManager.gridSystem.ResizeGrid(2 * player.level + 1);
+
+
+        if (System.DateTime.Now.Day != System.DateTime.Parse(player.lastConnectTime).Day)
+            InGameManager.inGameManager.ItemGameManager.ChangePrice();
 
         yield return 0;
     }
@@ -176,13 +209,29 @@ public class Test_Json : MonoBehaviour
     public void OnLoadJson()
     {
         // 플레이어 객체에 Json 파일 정보 불러오기
-        player = LoadJsonFile<PlayerInfo>(savePath, "PlayerInfoJson");
+        //player = LoadJsonFile<PlayerInfo>(savePath, "PlayerInfoJson");
+
+        player = new PlayerInfo("ASDF", InGameManager.inGameManager.ItemGameManager.UserMoney,
+            InGameManager.inGameManager.ItemGameManager.UserExp, InGameManager.inGameManager.ItemGameManager.UserLevel);
 
         Debug.Log("Player Info ) " + player.ToString());
 
-        InGameManager.inGameManager.BackGround[Mathf.Max((player.level - 1), 0)].gameObject.SetActive(true);
+        if(player.level == 0)
+        {
+            player.level = 1;
+        }
 
-        InGameManager.inGameManager.gridSystem.ResizeGrid(2 * player.level + 1);
+        for(int i = 1; i <= 10; i++)
+        {
+            if(i == player.level)
+            {
+                InGameManager.inGameManager.BackGround[(i == 10)? (i-2) : (i-1)].gameObject.SetActive(true);
+            }
+            else
+            {
+                InGameManager.inGameManager.BackGround[Mathf.Min(i - 1, 8)].gameObject.SetActive(false);
+            }
+        }
 
         if (System.DateTime.Now.Day != System.DateTime.Parse(player.lastConnectTime).Day)
             InGameManager.inGameManager.ItemGameManager.ChangePrice();
@@ -284,7 +333,7 @@ public class Test_Json : MonoBehaviour
         // 만일 해당 경로에 Json 파일이 존재하지 않는다면
         if (!File.Exists(string.Format("{0}/{1}.json", path, fileName)))
         {
-            Debug.LogError("Load Json Error ) 해당 경로에 Json 파일이 존재하지 않습니다!");
+            Debug.Log("Load Json Error ) 해당 경로에 Json 파일이 존재하지 않습니다!");
 
             return;
         }

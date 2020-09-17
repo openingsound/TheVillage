@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
 
     public static bool isInit = false;
 
-    void Awake()
+    void Start()
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
         //엑셀로 하면 매 줄마다 '\n'이 들어가 있음
@@ -101,6 +101,7 @@ public class GameManager : MonoBehaviour
             x.image = ImageSlot[n];
             x.num = n++;
         }
+
         filePath = Application.persistentDataPath + "/MyItemText.txt";
         filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
         filePath_pre = Application.persistentDataPath + "/PreCost.txt";
@@ -156,6 +157,7 @@ public class GameManager : MonoBehaviour
         UserMoney = MoneyAndExpList[0];
         UserExp = MoneyAndExpList[1];
         setLevel(MoneyAndExpList[1]);
+
         Money_t.text = System.Convert.ToString(UserMoney);
     }
 

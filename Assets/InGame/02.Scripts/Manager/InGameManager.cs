@@ -12,17 +12,11 @@ public class InGameManager : MonoBehaviour
 
     public Test_Json Json;
 
-    public GameObject[] BackGround = new GameObject[9];
+    public GameObject[] BackGround;
 
     private void Awake()
     {
         inGameManager = this;
-
-        for(int i = 1; i < 10; i++)
-        {
-            BackGround[i-1] = GameObject.Find("lv_" + i);
-            BackGround[i-1].SetActive(false);
-        }
 
         StartCoroutine("resetPrice");
     }
@@ -76,7 +70,7 @@ public class InGameManager : MonoBehaviour
         }
 
         // 새 나무 생성
-        GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, InGameManager.inGameManager.gridSystem.GettingGridPos(index).Value, Quaternion.identity);
+        GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, InGameManager.inGameManager.gridSystem.GettingGridPos(index, InGameManager.inGameManager.gridSystem.GridSize).Value, Quaternion.identity);
         Object_Tree tree = newTree.GetComponent<Object_Tree>();
 
         tree.InitTree(System.Enum.GetName(typeof(Plants_DB.Fruit), selectedFruit), growtime, index);
@@ -127,7 +121,7 @@ public class InGameManager : MonoBehaviour
         }
 
         // 새 밭 생성
-        GameObject newField = Instantiate(Plants_DB.PlantDB.Field, InGameManager.inGameManager.gridSystem.GettingGridPos(index).Value, Quaternion.identity);
+        GameObject newField = Instantiate(Plants_DB.PlantDB.Field, InGameManager.inGameManager.gridSystem.GettingGridPos(index, InGameManager.inGameManager.gridSystem.GridSize).Value, Quaternion.identity);
         Object_Field field = newField.GetComponent<Object_Field>();
 
         field.InitField(System.Enum.GetName(typeof(Plants_DB.Crop), selectedCrop), growtime, index);
@@ -203,9 +197,20 @@ public class InGameManager : MonoBehaviour
     /// <param name="newCycle"></param>
     public void Upgrade(int newCycle)
     {
-        BasicObject selectedObject = InputManager.InputSystem.selectedObject.GetComponent<BasicObject>();
+        if (InputManager.InputSystem.selectedObject.CompareTag("Tree"))
+        {
+            Object_Tree selected = InputManager.InputSystem.selectedObject.GetComponent<Object_Tree>();
 
-        selectedObject.Upgrade(newCycle);
+            selected.Upgrade(newCycle);
+
+            Debug.Log("Upgrade Tree");
+        }
+        else if (InputManager.InputSystem.selectedObject.CompareTag("Field"))
+        {
+            Object_Field selected = InputManager.InputSystem.selectedObject.GetComponent<Object_Field>();
+
+            selected.Upgrade(newCycle);
+        }
     }
 
     /// <summary>

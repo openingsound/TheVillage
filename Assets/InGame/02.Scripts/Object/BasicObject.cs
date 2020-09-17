@@ -40,10 +40,4 @@ public abstract class BasicObject : MonoBehaviour
     /// 현재 오브젝트의 인덱스
     /// </summary>
     public int mapIdx { get; protected set; }
-
-    /// <summary>
-    /// 오브젝트의 업그레이드를 하는 함수
-    /// </summary>
-    /// <param name="newCycle">오브젝트의 다음 레벨의 수확주기</param>
-    public abstract void Upgrade(int newCycle);
 }
