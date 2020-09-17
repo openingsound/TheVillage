@@ -14,11 +14,22 @@ public class TimeManager : MonoBehaviour
 
     public GameObject _gameOver;
 
+    public GameObject _fail;
+
+    int n;
     private void Start()
     {
         _Btn = GameObject.FindWithTag("Button1");
         _gameOver.SetActive(false);
+        _fail.SetActive(false);
     }
+    
+    public void GameOver(int a)
+    {
+        n = a;
+
+    }
+    
     void Update()
     {
 
@@ -34,11 +45,21 @@ public class TimeManager : MonoBehaviour
         else
         {
             _Btn.SetActive(false);
+            
+            if(n == 0)
+            {
+                _fail.SetActive(true);
+            }
+            else if(n >= 1) { 
             _gameOver.SetActive(true);
-
+            }
         }
 
 
 
     }
+
+
+    
+
 }

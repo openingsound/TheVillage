@@ -9,6 +9,8 @@ public class TimingManager : MonoBehaviour
     [SerializeField] RectTransform[] timingRect = null;
     Vector2[] timingBoxs = null;
 
+    TimeManager _timeManager;
+
     int winT = 0; //성공 횟수 정수
 
    public GameObject _timing;
@@ -43,6 +45,8 @@ public class TimingManager : MonoBehaviour
         uIManager = FindObjectOfType<UIManager>();
 
         _character = FindObjectOfType<Character>();
+
+        _timeManager = FindObjectOfType<TimeManager>();
 
         timingBoxs = new Vector2[timingRect.Length];
         
@@ -117,6 +121,8 @@ public class TimingManager : MonoBehaviour
     
     public void OnDraw()
     {
+
+        _timeManager.GameOver(winT);
 
         if (num > 1) { 
 
