@@ -1958,13 +1958,21 @@ PrefabInstance:
     - target: {fileID: 456534923, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
       propertyPath: Column
       value: 
-      objectReference: {fileID: 8218513865450177885, guid: ec13628fb15d10b4e9c84a5149567179,
+      objectReference: {fileID: 6400025861593671365, guid: 44186ff8c41430a48980e02b0c1f87c5,
         type: 3}
+    - target: {fileID: 456534923, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 456534924, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
       propertyPath: Column
       value: 
       objectReference: {fileID: 6155686055918947393, guid: 401840e8df940854e996f453f3d640ff,
         type: 3}
+    - target: {fileID: 456534924, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 456534925, guid: 83a8cd1b4d4cd0146a867c8e7b6aa964, type: 3}
       propertyPath: m_Size.x
       value: 1
