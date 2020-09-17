@@ -8,7 +8,7 @@ public class TimeManager : MonoBehaviour
 
     public GameObject _Btn;
 
-    private float done = 35.0f; // 시간 제한 35초
+    private float done = 5.0f; // 시간 제한 35초
 
     public Text _time; //시간 텍스트
 
