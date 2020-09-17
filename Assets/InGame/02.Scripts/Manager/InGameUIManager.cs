@@ -70,6 +70,8 @@ public class InGameUIManager : MonoBehaviour
 
     private void LateUpdate()
     {
+        Debug.Log("UICheck : " + UICheck.ToString());
+
         // 만일 상점 UI 상태인데도 불구하고 UI가 꺼져있다면
         if (UICheck == UI_BitFlag.SHOP && shopUI.activeInHierarchy == false)
         {
@@ -78,13 +80,16 @@ public class InGameUIManager : MonoBehaviour
         }
 
         // 이 아래는 빈땅, 나무, 밭 클릭 시 나타나는 UI 표시
-        if (UICheck >= UI_BitFlag.SHOP)
+        if (UICheck != UI_BitFlag.NONE && UICheck != UI_BitFlag.BUILD)
             return;
 
 
         // 만일 클릭이 일어났다면 상태 반전(UI on <-> off)
         if(InputManager.InputSystem.State == InputManager.InputState.CLICK)
         {
+            if (InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos) == -1)
+                return;
+
             // UI 상태 반전
             isUIon = !isUIon;
             
@@ -143,16 +148,12 @@ public class InGameUIManager : MonoBehaviour
 
                 case UI_BitFlag.FIELD:
                     // 밭 UI 활성화
-                    cropUI.SetActive(true);
-
-                    upgradeUI.SetActive(true);
+                    OnClickCropEnter();
                     break;
 
                 case UI_BitFlag.TREE:
                     // 나무 UI 활성화
-                    cropUI.SetActive(true);
-
-                    upgradeUI.SetActive(true);
+                    OnClickCropEnter();
                     break;
             }
 
@@ -211,8 +212,29 @@ public class InGameUIManager : MonoBehaviour
     public void OnClickShopEnter()
     {
         // 상점과 경매 UI를 킨 것이 아니라면
-        if(UICheck < UI_BitFlag.SHOP)
+        if (UICheck < UI_BitFlag.SHOP)
         {
+            switch (UICheck)
+            {
+                case UI_BitFlag.BUILD:
+                    gameManager.CloseBuildPop();
+                    break;
+
+                case UI_BitFlag.FIELD:
+                    // 밭 UI 비활성화
+                    cropUI.SetActive(false);
+
+                    upgradeUI.SetActive(false);
+                    break;
+
+                case UI_BitFlag.TREE:
+                    // 나무 UI 비활성화
+                    cropUI.SetActive(false);
+
+                    upgradeUI.SetActive(false);
+                    break;
+            }
+            
             // 상태를 변경하고 상점을 킨다
             UICheck = UI_BitFlag.SHOP;
 
@@ -255,6 +277,28 @@ public class InGameUIManager : MonoBehaviour
         // 상점과 경매 UI를 킨 것이 아니라면
         if (UICheck < UI_BitFlag.SHOP)
         {
+            switch (UICheck)
+            {
+                case UI_BitFlag.BUILD:
+                    gameManager.CloseBuildPop();
+                    break;
+
+                case UI_BitFlag.FIELD:
+                    // 밭 UI 비활성화
+                    cropUI.SetActive(false);
+
+                    upgradeUI.SetActive(false);
+                    break;
+
+                case UI_BitFlag.TREE:
+                    // 나무 UI 비활성화
+                    cropUI.SetActive(false);
+
+                    upgradeUI.SetActive(false);
+                    break;
+
+            }
+
             // 상태를 변경하고 경매를 킨다
             UICheck = UI_BitFlag.AUCTION;
 
@@ -316,7 +360,11 @@ public class InGameUIManager : MonoBehaviour
     {
         if(UICheck == UI_BitFlag.FIELD || UICheck == UI_BitFlag.TREE)
         {
-            upgradeUI.SetActive(true);
+            Debug.Log("OnClickUpgradeEnter() 실행!");
+
+            InGameManager.inGameManager.ItemGameManager.UpgradeUpdate(
+                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Name,
+                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Level);
         }
     }
 
@@ -329,7 +377,61 @@ public class InGameUIManager : MonoBehaviour
     {
         if (UICheck == UI_BitFlag.FIELD || UICheck == UI_BitFlag.TREE)
         {
+            Debug.Log("OnClickUpgradeExit() 실행!");
+
             upgradeUI.SetActive(false);
+        }
+    }
+
+
+
+    /// <summary>
+    /// 작물 UI를 끄는 함수
+    /// </summary>
+    public void OnClickCropExit()
+    {
+        if (UICheck == UI_BitFlag.FIELD || UICheck == UI_BitFlag.TREE)
+        {
+            cropUI.SetActive(false);
+
+            UICheck = UI_BitFlag.NONE;
+
+            isUIon = false;
+        }
+    }
+
+    /// <summary>
+    /// 작물 UI를 키는 함수
+    /// </summary>
+    public void OnClickCropEnter()
+    {
+        if(UICheck < UI_BitFlag.SHOP)
+        {
+            UICheck = (InputManager.InputSystem.selectedObject.CompareTag("Tree")) ? UI_BitFlag.TREE : 
+                ((InputManager.InputSystem.selectedObject.CompareTag("Field")) ? UI_BitFlag.FIELD : UI_BitFlag.NONE);
+
+            if (UICheck == UI_BitFlag.NONE)
+                return;
+
+            InGameManager.inGameManager.ItemGameManager.CropUpdate(
+                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Name,
+                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Level);
+
+            isUIon = true;
+        }
+    }
+
+    public void OnClickHarvest()
+    {
+        if(InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].CountHarvest > 0)
+        {
+            InGameManager.inGameManager.ItemGameManager.harvest(
+                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Name,
+                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].CountHarvest);
+
+            InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].CountHarvest = 0;
+
+            OnClickCropExit();
         }
     }
 }

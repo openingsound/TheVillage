@@ -18,9 +18,9 @@ public class Test_Tree : MonoBehaviour
     /// <summary>
     /// 나무 건설하는 함수
     /// </summary>
-    public void OnClickPlanting(int selectedFruit, float growtime)
+    public void OnClickPlanting(int selectedFruit, int growtime)
     {
-        GridTile newGridTile = new GridTile("Tree", selectedFruit.ToString(), selectedFruit, 1, false, Object_Tree.TreeState.Bush.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile("Tree", System.Enum.GetName(typeof(Plants_DB.Fruit), selectedFruit), selectedFruit, 1, 0, Object_Tree.TreeState.Bush.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
         
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
@@ -28,7 +28,7 @@ public class Test_Tree : MonoBehaviour
         GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, InputManager.InputSystem.TargetPos, Quaternion.identity);
         Object_Tree tree = newTree.GetComponent<Object_Tree>();
 
-        tree.InitTree(selectedFruit.ToString(), growtime * 2, growtime, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
+        tree.InitTree(System.Enum.GetName(typeof(Plants_DB.Fruit), selectedFruit), growtime, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
 
         newTree.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
 
@@ -54,11 +54,8 @@ public class Test_Tree : MonoBehaviour
             return;
         }
 
-        if (tree.growth == Object_Tree.TreeState.Harvest && !tree.isAuto)
-        {
-            Debug.Log(tree.ToString()); 
-            tree.FruitHarvesting();
-        }
+        // 만일 나무에서 자동 수확이 진행되었거나, 현재 수확이 가능하다면
+        // 수확 실행
     }
 
 
@@ -66,9 +63,9 @@ public class Test_Tree : MonoBehaviour
     /// <summary>
     /// 밭을 제작하는 함수
     /// </summary>
-    public void OnClickPlowing(int selectedCrop, float growtime)
+    public void OnClickPlowing(int selectedCrop, int growtime)
     {
-        GridTile newGridTile = new GridTile( "Field", selectedCrop.ToString(), selectedCrop, 1, false, Object_Field.FieldState.Plow.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
+        GridTile newGridTile = new GridTile( "Field", System.Enum.GetName(typeof(Plants_DB.Crop), selectedCrop), selectedCrop, 1, 0, Object_Field.FieldState.Plow.ToString(), -1, System.DateTime.Now.ToString("yyyyMMddHHmmss"));
 
         gridSystem.ChangeGridContent(InputManager.InputSystem.TargetPos, newGridTile);
 
@@ -76,7 +73,7 @@ public class Test_Tree : MonoBehaviour
         GameObject newField = Instantiate(Plants_DB.PlantDB.Field, InputManager.InputSystem.TargetPos, Quaternion.identity);
         Object_Field field = newField.GetComponent<Object_Field>();
 
-        field.InitField(selectedCrop.ToString(), growtime * 2, growtime, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
+        field.InitField(System.Enum.GetName(typeof(Plants_DB.Crop), selectedCrop), growtime, gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos));
 
         newField.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f);
 
@@ -102,9 +99,7 @@ public class Test_Tree : MonoBehaviour
             return;
         }
 
-        if (field.growth == Object_Field.FieldState.Harvest && !field.isAuto)
-        {
-            field.FruitHarvesting();
-        }
+        // 만일 밭에서 자동 수확이 진행되었거나, 현재 수확이 가능하다면
+        // 수확 실행
     }
 }

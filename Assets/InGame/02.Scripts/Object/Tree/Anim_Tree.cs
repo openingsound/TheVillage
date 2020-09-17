@@ -13,7 +13,7 @@ public class Anim_Tree : MonoBehaviour
     private GameObject fruitBox;
 
     // 레벨별 작물 스폰포인트
-    private Transform[] spawnpoints = new Transform[6];
+    private Transform[] spawnpoints = new Transform[BasicObject.MaxLevel];
 
 
     /* 컴포넌트 */
@@ -25,7 +25,7 @@ public class Anim_Tree : MonoBehaviour
     private Animator treeAnim;
 
     // 열매 성장 <Animator> 컴포넌트
-    private Animator[] fruitAnims = new Animator[6];
+    private Animator[] fruitAnims = new Animator[BasicObject.MaxLevel];
 
 
 
@@ -39,13 +39,15 @@ public class Anim_Tree : MonoBehaviour
     {
         /* 나무 오브젝트 생성 및 초기화 */
 
+        this.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
+
         // 나무 오브젝트 생성
         treeObject = Instantiate(tree, this.gameObject.transform.position, Quaternion.identity);
 
         // 나무 오브젝트를 이 나무 게임 오브젝트의 자식으로 설정
         treeObject.transform.parent = this.gameObject.transform;
 
-        treeObject.transform.localScale = new Vector3(1, 1, 1);
+        treeObject.transform.localScale = Vector3.one;
 
         // 나무 오브젝트 비활성화
         treeObject.SetActive(false);
@@ -60,7 +62,7 @@ public class Anim_Tree : MonoBehaviour
         // 상자 아이템을 이 나무 오브젝트의 자식으로 설정
         fruitBox.transform.parent = this.gameObject.transform;
 
-        fruitBox.transform.localScale = new Vector3(1, 1, 1);
+        fruitBox.transform.localScale = Vector3.one;
 
         // 상자 아이템 비활성화
         fruitBox.SetActive(false);
@@ -69,7 +71,7 @@ public class Anim_Tree : MonoBehaviour
 
         /* 레벨별 작물 스폰포인트 연결 및 작물 프리팹 생성 */
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < BasicObject.MaxLevel; i++)
         {
             // Pos1 ~ Pos6 그룹 오브젝트 할당
             spawnpoints[i] = this.transform.Find("FruitSpawnPoint").transform.Find("Pos" + (i + 1).ToString());
@@ -79,6 +81,8 @@ public class Anim_Tree : MonoBehaviour
 
             // 각 과일 오브젝트의 부모를 스폰포인트 오브젝트로 지정
             fruitAnims[i].transform.parent = spawnpoints[i];
+
+            fruitAnims[i].transform.localScale = Vector3.one;
 
             // 한 줄을 담당하는 그룹 오브젝트를 비활성화
             spawnpoints[i].gameObject.SetActive(false);
@@ -100,13 +104,13 @@ public class Anim_Tree : MonoBehaviour
     /// </summary>
     /// <param name="state">나무의 상태</param>
     /// <param name="size">나무의 성장 크기 정도</param>
-    public void AnimStateInit(Object_Tree.TreeState state, Object_Tree.SizeState size = Object_Tree.SizeState.NULL, bool isHarvest = false, float startTimeRate = 0)
+    public void Anim_StateInit(Object_Tree.TreeState state, Object_Tree.SizeState size = Object_Tree.SizeState.NULL, bool isHarvest = false, float startTimeRate = 0)
     {
         // 변경된 상태가 Bush(묘목)이라면
         if(state == Object_Tree.TreeState.Bush)
         {
             // 애니메이션의 재생 속도 조절
-            treeAnim.speed = 3 / thisTree.treeGrowTime;
+            treeAnim.speed = 3 / (thisTree.cycle * 2);
 
             // 다음 성장 애니메이션 실행
             //treeAnim.SetTrigger("Next");
@@ -143,7 +147,7 @@ public class Anim_Tree : MonoBehaviour
             // 수확 애니메이션 실행 시
             if(isHarvest)
             {
-                for(int i = 0; i < 6; i++)
+                for(int i = 0; i < BasicObject.MaxLevel; i++)
                 {
                     // 해당 라인이 비활성화되어 있다면
                     if (spawnpoints[i].gameObject.activeInHierarchy == false)
@@ -161,7 +165,7 @@ public class Anim_Tree : MonoBehaviour
             }
 
             // 각 레벨별 작물 스폰포인트를 순회
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < BasicObject.MaxLevel; i++)
             {
                 // 해당 라인이 비활성화되어 있다면
                 if (spawnpoints[i].gameObject.activeInHierarchy == false)
@@ -172,7 +176,7 @@ public class Anim_Tree : MonoBehaviour
 
                 // 과일 성장 시작
                 fruitAnims[i].SetTrigger("Grow");
-                fruitAnims[i].speed = 1 / thisTree.fruitGrowTime;
+                fruitAnims[i].speed = 1 / thisTree.cycle;
                 fruitAnims[i].Play("Grow", 0, startTimeRate);
             }
 
@@ -190,7 +194,7 @@ public class Anim_Tree : MonoBehaviour
             }
 
             // 각 레벨별 작물 스폰포인트를 순회
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < BasicObject.MaxLevel; i++)
             {
                 // 해당 라인이 비활성화되어 있다면
                 if (spawnpoints[i].gameObject.activeInHierarchy == false)
@@ -199,7 +203,7 @@ public class Anim_Tree : MonoBehaviour
                     continue;
                 }
 
-                // 과일 성장 시작
+                // 과일 성장 완료
                 fruitAnims[i].Play("Grow", 0, 1f);
             }
         }
@@ -238,14 +242,14 @@ public class Anim_Tree : MonoBehaviour
     /// <param name="lvl">밭의 레벨</param>
     public void Anim_SetLevel(int lvl)
     {
-        // 1 ~ 6 레벨 사이의 값이 아니라면 오류문 출력
-        if(lvl < 1 || lvl > 6)
+        // 1 ~ 5 레벨 사이의 값이 아니라면 오류문 출력
+        if(lvl < 1 || lvl > BasicObject.MaxLevel)
         {
             Debug.LogError("Parameter 'int lvl' of range is 1 ~ 5 - Anim_SetLevel(int lvl : " + lvl.ToString() + ")");
             return;
         }
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < BasicObject.MaxLevel; i++)
         {
             // 만일 해당 스폰포인트가 레벨 제한 안에 들어온다면
             if (lvl > i)
@@ -260,6 +264,9 @@ public class Anim_Tree : MonoBehaviour
                 spawnpoints[i].gameObject.SetActive(false);
             }
         }
+
+        // 애니메이션을 맞게 재실행시킴
+        //AnimStateInit(thisTree.growth, thisTree.size, (thisTree.growth == Object_Tree.TreeState.Harvest)? true : false, startRate);
     }
 
 }

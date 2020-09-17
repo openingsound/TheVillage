@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Test_Json : MonoBehaviour
 {
     // 플레이어 정보 저장
-    private PlayerInfo player = null;
+    public PlayerInfo player = null;
 
     // 닉네임을 입력받을 InputField
     public InputField nicknameField;
@@ -30,7 +30,7 @@ public class Test_Json : MonoBehaviour
     public LoadWay load;
 
     // json 파일 저장 정보
-    private string savePath;
+    public string savePath;
 
 
     private string Json_Player = "";
@@ -42,7 +42,21 @@ public class Test_Json : MonoBehaviour
     {
         savePath = Application.dataPath;
 
+        StartCoroutine("LoadJson");
+    }
+
+    IEnumerator LoadJson()
+    {
+        while(GameManager.isInit == false)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+
+        Debug.Log("첫 Json Data 로딩 중...");
+
         OnLoadJson();
+
+        yield return 0;
     }
 
 
@@ -292,7 +306,7 @@ public class Test_Json : MonoBehaviour
         /* <GridMap> 컴포넌트에 정보 덮어쓰기 */
 
         // 만일 TestMap 게임 오브젝트에 GridMap 컴포넌트가 있다면
-        if(TestMap.TryGetComponent<GridMap>(out map))
+        if (TestMap.TryGetComponent<GridMap>(out map))
         {
             // jsonData를 바탕으로 객체를 구성하여 덮어 씀
             JsonUtility.FromJsonOverwrite(jsonData, TestMap.GetComponent<GridMap>());
@@ -317,404 +331,15 @@ public class Test_Json : MonoBehaviour
         LoadObjectTile();
     }
 
-
-
-
     /// <summary>
-    /// 나무 건설하는 함수
+    /// 그리드 맵에서 오브젝트들을 생성하는 함수
     /// </summary>
-    public void OnLoadTree(GridTile tile, int idx)
-    {
-        // 새 나무 생성
-        GameObject newTree = Instantiate(Plants_DB.PlantDB.TreeBush, map.GettingGridPos(idx).Value, Quaternion.identity);
-        Object_Tree tree = newTree.GetComponent<Object_Tree>();
-
-        newTree.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
-
-        Plants_DB.Fruit fruit = (Plants_DB.Fruit)tile.TypeInt;
-
-        switch (fruit)
-        {
-            case Plants_DB.Fruit.Apple:
-                tree.InitTree(tile.Name, 10f, 10f, idx, tile.Level, tile.IsAuto);
-                break;
-
-            default:
-                tree.InitTree(tile.Name, 10f, 10f, idx, tile.Level, tile.IsAuto);
-                break;
-        }
-
-        
-        // 나무 애니메이션 초기화
-        tree.anim.Anim_Init(Plants_DB.PlantDB.OwnTrees[tile.TypeInt], Plants_DB.PlantDB.Fruits[tile.TypeInt], Plants_DB.PlantDB.FruitBoxes[tile.TypeInt]);
-
-        // 나무 레벨 애니메이션 초기화
-        tree.anim.Anim_SetLevel(tile.Level);
-
-        // 나무의 상태 및 크기 변수
-        Object_Tree.TreeState loadTreeState = (Object_Tree.TreeState)(tile.LastStateInt / 10);
-        Object_Tree.SizeState loadTreeSize = (Object_Tree.SizeState)(tile.LastStateInt % 10);
-
-        if (load == LoadWay.Keep)
-        {
-            // 마지막 상태변화 시간에서 마지막 접속 상태 사이의 지나간 시간의 간격을 구함
-            System.TimeSpan pastTime = System.DateTime.Parse(player.lastConnectTime) - System.DateTime.Parse(tile.LastStateTime);
-
-            // 현재 상태의 총 시간과 남은 시간
-            float fullTime, leftTime;
-
-            if(loadTreeState == Object_Tree.TreeState.Bush)
-            {
-                // 전체 시간은 나무 성장 시간
-                fullTime = tree.treeGrowTime / 3;
-
-                // 남은시간 계산
-                leftTime = fullTime - (float)pastTime.TotalSeconds;
-            }
-            else if(loadTreeState == Object_Tree.TreeState.Fruit)
-            {
-                // 전체 시간은 열매 성장 시간
-                fullTime = tree.fruitGrowTime;
-
-                // 남은시간 계산
-                leftTime = fullTime - (float)pastTime.TotalSeconds;
-            }
-            else
-            {
-                leftTime = 0;
-                fullTime = 1;
-            }
-            
-            // 나무 상태 초기화
-            tree.treeStateInit(loadTreeState, loadTreeSize, leftTime, false, leftTime / fullTime);
-        }
-        else if(load == LoadWay.Skip)
-        {
-
-
-            // 마지막 상태변화 시간에서 현재 시간 사이의 지나간 시간의 간격을 구함
-            float nowTime = (float)(System.DateTime.Now - System.DateTime.Parse(tile.LastStateTime)).TotalSeconds;
-
-            // 다음 상태까지의 남은 시간 계산
-            float fullTime, leftTime;
-
-
-
-            // 마지막 상태가 묘목 상태라면
-            if(loadTreeState == Object_Tree.TreeState.Bush)
-            {
-                int size;
-
-                // Bush_S, M, L의 상태인지 시간을 빼며 검사함
-                for(size = (int)loadTreeSize; size < 4; size++)
-                {
-                    nowTime -= tree.treeGrowTime / 3f;
-
-                    // 현재 시간이 음수라면 - 아직 현재 사이즈의 상태를 벗어나지 못함
-                    if(nowTime < 0)
-                    {
-                        break;
-                    }
-                    // 현재 시간이 양수라면 - 다음 사이즈 상태로 넘어갈 수 있음
-                }
-
-
-
-                // 아직 bush 성장 단계라면
-                if(size < 4)
-                {
-                    // 현재 나무의 성장 크기 변경
-                    loadTreeSize = (Object_Tree.SizeState)size;
-
-                    // 전체 시간은 나무 묘목 성장 한 단계에 걸리는 시간
-                    fullTime = tree.treeGrowTime / 3;
-
-                    // 남은 시간 계산 - 이 케이스는 nowTime이 음수인 경우
-                    // -> 즉, (-nowTime)은 다음 단계까지 남은 시간이다
-                    leftTime = -1 * nowTime;
-
-                    // 나무 상태 초기화
-                    tree.treeStateInit(loadTreeState, loadTreeSize, leftTime, false, leftTime / fullTime);
-
-                    // 이대로 실행 종료
-                    return;
-                }
-                // 만일 과일 성장 단계로 넘어간다면
-                else
-                {
-                    // 현재 나무의 성장 상태 변경
-                    loadTreeState = Object_Tree.TreeState.Fruit;
-
-                    // 현재 나무의 성장 크기 변경
-                    loadTreeSize = Object_Tree.SizeState.NULL;
-                }
-            }
-
-
-
-            // 만일 자동 수확이 있다면 몇번의 수확이 중간에 있었는지 계산함
-            if (tile.IsAuto)
-            {
-                // 지금까지 몇 번의 수확이 있었는지 계산함
-                int harvestCount = (int)(nowTime / tree.fruitGrowTime);
-
-                // 전체 시간은 나무 열매 성장 시간
-                fullTime = tree.fruitGrowTime;
-
-                // 남은 시간 계산함
-                leftTime = nowTime % tree.fruitGrowTime;
-
-                // 만일 남은 시간이 정확하게 수확을 할 때라면
-                if(leftTime == 0f)
-                {
-                    // 현재 상태를 수확 상태로 변경
-                    loadTreeState = Object_Tree.TreeState.Harvest;
-
-                    leftTime = 0;
-                    fullTime = 1;
-                }
-
-
-                // 나무 상태 초기화
-                tree.treeStateInit(loadTreeState, loadTreeSize, leftTime, false, leftTime / fullTime);
-
-                // (디버그용) 현재까지 수확 횟수를 알려줌
-                Debug.Log(idx + ") " + tile.Name + " " + tile.Type + " 수확 횟수 : " + harvestCount + " (자동 수확 ON)");
-
-            }
-            // 만일 자동 수확이 없다면 과일이 다 자랐는지만 확인함
-            else
-            {
-                // 현재 과일이 다 자랐다면
-                if(nowTime > tree.fruitGrowTime)
-                {
-                    // 현재 상태를 수확 상태로 변경
-                    loadTreeState = Object_Tree.TreeState.Harvest;
-
-                    leftTime = 0;
-                    fullTime = 1;
-                }
-                // 아니라면 현재 상태는 과일이 자라는 상태
-                else
-                {
-                    // 남은 시간 계산
-                    leftTime = nowTime;
-
-                    // 전체 시간은 나무 열매 성장 시간
-                    fullTime = tree.fruitGrowTime;
-                }
-
-                // 나무 상태 초기화
-                tree.treeStateInit(loadTreeState, loadTreeSize, leftTime, false, leftTime / fullTime);
-
-                // (디버그용) 현재까지 수확 횟수를 알려줌
-                Debug.Log(idx + ") " + tile.Name + " " + tile.Type + " 수확 횟수 : - (자동 수확 OFF)");
-            }
-
-        }
-        
-    }
-
-
-
-
-    /// <summary>
-    /// 밭을 제작하는 함수
-    /// </summary>
-    public void OnLoadField(GridTile tile, int idx)
-    {
-        // 새 밭 생성
-        GameObject newField = Instantiate(Plants_DB.PlantDB.Field, map.GettingGridPos(idx).Value, Quaternion.identity);
-        Object_Field field = newField.GetComponent<Object_Field>();
-
-        newField.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
-
-        Plants_DB.Crop crop = (Plants_DB.Crop)tile.TypeInt;
-
-        switch (crop)
-        {
-            case Plants_DB.Crop.Watermelon:
-                field.InitField(tile.Name, 10f, 10f, idx, tile.Level, tile.IsAuto);
-                break;
-
-            default:
-                field.InitField(tile.Name, 10f, 10f, idx, tile.Level, tile.IsAuto);
-                break;
-        }
-
-
-
-        // 나무 애니메이션 초기화
-        field.anim.Anim_Init(Plants_DB.PlantDB.OwnBushes[tile.TypeInt], Plants_DB.PlantDB.Crops[tile.TypeInt], Plants_DB.PlantDB.CropBoxes[tile.TypeInt]);
-
-        // 나무 레벨 애니메이션 초기화
-        field.anim.Anim_SetLevel(tile.Level);
-
-        // 나무의 상태 및 크기 변수
-        Object_Field.FieldState loadFieldState = (Object_Field.FieldState)(tile.LastStateInt / 10);
-        Object_Field.SizeState loadFieldSize = (Object_Field.SizeState)(tile.LastStateInt % 10);
-
-
-        if (load == LoadWay.Keep)
-        {
-            // 마지막 상태변화 시간에서 마지막 접속 상태 사이의 지나간 시간의 간격을 구함
-            System.TimeSpan pastTime = System.DateTime.Parse(player.lastConnectTime) - System.DateTime.Parse(tile.LastStateTime);
-
-            // 현재 상태의 총 시간과 남은 시간
-            float fullTime, leftTime;
-
-            if (loadFieldState == Object_Field.FieldState.Plow)
-            {
-                // 전체 시간은 밭 가는데 소요되는 시간
-                fullTime = field.FieldPlowTime;
-
-                // 남은시간 계산
-                leftTime = fullTime - (float)pastTime.TotalSeconds;
-            }
-            else if (loadFieldState == Object_Field.FieldState.Grow)
-            {
-                // 전체 시간은 작물 성장 시간
-                fullTime = field.CropGrowTime / 3;
-
-                // 남은시간 계산
-                leftTime = fullTime - (float)pastTime.TotalSeconds;
-            }
-            else
-            {
-                leftTime = 0;
-                fullTime = 1;
-            }
-
-            // 밭 상태 초기화
-            field.fieldStateInit(loadFieldState, loadFieldSize, leftTime, false, leftTime / fullTime);
-        }
-        else if (load == LoadWay.Skip)
-        {
-
-
-            // 마지막 상태변화 시간에서 현재 시간 사이의 지나간 시간의 간격을 구함
-            float nowTime = (float)(System.DateTime.Now - System.DateTime.Parse(tile.LastStateTime)).TotalSeconds;
-
-            // 다음 상태까지의 남은 시간 계산
-            float fullTime, leftTime;
-
-
-
-            // 마지막 상태가 밭을 가는 상태라면
-            if (loadFieldState == Object_Field.FieldState.Plow)
-            {
-                // 현재까지 밭을 다 갈지 못했다면
-                if(nowTime < field.FieldPlowTime)
-                {
-                    // 전체 시간은 밭을 가는 데 필요한 소요시간
-                    fullTime = field.FieldPlowTime;
-
-                    // 남은 시간 계산
-                    leftTime = fullTime - nowTime;
-
-                    // 밭 상태 초기화
-                    field.fieldStateInit(loadFieldState, loadFieldSize, leftTime, false, leftTime / fullTime);
-
-                    return;
-                }
-                // 이미 밭을 다 갈았다면
-                else
-                {
-                    // 상태를 작물 성장 상태로 변경
-                    loadFieldState = Object_Field.FieldState.Grow;
-
-                    loadFieldSize = Object_Field.SizeState.NULL;
-                }
-            }
-
-
-
-            // 만일 자동 수확이 있다면 몇번의 수확이 중간에 있었는지 계산함
-            if (tile.IsAuto)
-            {
-                // 지금까지 몇 번의 수확이 있었는지 계산함
-                int harvestCount = (int)(nowTime / field.CropGrowTime);
-
-                // 전체 시간은 나무 열매 성장 시간
-                fullTime = field.CropGrowTime / 3;
-
-                // 남은 시간 계산함
-                leftTime = nowTime % field.CropGrowTime;
-
-                // 만일 남은 시간이 정확하게 수확을 할 때라면
-                if (leftTime == 0f)
-                {
-                    // 현재 상태를 수확 상태로 변경
-                    loadFieldState = Object_Field.FieldState.Harvest;
-                    loadFieldSize = Object_Field.SizeState.NULL;
-
-                    leftTime = 0;
-                    fullTime = 1;
-                }
-                else
-                {
-                    loadFieldState = Object_Field.FieldState.Grow;
-
-                    // S = 1, M = 2, L = 3 이므로 +1 을 하여 맞춘다
-                    loadFieldSize = (Object_Field.SizeState)((int)(leftTime / fullTime + 1));
-
-                    // 남은 시간 계산
-                    leftTime %= fullTime;
-                }
-
-
-                // 밭 상태 초기화
-                field.fieldStateInit(loadFieldState, loadFieldSize, leftTime, false, leftTime / fullTime);
-
-                // (디버그용) 현재까지 수확 횟수를 알려줌
-                Debug.Log(idx + ") " + tile.Name + " " + tile.Type + " 수확 횟수 : " + harvestCount + " (자동 수확 ON)");
-
-            }
-            // 만일 자동 수확이 없다면 작물이 다 자랐는지만 확인함
-            else
-            {
-                // 현재 작물이 다 자랐다면
-                if (nowTime > field.CropGrowTime)
-                {
-                    // 현재 상태를 수확 상태로 변경
-                    loadFieldState = Object_Field.FieldState.Harvest;
-                    loadFieldSize = Object_Field.SizeState.NULL;
-
-                    leftTime = 0;
-                    fullTime = 1;
-                }
-                // 아니라면 현재 상태는 작물이 자라는 상태
-                else
-                {
-                    // 남은 시간 계산
-                    leftTime = nowTime;
-
-                    // 전체 시간은 나무 열매 성장 시간
-                    fullTime = field.CropGrowTime / 3;
-
-                    // 작물의 성장 상태 변경
-                    loadFieldSize = (Object_Field.SizeState)((int)(leftTime / fullTime + 1));
-                }
-
-                // 밭 상태 초기화
-                field.fieldStateInit(loadFieldState, loadFieldSize, leftTime, false, leftTime / fullTime);
-
-                // (디버그용) 현재까지 수확 횟수를 알려줌
-                Debug.Log(idx + ") " + tile.Name + " " + tile.Type + " 수확 횟수 : - (자동 수확 OFF)");
-            }
-
-        }
-
-
-    }
-
-
-
     public void LoadObjectTile()
     {
         if(map == null)
         {
             Debug.LogError("Load Map Error ) 그리드 맵 오브젝트가 연결되지 않았습니다!");
+            return;
         }
 
         for(int idx = 0; idx < map.GridSize * map.GridSize; idx++)
@@ -723,16 +348,181 @@ public class Test_Json : MonoBehaviour
             switch(map.tiles[idx].Type)
             {
                 case "Tree":
-                    OnLoadTree(map.tiles[idx], idx);
+                    OnLoadTree(idx);
                     break;
 
                 case "Field":
-                    OnLoadField(map.tiles[idx], idx);
+                    OnLoadField(idx);
                     break;
 
                 default:
                     continue;
             } 
         }
+    }
+
+    /// <summary>
+    /// 그리드 타일 정보로 나무를 생성하는 함수
+    /// </summary>
+    /// <param name="index"></param>
+    private void OnLoadTree(int index)
+    {
+        // 1. 나무를 그리드 타일 내 정보대로 인스턴스를 생성한다
+
+        // 작물의 수확 주기 (데이터 상에는 분단위로 주기가 기록되어 있으므로 초로 환산한다)
+        int cycle = InGameManager.inGameManager.ItemGameManager.AllItemList.Find(x => x.EName == map.tiles[index].Name).Cycle * 60;
+
+        // 작물 인스턴스 생성
+        Object_Tree tree = InGameManager.inGameManager.OnClickPlanting(map.tiles[index].Name, cycle, index, false).GetComponent<Object_Tree>();
+
+        // 2. 불러오는 방식에 따라 지난 시간을 계산한다
+
+        // 지난 시간을 저장하는 변수
+        int pastTime = 0;        
+
+        // 불러오는 방식에 따라 지난 시간을 다르게 계산한다
+        if (load == LoadWay.Keep)
+        {
+            // Keep 방식 : 마지막 접속 시간 - 마지막 상태 변화 시작 시간으로 계산함
+            pastTime = (int) (System.DateTime.Parse(player.lastConnectTime) - System.DateTime.Parse(map.tiles[index].LastStateTime)).TotalSeconds;
+        }
+        else if(load == LoadWay.Skip)
+        {
+            // Skip 방식 : 현재 시간 - 마지막 상태 변화 시작 시간으로 계산함
+            pastTime = (int)(System.DateTime.Now - System.DateTime.Parse(map.tiles[index].LastStateTime)).TotalSeconds;
+        }
+
+        // 3. 지난 시간을 가지고 상태 변화의 정도를 계산한다.
+
+        // 현재의 오브젝트 성장 상태 (Bush = 0, Fruit = 10, Harvest = 20)
+        Object_Tree.TreeState nowTreeState;
+
+        // 현재의 오브젝트 크기 상태 (S = 1, M = 2, L = 3)
+        Object_Tree.SizeState nowSizeState;
+
+        if (((Object_Tree.TreeState)(map.tiles[index].LastStateInt / 10)) == Object_Tree.TreeState.Bush)
+        {
+            // 만일 마지막 상태가 부쉬라면
+            // 1. 아직 Bush 시간 내라면 크기 상태 구하기
+            if (pastTime < cycle * 3)
+            {
+                // 현재 상태는 Bush
+                nowTreeState = Object_Tree.TreeState.Bush;
+
+                // 현재 크기 상태 (S = 1, M = 2, L = 3) : (지난 시간) / { (건설 시간) / 3 } + 1
+                nowSizeState = (Object_Tree.SizeState)((int)(pastTime / cycle) + 1);
+
+                // 나무 상태 초기화
+                tree.treeStateInit(nowTreeState, nowSizeState, pastTime - (((int)nowSizeState) - 1) * (cycle * 2 / 3f));
+
+                // 다 설정했으므로 함수 종료
+                return;
+            }
+            else
+            {
+                // 이미 나무로 다 성장하였으므로 성장 시간을 뺀다
+                pastTime -= cycle * 2;
+            }
+        }
+
+        // 2. 만일 나무로 다 자랐다면 열매가 몇 번 맺히는지 검사 (단, 최댓값은 ((level - 2) * 2)이다)
+
+        // 수확한 횟수는 맵 타일에 저장됨 (수확한 횟수, 최대 저장 가능한 자동 수확 횟수, 0(초기 값))
+        map.tiles[index].CountHarvest += Mathf.Max((pastTime / cycle), ((player.level - 2) * 2), 0);
+
+        // 3. 이제 현재 상태를 계산한다
+
+        // 크기 상태는 null
+        nowSizeState = Object_Tree.SizeState.NULL;
+
+        // 성장 상태는 Fruit 아니면 Harvest (단, Harvest는 수확 횟수가 다 찼을 때나 딱 걸쳤을 때 변경한다)
+        nowTreeState = ((pastTime % cycle == 0) || (map.tiles[index].CountHarvest == Mathf.Max(((player.level - 2) * 2), 0))) ? Object_Tree.TreeState.Harvest : Object_Tree.TreeState.Fruit;
+
+        // 나무 상태 초기화
+        tree.treeStateInit(nowTreeState, nowSizeState,
+            (nowTreeState == Object_Tree.TreeState.Harvest) ? 0 : pastTime % cycle, false);
+
+
+    }
+
+    /// <summary>
+    /// 그리드 타일 정보로 밭을 생성하는 함수
+    /// </summary>
+    /// <param name="index"></param>
+    private void OnLoadField(int index)
+    {
+        // 1. 밭을 그리드 타일 내 정보대로 인스턴스를 생성한다
+
+        // 작물의 수확 주기 (데이터 상에는 분단위로 주기가 기록되어 있으므로 초로 환산한다)
+        int cycle = InGameManager.inGameManager.ItemGameManager.AllItemList.Find(x => x.EName == map.tiles[index].Name).Cycle * 60;
+
+        // 작물 인스턴스 생성
+        Object_Field field = InGameManager.inGameManager.OnClickPlowing(map.tiles[index].Name, cycle, index, false).GetComponent<Object_Field>();
+
+        // 2. 불러오는 방식에 따라 지난 시간을 계산한다
+
+        // 지난 시간을 저장하는 변수
+        int pastTime = 0;
+
+        if (load == LoadWay.Keep)
+        {
+            // Keep 방식 : 마지막 접속 시간 - 마지막 상태 변화 시작 시간으로 계산함
+            pastTime = (int)(System.DateTime.Parse(player.lastConnectTime) - System.DateTime.Parse(map.tiles[index].LastStateTime)).TotalSeconds;
+        }
+        else if (load == LoadWay.Skip)
+        {
+            // Skip 방식 : 현재 시간 - 마지막 상태 변화 시작 시간으로 계산함
+            pastTime = (int)(System.DateTime.Now - System.DateTime.Parse(map.tiles[index].LastStateTime)).TotalSeconds;
+        }
+
+        // 3. 지난 시간을 가지고 상태 변화의 정도를 계산한다.
+
+        // 현재의 오브젝트 성장 상태 (Plow = 0, Crop = 10, Harvest = 20)
+        Object_Field.FieldState nowFieldState;
+
+        // 현재의 오브젝트 크기 상태 (S = 1, M = 2, L = 3)
+        Object_Field.SizeState nowSizeState;
+
+        if (((Object_Field.FieldState)(map.tiles[index].LastStateInt / 10)) == Object_Field.FieldState.Plow)
+        {
+            // 만일 마지막 상태가 부쉬라면
+            // 1. 아직 Plow 시간 내라면
+            if (pastTime < cycle * 3)
+            {
+                // 현재 상태는 Plow
+                nowFieldState = Object_Field.FieldState.Plow;
+
+                // 현재 크기 상태는 Null
+                nowSizeState = Object_Field.SizeState.NULL;
+
+                // 밭 상태 초기화
+                field.fieldStateInit(nowFieldState, nowSizeState, pastTime);
+
+                // 다 설정했으므로 함수 종료
+                return;
+            }
+            else
+            {
+                // 이미 밭으로 다 성장하였으므로 성장 시간을 뺀다
+                pastTime -= cycle * 2;
+            }
+        }
+
+        // 2. 만일 밭을 다 갈았다면 열매가 몇 번 맺히는지 검사 (단, 최댓값은 ((level - 2) * 2)이다)
+
+        // 수확한 횟수는 맵 타일에 저장됨 (수확한 횟수, 최대 저장 가능한 자동 수확 횟수, 0(초기 값))
+        map.tiles[index].CountHarvest += Mathf.Max((pastTime / cycle), ((player.level - 2) * 2), 0);
+
+        // 3. 이제 현재 상태를 계산한다
+
+        // 크기 상태 구하기 (S = 1, M = 2, L = 3)
+        nowSizeState = (Object_Field.SizeState)((int)((pastTime % cycle) / (cycle / 3f) + 1));
+
+        // 성장 상태는 Grow 아니면 Harvest (단, Harvest는 수확 횟수가 다 찼을 때나 딱 걸쳤을 때 변경한다)
+        nowFieldState = ((pastTime % cycle == 0) || (map.tiles[index].CountHarvest == Mathf.Max(((player.level - 2) * 2), 0))) ? Object_Field.FieldState.Harvest : Object_Field.FieldState.Grow;
+
+        // 밭 상태 초기화
+        field.fieldStateInit(nowFieldState, nowSizeState,
+            (nowFieldState == Object_Field.FieldState.Harvest) ? 0 : pastTime % ((int) (cycle / 3f)), false);
     }
 } 

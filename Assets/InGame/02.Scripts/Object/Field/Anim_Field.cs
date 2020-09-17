@@ -10,13 +10,13 @@ public class Anim_Field : MonoBehaviour
     private GameObject fruitBox;
 
     // 다 성장한 작물 오브젝트
-    private GameObject[,] fruits = new GameObject[5, 5];
+    private GameObject[,] fruits = new GameObject[BasicObject.MaxLevel, BasicObject.MaxLevel];
 
     // 레벨별 작물 그룹 오브젝트
-    private GameObject[] levelPos = new GameObject[5];
+    private GameObject[] levelPos = new GameObject[BasicObject.MaxLevel];
 
     // 레벨별 작물 스폰포인트
-    private Transform[,] spawnpoints = new Transform[5, 5];
+    private Transform[,] spawnpoints = new Transform[BasicObject.MaxLevel, BasicObject.MaxLevel];
 
 
 
@@ -29,7 +29,7 @@ public class Anim_Field : MonoBehaviour
     private Animator fieldAnim;
 
     // 작물 성장 <Animator> 컴포넌트
-    private Animator[,] bushAnims = new Animator[5, 5];
+    private Animator[,] bushAnims = new Animator[BasicObject.MaxLevel, BasicObject.MaxLevel];
 
 
 
@@ -43,11 +43,15 @@ public class Anim_Field : MonoBehaviour
     {
         /* 모든 오브젝트 비활성화 */
 
+        this.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize) * 0.5f;
+
         // 과일 상자 아이템 생성
         fruitBox = Instantiate(box, Vector3.zero, Quaternion.identity);
 
         // 상자 아이템을 이 밭 오브젝트의 자식으로 설정
         fruitBox.transform.parent = this.gameObject.transform;
+
+        fruitBox.transform.localScale = Vector3.one;
 
         // 상자 아이템 비활성화
         fruitBox.SetActive(false);
@@ -56,12 +60,12 @@ public class Anim_Field : MonoBehaviour
 
         /* 레벨별 작물 스폰포인트 연결 및 작물 프리팹 생성 */
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < BasicObject.MaxLevel; i++)
         {
             // row1 ~ row5 그룹 오브젝트 할당
             levelPos[i] = this.transform.Find("CropSpawnPoint").transform.Find("row" + (i + 1).ToString()).gameObject;
 
-            for (int j = 0; j < 5; j++)
+            for (int j = 0; j < BasicObject.MaxLevel; j++)
             {
                 // 각각의 스폰포인트를 배열에 저장
                 spawnpoints[i, j] = levelPos[i].transform.Find("Pos" + (j + 1).ToString());
@@ -70,7 +74,7 @@ public class Anim_Field : MonoBehaviour
                 bushAnims[i, j] = Instantiate(bush, spawnpoints[i, j].position, Quaternion.identity).GetComponent<Animator>();
 
                 bushAnims[i, j].transform.localScale 
-                    = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 0.5f);
+                    = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
 
                 bushAnims[i, j].transform.parent = spawnpoints[i, j];
 
@@ -79,8 +83,11 @@ public class Anim_Field : MonoBehaviour
 
                 fruits[i, j].transform.parent = spawnpoints[i, j];
 
+                fruits[i, j].transform.localScale = Vector3.one;
+                /*
                 fruits[i, j].transform.localScale 
                     = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f, GridMap.Map.CellSize / GridMap.BasicCellSize * 1.5f);
+                */
 
                 fruits[i, j].SetActive(false);
 
@@ -112,7 +119,7 @@ public class Anim_Field : MonoBehaviour
         if(state == Object_Field.FieldState.Plow)
         {
             //fieldAnim.SetBool("Plow", true);
-            fieldAnim.speed = 1 / thisField.FieldPlowTime;
+            fieldAnim.speed = 1 / (thisField.cycle * 2);
             fieldAnim.Play("Plow", 0, startTimeRate);
         }
         else if(state == Object_Field.FieldState.Grow)
@@ -136,7 +143,7 @@ public class Anim_Field : MonoBehaviour
                     fruits[i, j].SetActive(false);
 
                     //bushAnims[i, j].SetTrigger("Next");
-                    bushAnims[i, j].speed = 3 / thisField.CropGrowTime;
+                    bushAnims[i, j].speed = 3 / thisField.cycle;
                     
                     switch (size)
                     {
@@ -163,7 +170,7 @@ public class Anim_Field : MonoBehaviour
 
 
             // 각 레벨별 작물 스폰포인트를 순회
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < BasicObject.MaxLevel; i++)
             {
                 // 해당 라인이 비활성화되어 있다면
                 if (levelPos[i].activeInHierarchy == false)
@@ -222,7 +229,7 @@ public class Anim_Field : MonoBehaviour
                 return;
         }
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < BasicObject.MaxLevel; i++)
         {
             int lineCheck = 1 << i;
 

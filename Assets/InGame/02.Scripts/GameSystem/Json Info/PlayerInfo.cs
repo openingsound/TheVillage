@@ -29,6 +29,7 @@ public class PlayerInfo
     /// 픞레이어의 레벨
     ///</summary>
     private int _level;
+    public int level { get { return _level; } private set { _level = value; } }
 
     /// <summary>
     /// 플레이어의 마지막 접속 시각

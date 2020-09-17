@@ -9,7 +9,7 @@ public class GridMap : MonoBehaviour
     public static GridMap Map { get; private set; } = null;
 
 
-    public const float BasicCellSize = 6f;
+    public const float BasicCellSize = 3f;
 
     [Header(" - 그리드 설정")]
     public int GridSize;

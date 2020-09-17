@@ -24,10 +24,10 @@ public class Object_Field : BasicObject
     // 현재 나무의 크기
 
     // 밭을 가는데 걸리는 시간
-    public float FieldPlowTime { get; protected set; }
+    //public float FieldPlowTime { get; protected set; }
 
     // 열매가 자라나는데 걸리는 시간
-    public float CropGrowTime { get; protected set; }
+    //public float CropGrowTime { get; protected set; }
 
     // 상태 변환이 종료되는 시각 (DateTime 구조체)
     [SerializeField]
@@ -44,7 +44,7 @@ public class Object_Field : BasicObject
     /* 밭의 수확 관련 프로퍼티 */
 
     // 자동수확을 할 것인가
-    public bool isAuto;
+    //public bool isAuto;
 
     #endregion
 
@@ -59,25 +59,22 @@ public class Object_Field : BasicObject
     /// <param name="_name"></param>
     /// <param name="plowTime"></param>
     /// <param name="cropTime"></param>
-    public void InitField(string _name, float plowTime, float cropTime, int _idx, int _level = 1, bool auto = false)
+    public void InitField(string _name, int _cycle, int _idx, int _level = 1)
     {
         // 오브젝트 이름 설정
         name = _name;
 
         // 오브젝트 종류는 밭
         type = "Field";
-        
-        // 밭을 가는데 걸리는 시간 설정
-        FieldPlowTime = plowTime;
 
-        // 작물이 자라는 시간 설정
-        CropGrowTime = cropTime;
+        // 오브젝트의 수확주기
+        cycle = _cycle;
 
         // 레벨은 1
         level = _level;
 
-        // 자동 수확은 off
-        isAuto = auto;
+        // 오브젝트가 자동 수확을 진행한 횟수
+        harvestCount = 0;
 
         mapIdx = _idx;
     }
@@ -99,7 +96,7 @@ public class Object_Field : BasicObject
         anim.Anim_SetLevel(level);
 
         // 나무의 상태 초기화
-        fieldStateInit(FieldState.Plow, SizeState.NULL, FieldPlowTime);
+        fieldStateInit(FieldState.Plow, SizeState.NULL);
     }
 
 
@@ -108,68 +105,119 @@ public class Object_Field : BasicObject
     /// </summary>
     public virtual void FruitHarvesting()
     {
+        harvestCount++;
+
         // 임시 - 이전에 떨구었던 열매 아이템 제거 애니메이션 함수
-        anim.Anim_GetFruitBox();
+        //anim.Anim_GetFruitBox();
 
         // 열매 아이템 떨구기
         anim.Anim_DropBox();
 
-        anim.Anim_SetLevel(level);
+        //anim.Anim_SetLevel(level);
 
         // 다시 열매 성장 상태로 초기화
-        fieldStateInit(FieldState.Grow, SizeState.S, CropGrowTime / 3, true);
+        fieldStateInit(FieldState.Grow, SizeState.S, 0, true);
     }
 
-
     /// <summary>
-    /// 나무의 상태를 변경하는 함수
+    /// 밭의 상태를 변경하는 함수
     /// </summary>
-    /// <param name="newTreeState"></param>
-    /// <param name="newSizeState"></param>
-    /// <param name="endTime"></param>
-    public virtual void fieldStateInit(FieldState newFieldState, SizeState newSizeState, float endTime, bool isHarvest = false, float startTimeRate = 0)
+    /// <param name="newFieldState">밭의 새 성장 상태</param>
+    /// <param name="newSizeState">밭의 새 크기 상태</param>
+    /// <param name="pastTime">현재 상태에서 지난 시간</param>
+    /// <param name="isHarvest">수확을 하려 하는가 (수확 가능 상태에 바로 안되고, 그 다음에 따고서 Fruit 상태로 돌아갈 때 isHarvest를 쓴다)</param>
+    public virtual void fieldStateInit(FieldState newFieldState, SizeState newSizeState, float pastTime = 0, bool isHarvest = false)
     {
         // 상태 변수의 값 변경
         growth = newFieldState;
 
-        GridMap.Map.tiles[mapIdx].IsAuto = isAuto;
+        GridMap.Map.tiles[mapIdx].CountHarvest = harvestCount;
 
         GridMap.Map.tiles[mapIdx].LastStateInt = (int)newFieldState + (int)newSizeState;
 
-        if (startTimeRate != 1)
+        // 상태변화에 필요한 전체 시간
+        float totalTime;
+
+        if (newFieldState == FieldState.Plow)
         {
-            GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.AddSeconds(
-            (double)(endTime - (endTime / (1 - startTimeRate)))).ToString("yyyy-MM-dd HH:mm:ss");
+            totalTime = cycle * 3;
+        }
+        else if (newFieldState == FieldState.Grow)
+        {
+            totalTime = cycle / 3f;
         }
         else
         {
-            double addSeconds;
+            totalTime = 0;
+        }
 
-            if (newFieldState == FieldState.Plow)
-            {
-                addSeconds = FieldPlowTime;
-            }
-            else if (newFieldState == FieldState.Grow)
-            {
-                addSeconds = CropGrowTime / 3;
-            }
-            else
-            {
-                addSeconds = 0;
-            }
-
-            GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.AddSeconds(-1 * addSeconds).ToString("yyyy-MM-dd HH:mm:ss");
+        // 아직 상태 변화 중이라면
+        if (pastTime != totalTime)
+        {
+            // 마지막 상태 변화는 지난 시간만큼 뺀 값
+            GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.AddSeconds(
+            (double)(pastTime * -1)).ToString("yyyy-MM-dd HH:mm:ss");
+        }
+        // 만일 상태 변화가 딱 끝났다면
+        else
+        {
+            // 마지막 상태 변화는 현 상태의 변화 주기만큼 뺀값
+            GridMap.Map.tiles[mapIdx].LastStateTime = System.DateTime.Now.AddSeconds(-1 * totalTime).ToString("yyyy-MM-dd HH:mm:ss");
         }
 
         // 크기 변수의 값 변경
         size = newSizeState;
 
         // 상태 종료때의 시간
-        stateEndTime = System.DateTime.Now.AddSeconds(endTime).ToString("yyyy-MM-dd HH:mm:ss");
+        stateEndTime = System.DateTime.Now.AddSeconds(totalTime - pastTime).ToString("yyyy-MM-dd HH:mm:ss");
         Debug.Log("State Ending Time : " + stateEndTime);
 
         // 상태 애니메이션 초기화 함수 실행
-        anim.Anim_StateInit(newFieldState, newSizeState, isHarvest, startTimeRate);
+        anim.Anim_StateInit(newFieldState, newSizeState, isHarvest, (pastTime / totalTime));
+    }
+    
+    /// <summary>
+    /// 작물을 업그레이드하는 함수
+    /// </summary>
+    public override void Upgrade(int newCycle)
+    {
+        if (level == MaxLevel)
+        {
+            Debug.LogError("Error) 해당 오브젝트는 이미 최대 레벨입니다!");
+            return;
+        }
+
+        // 최고 레벨이 아니면 레벨을 1 올린다
+        level++;
+
+        // 완전히 성장하지 않았을 때
+        System.DateTime newStateEndTime = System.DateTime.Now.AddSeconds(((newCycle / cycle) * (System.DateTime.Now - System.DateTime.Parse(stateEndTime)).TotalSeconds));
+
+        stateEndTime = newStateEndTime.ToString("yyyy-MM-dd HH:mm:ss");
+
+        // 수확 시 필요한 성장 시간 새로 대입
+        cycle = newCycle;
+
+        // 레벨별 초기화 애니메이션 실행
+        anim.Anim_SetLevel(level);
+
+        // 상태변화에 필요한 전체 시간
+        float totalTime;
+
+        if (growth == FieldState.Plow)
+        {
+            totalTime = cycle * 3;
+        }
+        else if (growth == FieldState.Grow)
+        {
+            totalTime = cycle / 3f;
+        }
+        else
+        {
+            totalTime = 0;
+        }
+
+        anim.Anim_StateInit(growth, size, false, (cycle - ((float)(newStateEndTime - System.DateTime.Now).TotalSeconds)) / totalTime);
     }
 
     #endregion
@@ -188,7 +236,7 @@ public class Object_Field : BasicObject
     {
         if(growth == FieldState.Harvest)
         {
-            if(isAuto)
+            if(harvestCount <= (level - 2) * 2)
             {
                 // 수확하는 함수
                 FruitHarvesting();
@@ -209,7 +257,7 @@ public class Object_Field : BasicObject
             // 만일 밭을 다 갈았다면
             if(growth == FieldState.Plow)
             {
-                fieldStateInit(FieldState.Grow, SizeState.S, CropGrowTime / 3);
+                fieldStateInit(FieldState.Grow, SizeState.S);
             }
             // 밭에서 작물이 성장 중이라면
             else
@@ -217,15 +265,15 @@ public class Object_Field : BasicObject
                 switch(size)
                 {
                     case SizeState.S:
-                        fieldStateInit(FieldState.Grow, SizeState.M, CropGrowTime / 3);
+                        fieldStateInit(FieldState.Grow, SizeState.M);
                         break;
 
                     case SizeState.M:
-                        fieldStateInit(FieldState.Grow, SizeState.L, CropGrowTime / 3);
+                        fieldStateInit(FieldState.Grow, SizeState.L);
                         break;
 
                     case SizeState.L:
-                        fieldStateInit(FieldState.Harvest, SizeState.NULL, 0);
+                        fieldStateInit(FieldState.Harvest, SizeState.NULL);
                         break;
                 }
             }
