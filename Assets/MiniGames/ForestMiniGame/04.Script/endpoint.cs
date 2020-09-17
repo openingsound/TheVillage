@@ -8,7 +8,7 @@ public class endpoint : MonoBehaviour
     public GameObject Column;
 
     private float nowTime;
-    private float makeTime = 30.0f;
+    private float makeTime = 5.0f;
 
 
     // Start is called before the first frame update
