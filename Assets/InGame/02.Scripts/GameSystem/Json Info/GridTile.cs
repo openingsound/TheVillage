@@ -24,7 +24,7 @@ public class GridTile
     // 오브젝트의 레벨
     [SerializeField]
     private int level;
-    public int Level { get { return level; } private set { level = value; } }
+    public int Level { get { return level; } set { level = value; } }
     
     // 농작물 관련 오브젝트의 경우 몇번의 자동수확이 이루어졌는가
     [SerializeField]
