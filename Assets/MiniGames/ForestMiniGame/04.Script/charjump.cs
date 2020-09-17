@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
+using System.IO;
 public class charjump : MonoBehaviour
 {
     public GameObject rewardCanvas;
@@ -10,6 +11,9 @@ public class charjump : MonoBehaviour
     public AudioSource tapAudio;
     public AudioSource winAudio;
     public AudioSource collideAudio;
+
+    public List<int> MoneyAndExpList;
+    public Text rewardMoeny;
 
     // Start is called before the first frame update
     void Start()
@@ -40,13 +44,12 @@ public class charjump : MonoBehaviour
     //캐릭터 충돌했을 때 게임오버
     void OnCollisionEnter(Collision coll)
     {
-     
-            collideAudio.Play();
-            failCanvas.SetActive(true);
-            Debug.Log("GameOver");
-            Time.timeScale = 0;
-            gameObject.GetComponent<Animator>().Play("die");
-        
+        collideAudio.Play();
+        failCanvas.SetActive(true);
+        Debug.Log("GameOver");
+        Time.timeScale = 0;
+        gameObject.GetComponent<Animator>().Play("die");
+
     }
 
     public void Replay()
@@ -55,16 +58,35 @@ public class charjump : MonoBehaviour
     }
 
     //동전을 먹을경우 보상
-    private void OnTriggerEnter (Collider collision)
+    private void OnTriggerEnter(Collider collision)
     {
-        if(collision.CompareTag("ScorePlus"))
+        loadMnE();
+        if (collision.CompareTag("ScorePlus"))
         {
             winAudio.Play();
             rewardCanvas.SetActive(true);
             Debug.Log("Player wins");
             Time.timeScale = 0;
             gameObject.GetComponent<Animator>().Play("win");
+            writeMnE(15);
         }
     }
 
+    void loadMnE()
+    {
+        string filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
+        string jdata = File.ReadAllText(filePath_MnE);
+        MoneyAndExpList = JsonUtility.FromJson<Serialization<int>>(jdata).target;
+    }
+    void writeMnE(int good)
+    {
+        string filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
+        print(filePath_MnE);
+        int userlevel = MoneyAndExpList[2];//레벨 저장
+        int UPMoney = userlevel * good;
+        MoneyAndExpList[0] += UPMoney;
+        rewardMoeny.text = System.Convert.ToString(UPMoney);
+        string jdata = JsonUtility.ToJson(new Serialization<int>(MoneyAndExpList));
+        File.WriteAllText(filePath_MnE, jdata);
+    }
 }
