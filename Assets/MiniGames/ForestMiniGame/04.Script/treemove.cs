@@ -13,7 +13,7 @@ public class treemove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time - makeTime > 5.0f)
+        if (Time.time - makeTime > 8.0f)
             Destroy(gameObject);
     }
 }
