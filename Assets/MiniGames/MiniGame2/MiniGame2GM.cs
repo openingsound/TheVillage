@@ -13,6 +13,7 @@ struct pii { int y; int x; };
 
 public class MiniGame2GM : MonoBehaviour
 {
+    public GameManager GM;
     public GameObject linePrefab;
     public Canvas canvas;
     public int ch;
@@ -29,6 +30,8 @@ public class MiniGame2GM : MonoBehaviour
     public GameObject Successpanel;
     public GameObject rewardCanvas;
     public GameObject Failpanel;
+    public List<int> MoneyAndExpList;
+    public Text rewardMoeny;
     void Start()
     {
         foods = new Dictionary<int, Food>();
@@ -82,8 +85,8 @@ public class MiniGame2GM : MonoBehaviour
                 break;
             }
         }
-        
-    }
+        loadMnE();
+}
     bool dfs(int y,int x,int py,int px)
     {//cycle이 존재하면 true 반환
         vis[y, x] = true;
@@ -140,6 +143,23 @@ public class MiniGame2GM : MonoBehaviour
             lineOnEditRcts.sizeDelta = new Vector2(lineOnEditRcts.sizeDelta.x, Vector3.Distance(mousePos, foodOnEdit.transform.localPosition));
             lineOnEditRcts.rotation = Quaternion.FromToRotation(Vector3.up, (mousePos - foodOnEdit.transform.localPosition).normalized);
         }
+    }
+    void loadMnE()
+    {
+        string filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
+        string jdata = File.ReadAllText(filePath_MnE);
+        MoneyAndExpList = JsonUtility.FromJson<Serialization<int>>(jdata).target;
+    }
+    void writeMnE(int good)
+    {
+        string filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
+        print(filePath_MnE);
+        int userlevel = MoneyAndExpList[2];//레벨 저장
+        int UPMoney = userlevel*good;
+        MoneyAndExpList[0] += UPMoney;
+        rewardMoeny.text = System.Convert.ToString( UPMoney);
+        string jdata = JsonUtility.ToJson(new Serialization<int>(MoneyAndExpList));
+        File.WriteAllText(filePath_MnE, jdata);
     }
     void TimeButton()
     {
@@ -280,6 +300,7 @@ public class MiniGame2GM : MonoBehaviour
             Release();
         }
     }
+
     IEnumerator GetScore()
     {
         int score = 0;
@@ -299,6 +320,9 @@ public class MiniGame2GM : MonoBehaviour
             if (score % 2 == 0)
                 Scoretext.fontSize = tem + 1;
         }
+        writeMnE(score);
+        
+
         yield return new WaitForSeconds(0.2f);
         int cou = 0;
         foreach (var line in lines)

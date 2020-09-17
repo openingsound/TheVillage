@@ -141,10 +141,11 @@ public class GameManager : MonoBehaviour
         }
         Load();
         Read_sta();
+        Save();
         ShopUpdate();
         SellUpdate();
         //Save();
-        //print(filePath);
+        print(filePath);
 
         isInit = true;
     }
@@ -158,6 +159,7 @@ public class GameManager : MonoBehaviour
         setLevel(MoneyAndExpList[1]);
         Money_t.text = System.Convert.ToString(UserMoney);
     }
+
 
  
 
@@ -612,6 +614,7 @@ public class GameManager : MonoBehaviour
                 Exp_Fill.fillAmount = (float)exp / (float)Explist[i];
                 UserLevel = i;
                 print("Level : " + UserLevel);
+                MoneyAndExpList[2] = UserLevel;
                 break;
             }
             else
