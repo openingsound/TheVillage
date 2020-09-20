@@ -75,9 +75,7 @@ public class GameManager : MonoBehaviour
     public Text Money_t, Exp_t, Level_t;
     public Image Exp_Fill;
 
-    public static bool isInit = false;
-
-    void Awake()
+    public void Init_GameManager()
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
         //엑셀로 하면 매 줄마다 '\n'이 들어가 있음
@@ -96,7 +94,7 @@ public class GameManager : MonoBehaviour
             x.Cycle = System.Convert.ToInt32(x.SCycle);
             x.Cost = x.level * 10 + x.Cycle / 10;
 
-            Debug.Log(x.Name + " 이미지 : " + ImageSlot[n].ToString());
+            //Debug.Log(x.Name + " 이미지 : " + ImageSlot[n].ToString());
 
             x.image = ImageSlot[n];
             x.num = n++;
@@ -145,8 +143,6 @@ public class GameManager : MonoBehaviour
         SellUpdate();
         //Save();
         //print(filePath);
-
-        isInit = true;
     }
 
     void Read_sta()
@@ -330,17 +326,20 @@ public class GameManager : MonoBehaviour
 
         GameObject harvest = CropPop.transform.GetChild(0).GetChild(1).GetChild(3).gameObject;
 
-        if (InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx((InputManager.InputSystem.TargetPos))].CountHarvest == 0)
+        // 만일 현재 수확이 가능하다면 버튼을 활성화시킴
+        if (GridMap.Map.tiles[GridMap.Map.GettingGridIdx((InputManager.InputSystem.TargetPos))].CountHarvest > 0
+            || GridMap.Map.tiles[GridMap.Map.GettingGridIdx((InputManager.InputSystem.TargetPos))].LastStateInt == (int)Object_Tree.TreeState.Harvest)
         {
-            harvest.GetComponent<Button>().interactable = false;
+            harvest.GetComponent<Button>().interactable = true;
             Color originColor = harvest.GetComponent<Image>().color;
-            harvest.GetComponent<Image>().color = new Color(originColor.r, originColor.g, originColor.b, 0.3f);
+            harvest.GetComponent<Image>().color = new Color(originColor.r, originColor.g, originColor.b, 1f);
         }
+        // 만일 현재 수확이 불가능하다면 버튼을 비활성화시킴
         else
         {
             harvest.GetComponent<Button>().interactable = false;
             Color originColor = harvest.GetComponent<Image>().color;
-            harvest.GetComponent<Image>().color = new Color(originColor.r, originColor.g, originColor.b, 1f);
+            harvest.GetComponent<Image>().color = new Color(originColor.r, originColor.g, originColor.b, 0.3f);
         }
     }
 
@@ -524,7 +523,7 @@ public class GameManager : MonoBehaviour
         if (UserMoney >= upgradeCost)
         {
             //업그레이드 하는 함수 
-            InGameManager.inGameManager.Upgrade(nextcycle);
+            InGameManager.inGameManager.Upgrade();
 
             Write_sta(-upgradeCost, 0);
             Save();
@@ -538,7 +537,7 @@ public class GameManager : MonoBehaviour
     public void UpgradeDig()
     {
         //철거하는 함수
-        InGameManager.inGameManager.Destroy();
+        InGameManager.inGameManager.Remove();
 
         Write_sta(DigCost, 0);
         Save();
@@ -612,6 +611,10 @@ public class GameManager : MonoBehaviour
                 Exp_Fill.fillAmount = (float)exp / (float)Explist[i];
                 UserLevel = i;
                 print("Level : " + UserLevel);
+
+                // 그리드 맵 재생성
+                GridMap.Map.ResizeGrid(i * 2 + 1);
+
                 break;
             }
             else

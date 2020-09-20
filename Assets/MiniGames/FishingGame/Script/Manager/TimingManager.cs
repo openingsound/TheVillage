@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
+using System.IO;
+using UnityEngine.UI;
 public class TimingManager : MonoBehaviour
 {
     [SerializeField] Transform Center;
     [SerializeField] RectTransform[] timingRect = null;
     Vector2[] timingBoxs = null;
 
-    
+    TimeManager _timeManager;
+    public List<int> MoneyAndExpList;
+    public TextMeshProUGUI rewardMoeny;
+    int winT = 0; //성공 횟수 정수
 
    public GameObject _timing;
 
@@ -44,6 +48,8 @@ public class TimingManager : MonoBehaviour
 
         _character = FindObjectOfType<Character>();
 
+        _timeManager = FindObjectOfType<TimeManager>();
+
         timingBoxs = new Vector2[timingRect.Length];
         
         for(int i = 0; i < timingRect.Length; i++)
@@ -51,10 +57,27 @@ public class TimingManager : MonoBehaviour
             timingBoxs[i].Set(Center.localPosition.y - timingRect[i].rect.height / 2
                 , Center.localPosition.y + timingRect[i].rect.height / 2);
         }
+        loadMnE();
     }
 
+    void loadMnE()
+    {
+        string filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
+        string jdata = File.ReadAllText(filePath_MnE);
+        MoneyAndExpList = JsonUtility.FromJson<Serialization<int>>(jdata).target;
+    }
+    void writeMnE(int good)
+    {
+        string filePath_MnE = Application.persistentDataPath + "/MoneyAndExp.txt";
+        print(filePath_MnE);
+        int userlevel = MoneyAndExpList[2];//레벨 저장
+        int UPMoney = 10 + userlevel * good;
+        MoneyAndExpList[0] += UPMoney;
+        rewardMoeny.text = System.Convert.ToString(UPMoney);
+        string jdata = JsonUtility.ToJson(new Serialization<int>(MoneyAndExpList));
+        File.WriteAllText(filePath_MnE, jdata);
+    }
 
-   
 
 
     public void CheckTiming()
@@ -82,6 +105,7 @@ public class TimingManager : MonoBehaviour
                 }
                 if(num > 1)
                 {
+                    writeMnE(3);
                     drawNum += rD.rDraw;
                    
                     OnDraw();
@@ -89,7 +113,7 @@ public class TimingManager : MonoBehaviour
                     reStart = true;
 
                     boly = false;
-                    
+                   
                     _character.boly(boly);
                 }
                 return;
@@ -113,43 +137,48 @@ public class TimingManager : MonoBehaviour
         
         }
 
-   
-    
+
+
     public void OnDraw()
     {
 
-        if (num > 1) { 
+        _timeManager.GameOver(winT);
+
+        if (num > 1)
+        {
 
             Random rD = new Random();
 
             int dD = rD.rNum;
 
-        if(drawNum != 0) { 
+            if (drawNum != 0)
+            {
 
-    Debug.Log(dD);        
-            
-                    if(drawNum >= dD)
-                    {
-                        uIManager.Success();
-                        
-                      
-                    }
-                else { 
-                    
+                Debug.Log(dD);
+
+                if (drawNum >= dD)
+                {
+                    uIManager.Success();
+                    winT++; //성공 횟수 증가
+
+                }
+                else
+                {
+
                     uIManager.Fail();
-                    
-                        
-                    }
 
-    
-        }
-        else
-        {
+
+                }
+
+
+            }
+            else
+            {
                 uIManager.Fail();
-            Debug.Log("FAil");
-               
+                Debug.Log("FAil");
+
+            }
         }
-    }
     }
 
     private void Update()
@@ -172,6 +201,13 @@ public class TimingManager : MonoBehaviour
 
          
      
+        
+    }
+
+    public void Restart(int a)
+    {
+        drawNum = a;
+        num = a;
         
     }
 }

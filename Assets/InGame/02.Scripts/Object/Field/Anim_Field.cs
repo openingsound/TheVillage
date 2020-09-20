@@ -113,19 +113,30 @@ public class Anim_Field : MonoBehaviour
     /// </summary>
     /// <param name="state">나무의 상태</param>
     /// <param name="size">나무의 성장 크기 정도</param>
-    public void Anim_StateInit(Object_Field.FieldState state, Object_Field.SizeState size = Object_Field.SizeState.NULL, bool isHarvest = false, float startTimeRate = 0)
+    /// <param name="startTimeRate">애니메이션의 시작 지점 (범위: 0.0 ~ 1.0f)</param>
+    public void Anim_StateInit(Object_Field.FieldState state, Object_Field.SizeState size = Object_Field.SizeState.NULL, float startTimeRate = 0)
     {
         // 밭 가는 애니메이션 실행
         if(state == Object_Field.FieldState.Plow)
         {
-            //fieldAnim.SetBool("Plow", true);
-            fieldAnim.speed = 1 / (thisField.cycle * 2);
-            fieldAnim.Play("Plow", 0, startTimeRate);
+            // 밭 갈기
+
+            // 플레이할 애니메이션의 이름
+            string playAnimName = "Plow";
+
+            // 플레이할 애니메이션의 재생 속도
+            fieldAnim.speed = 1f / (thisField.realCycle * 3);
+
+            // 애니메이션 재생
+            fieldAnim.Play(playAnimName, 0, startTimeRate);
         }
         else if(state == Object_Field.FieldState.Grow)
         {
             // 밭은 다 간 상태로 유지함
             fieldAnim.Play("Plow", 0, 1);
+
+            // 레벨 별 라인 활성화
+            Anim_SetLevel(thisField.level);
 
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < 5; i++)
@@ -142,23 +153,16 @@ public class Anim_Field : MonoBehaviour
                 {
                     fruits[i, j].SetActive(false);
 
-                    //bushAnims[i, j].SetTrigger("Next");
-                    bushAnims[i, j].speed = 3 / thisField.cycle;
-                    
-                    switch (size)
-                    {
-                        case Object_Field.SizeState.S:
-                            bushAnims[i, j].Play("Crop_S", 0, startTimeRate);
-                            break;
+                    // 작물 성장 시작
 
-                        case Object_Field.SizeState.M:
-                            bushAnims[i, j].Play("Crop_M", 0, startTimeRate);
-                            break;
+                    // 플레이할 애니메이션의 이름
+                    string playAnimName = "Crop" + System.Enum.GetName(typeof(Object_Field.SizeState), size);
 
-                        case Object_Field.SizeState.L:
-                            bushAnims[i, j].Play("Crop_L", 0, startTimeRate);
-                            break;
-                    }
+                    // 플레이할 애니메이션의 재생 속도
+                    fieldAnim.speed = 3f / thisField.realCycle;
+
+                    // 애니메이션 재생
+                    bushAnims[i, j].Play(playAnimName, 0, startTimeRate);
                 }
             }
          
@@ -168,6 +172,8 @@ public class Anim_Field : MonoBehaviour
             // 밭은 다 간 상태로 유지함
             fieldAnim.Play("Plow", 0, 1);
 
+            // 레벨 별 라인 활성화
+            Anim_SetLevel(thisField.level);
 
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < BasicObject.MaxLevel; i++)
@@ -182,8 +188,18 @@ public class Anim_Field : MonoBehaviour
                 // 다음 성장 상태로 변경
                 for (int j = 0; j < 5; j++)
                 {
-                    //bushAnims[i, j].SetTrigger("Next");
-                    bushAnims[i, j].Play("IDLE", 0, startTimeRate);
+                    // 작물 성장 시작
+
+                    // 플레이할 애니메이션의 이름
+                    string playAnimName = "IDLE";
+
+                    // 플레이할 애니메이션의 재생 속도
+                    fieldAnim.speed = 1;
+
+                    // 애니메이션 재생
+                    bushAnims[i, j].Play(playAnimName, 0, startTimeRate);
+                    
+                    // 다 자란 작물 열매 활성화
                     fruits[i, j].SetActive(true);
                 }
             }

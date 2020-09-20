@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4459978372833835566}
   - component: {fileID: 4435469314444178242}
   - component: {fileID: 4441890141479632592}
-  - component: {fileID: 5233367555632454599}
+  - component: {fileID: 2393102000788826814}
   m_Layer: 0
   m_Name: SM_Prop_Apple_01
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!95 &5233367555632454599
+--- !u!95 &2393102000788826814
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0

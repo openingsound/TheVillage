@@ -104,31 +104,20 @@ public class Anim_Tree : MonoBehaviour
     /// </summary>
     /// <param name="state">나무의 상태</param>
     /// <param name="size">나무의 성장 크기 정도</param>
-    public void Anim_StateInit(Object_Tree.TreeState state, Object_Tree.SizeState size = Object_Tree.SizeState.NULL, bool isHarvest = false, float startTimeRate = 0)
+    /// <param name="startTimeRate">애니메이션의 시작 지점 (범위: 0.0 ~ 1.0f)</param>
+    public void Anim_StateInit(Object_Tree.TreeState state, Object_Tree.SizeState size = Object_Tree.SizeState.NULL, float startTimeRate = 0)
     {
         // 변경된 상태가 Bush(묘목)이라면
         if(state == Object_Tree.TreeState.Bush)
         {
-            // 애니메이션의 재생 속도 조절
-            treeAnim.speed = 3 / (thisTree.cycle * 2);
+            // 플레이할 애니메이션의 이름
+            string playAnimName = "Bush_" + System.Enum.GetName(typeof(Object_Tree.SizeState), size);
 
-            // 다음 성장 애니메이션 실행
-            //treeAnim.SetTrigger("Next");
+            // 플레이할 애니메이션의 재생 속도
+            treeAnim.speed = 1f / thisTree.realCycle;
 
-            switch(size)
-            {
-                case Object_Tree.SizeState.S:
-                    treeAnim.Play("Bush_S", 0, startTimeRate);
-                    break;
-
-                case Object_Tree.SizeState.M:
-                    treeAnim.Play("Bush_M", 0, startTimeRate);
-                    break;
-
-                case Object_Tree.SizeState.L:
-                    treeAnim.Play("Bush_L", 0, startTimeRate);
-                    break;
-            }
+            // 애니메이션 재생
+            treeAnim.Play(playAnimName, 0, startTimeRate);
             
         }
         // 변경된 상태가 Fruit(과일)이라면
@@ -144,25 +133,8 @@ public class Anim_Tree : MonoBehaviour
                 treeObject.SetActive(true);
             }
 
-            // 수확 애니메이션 실행 시
-            if(isHarvest)
-            {
-                for(int i = 0; i < BasicObject.MaxLevel; i++)
-                {
-                    // 해당 라인이 비활성화되어 있다면
-                    if (spawnpoints[i].gameObject.activeInHierarchy == false)
-                    {
-                        // 처리를 건너뜀
-                        continue;
-                    }
-
-                    // 해당 열매 수확
-                    fruitAnims[i].SetTrigger("Harvest");
-                }
-
-                // 모든 열매 수확 후 오브젝트 레벨 애니메이션 초기화 설정 진행
-                Anim_SetLevel(thisTree.level);
-            }
+            // 애니메이션 실행 전 나무의 레벨에 맞게 라인 활성화
+            Anim_SetLevel(thisTree.level);
 
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < BasicObject.MaxLevel; i++)
@@ -175,13 +147,19 @@ public class Anim_Tree : MonoBehaviour
                 }
 
                 // 과일 성장 시작
-                fruitAnims[i].SetTrigger("Grow");
-                fruitAnims[i].speed = 1 / thisTree.cycle;
-                fruitAnims[i].Play("Grow", 0, startTimeRate);
+
+                // 플레이할 애니메이션의 이름
+                string playAnimName = "Grow";
+
+                // 플레이할 애니메이션의 재생 속도
+                fruitAnims[i].speed = 1f / thisTree.realCycle;
+
+                // 애니메이션 재생
+                fruitAnims[i].Play(playAnimName, 0, startTimeRate);
             }
 
         }
-        else
+        else if (state == Object_Tree.TreeState.Harvest)
         {
             // 만일 나무 오브젝트가 비활성화 되어있다면
             if (treeObject.activeInHierarchy == false)
@@ -192,6 +170,9 @@ public class Anim_Tree : MonoBehaviour
                 // 나무 오브젝트 활성화
                 treeObject.SetActive(true);
             }
+
+            // 애니메이션 실행 전 나무의 레벨에 맞게 라인 활성화
+            Anim_SetLevel(thisTree.level);
 
             // 각 레벨별 작물 스폰포인트를 순회
             for (int i = 0; i < BasicObject.MaxLevel; i++)
@@ -204,7 +185,15 @@ public class Anim_Tree : MonoBehaviour
                 }
 
                 // 과일 성장 완료
-                fruitAnims[i].Play("Grow", 0, 1f);
+                
+                // 플레이할 애니메이션의 이름
+                string playAnimName = "Grow";
+
+                // 플레이할 애니메이션의 재생 속도
+                fruitAnims[i].speed = 1;
+
+                // 애니메이션 재생
+                fruitAnims[i].Play(playAnimName, 0, 1f);
             }
         }
 

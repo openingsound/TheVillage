@@ -5,19 +5,20 @@ using UnityEngine.UI;
 
 public class InGameUIManager : MonoBehaviour
 {
-    //public static InGameUIManager UImanager;
-
+    #region InGameUI Property
+    
     /* 현재 UI 상태 표시 변수 */
 
     /// <summary>
     /// UI 활성화 상태 비트 플래그
     /// 1 : 상점 / 2 : 건설 / 4 : 나무 / 8 : 밭
     /// </summary>
-    public enum UI_BitFlag : int { NONE = 0, TREE = 1, FIELD = 2, BUILD = 4, SHOP = 8, AUCTION = 16 };
+    [System.Flags]
+    public enum UI_BitFlag : int { NONE = 0, TREE = 1, FIELD = 2, BUILD = 4, SHOP = 8, AUCTION = 16, OPTION = 32 };
 
     public static UI_BitFlag UICheck;
 
-    public static bool isUIon;
+    //public static bool isUIon;
 
 
     /* 땅 클릭 시 UI표시 */
@@ -44,12 +45,12 @@ public class InGameUIManager : MonoBehaviour
     // Auction Canvas
     public GameObject auctionUI;
 
+    // Option Canvas
+    public GameObject OptionUI;
 
+    #endregion
 
-    private void Awake()
-    {
-        
-    }
+    #region InGameUI Basic Method
 
     // Start is called before the first frame update
     void Start()
@@ -57,16 +58,10 @@ public class InGameUIManager : MonoBehaviour
         // UI 활성화 상태 비트 플래그 
         UICheck = (int) UI_BitFlag.NONE;
 
-        // UI 비활성화 상태
-        isUIon = false;
-
         // 타겟 표시 UI 비활성화 및 크기를 그리드 셀 크기에 맞게 조절
-        //TargetUI.SetActive(false);
+        TargetUI.SetActive(false);
         TargetUI.transform.localScale = new Vector3(GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize, GridMap.Map.CellSize / GridMap.BasicCellSize);
-
     }
-
-
 
     private void LateUpdate()
     {
@@ -79,132 +74,56 @@ public class InGameUIManager : MonoBehaviour
             shopUI.SetActive(true);
         }
 
-        // 이 아래는 빈땅, 나무, 밭 클릭 시 나타나는 UI 표시
-        if (UICheck != UI_BitFlag.NONE && UICheck != UI_BitFlag.BUILD)
-            return;
-
-
-        // 만일 클릭이 일어났다면 상태 반전(UI on <-> off)
-        if(InputManager.InputSystem.State == InputManager.InputState.CLICK)
+        // UI가 켜져있지 않을 때 클릭이 일어났다면
+        if(UICheck == UI_BitFlag.NONE && InputManager.InputSystem.State == InputManager.InputState.CLICK)
         {
-            if (InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos) == -1)
+            // 만일 범위 밖이라면 UI표시를 하지 않는다
+            if (GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos) == -1)
                 return;
 
-            // UI 상태 반전
-            isUIon = !isUIon;
-            
-            // 만일 UI가 꺼져 있었다면
-            if(isUIon == true)
+            // 현재 클릭한 오브젝트의 태그로 UI 상태 변경
+            switch (InputManager.InputSystem.selectedObject.tag)
             {
-                // 현재 클릭한 오브젝트의 태그로 UI 상태 변경
-                switch(InputManager.InputSystem.selectedObject.tag)
-                {
-                    // 빈 땅인 경우
-                    case "Boundary":
-                        UICheck = UI_BitFlag.BUILD;
-                        break;
-
-                    // 밭인 경우
-                    case "Field":
-                        UICheck = UI_BitFlag.FIELD;
-                        break;
-
-                    // 나무인 경우
-                    case "Tree":
-                        UICheck = UI_BitFlag.TREE;
-                        break;
-                }
-            }
-        }
-        // 만일 드래그가 일어났다면 UI를 끄기만 함(UI on -> off)
-        else if(InputManager.InputSystem.State == InputManager.InputState.DRAG)
-        {
-            // 만일 UI가 켜져있다면
-            if(isUIon == true)
-            {
-                // UI 비활성화
-                isUIon = false;
-
-            }
-        }
-
-        // UI 상태 변수들을 토대로 UI를 키고 끔
-        VisualizeUI();
-    }
-
-
-
-
-    private void VisualizeUI()
-    {
-        // UI를 킬 때
-        if(isUIon == true)
-        {
-            switch(UICheck)
-            {
-                case UI_BitFlag.BUILD:
-                    gameManager.OpenBuildPop();
+                // 빈 땅인 경우 - 건설 UI를 킨다
+                case "Boundary":
+                    // 단, 그리드의 내용물에 아무것도 없어야 한다
+                    if(GridMap.Map.tiles[GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos)].Type == "")
+                        OnClickBuildEnter();
                     break;
 
-                case UI_BitFlag.FIELD:
-                    // 밭 UI 활성화
-                    OnClickCropEnter();
+                // 밭인 경우 - 작물 UI를 킨다
+                case "Field":
+                    // 단, 그리드의 내용물이 밭이어야 한다
+                    if (GridMap.Map.tiles[GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos)].Type == "Field")
+                        OnClickCropEnter();
                     break;
 
-                case UI_BitFlag.TREE:
-                    // 나무 UI 활성화
-                    OnClickCropEnter();
+                // 나무인 경우 - 작물 UI를 킨다
+                case "Tree":
+                    // 단, 그리드의 내용물이 나무이어야 한다
+                    if (GridMap.Map.tiles[GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos)].Type == "Tree")
+                        OnClickCropEnter();
                     break;
             }
 
-            if(TargetUI.activeInHierarchy == false)
+            // 만일 TargetUI가 꺼져 있으면 끈다
+            if (TargetUI.activeInHierarchy == false)
             {
                 // 타겟 위치 표시 UI 활성화
                 TargetUI.SetActive(true);
-                TargetUI.transform.position = InputManager.InputSystem.TargetPos;
-
-                // 캠의 위치 설점 (나중에 zoom 크기에 따라 변경되도록 조절)
-                CamFollow.TargetPos = InputManager.InputSystem.TargetPos + new Vector3(10, 0, -3);
-            }
-        }
-        // UI를 끌 때
-        else
-        {
-            switch (UICheck)
-            {
-                case UI_BitFlag.BUILD:
-                    gameManager.CloseBuildPop();
-                    break;
-
-                case UI_BitFlag.FIELD:
-                    // 밭 UI 비활성화
-                    cropUI.SetActive(false);
-
-                    upgradeUI.SetActive(false);
-                    break;
-
-                case UI_BitFlag.TREE:
-                    // 나무 UI 비활성화
-                    cropUI.SetActive(false);
-
-                    upgradeUI.SetActive(false);
-                    break;
-
             }
 
-            // 상태를 NONE으로 한다
-            UICheck = UI_BitFlag.NONE;
+            // 땅 위치 표시 UI를 위치에 맞게 조절
+            TargetUI.transform.position = InputManager.InputSystem.TargetPos;
 
-
-            if (TargetUI.activeInHierarchy == true)
-            {
-                // 타겟 위치 표시 UI 비활성화
-                TargetUI.gameObject.SetActive(false);
-            }
+            // 캠의 위치 설점 (나중에 zoom 크기에 따라 변경되도록 조절)
+            CamFollow.TargetPos = InputManager.InputSystem.TargetPos + new Vector3(10, 0, -3);
         }
     }
 
+    #endregion
 
+    #region InGameUI OnClick Method
 
     /// <summary>
     /// 상점 UI를 킬 때 호출되는 함수
@@ -212,12 +131,15 @@ public class InGameUIManager : MonoBehaviour
     public void OnClickShopEnter()
     {
         // 상점과 경매 UI를 킨 것이 아니라면
-        if (UICheck < UI_BitFlag.SHOP)
+        if ((UICheck != UI_BitFlag.SHOP) && (UICheck != UI_BitFlag.AUCTION))
         {
+            // 다른 UI를 일단 끈다
             switch (UICheck)
             {
                 case UI_BitFlag.BUILD:
                     gameManager.CloseBuildPop();
+
+                    TargetUI.SetActive(false);
                     break;
 
                 case UI_BitFlag.FIELD:
@@ -225,6 +147,8 @@ public class InGameUIManager : MonoBehaviour
                     cropUI.SetActive(false);
 
                     upgradeUI.SetActive(false);
+
+                    TargetUI.SetActive(false);
                     break;
 
                 case UI_BitFlag.TREE:
@@ -232,6 +156,8 @@ public class InGameUIManager : MonoBehaviour
                     cropUI.SetActive(false);
 
                     upgradeUI.SetActive(false);
+
+                    TargetUI.SetActive(false);
                     break;
             }
             
@@ -240,13 +166,8 @@ public class InGameUIManager : MonoBehaviour
 
             // 상점 UI 활성화
             shopUI.SetActive(true);
-
-            // UI 상태 활성화
-            isUIon = true;
         }
     }
-
-
 
     /// <summary>
     /// 상점 UI를 끌 때 호출되는 함수
@@ -261,13 +182,8 @@ public class InGameUIManager : MonoBehaviour
 
             // 상점 UI 비활성화
             shopUI.SetActive(false);
-
-            // UI 상태 비활성화
-            isUIon = false;
         }
     }
-
-
 
     /// <summary>
     /// 경매 UI를 킬 때 호출되는 함수
@@ -275,12 +191,15 @@ public class InGameUIManager : MonoBehaviour
     public void OnClickAuctionEnter()
     {
         // 상점과 경매 UI를 킨 것이 아니라면
-        if (UICheck < UI_BitFlag.SHOP)
+        if ((UICheck != UI_BitFlag.SHOP) && (UICheck != UI_BitFlag.AUCTION))
         {
+            // 다른 UI를 일단 끈다
             switch (UICheck)
             {
                 case UI_BitFlag.BUILD:
                     gameManager.CloseBuildPop();
+
+                    TargetUI.SetActive(false);
                     break;
 
                 case UI_BitFlag.FIELD:
@@ -288,6 +207,8 @@ public class InGameUIManager : MonoBehaviour
                     cropUI.SetActive(false);
 
                     upgradeUI.SetActive(false);
+
+                    TargetUI.SetActive(false);
                     break;
 
                 case UI_BitFlag.TREE:
@@ -295,8 +216,9 @@ public class InGameUIManager : MonoBehaviour
                     cropUI.SetActive(false);
 
                     upgradeUI.SetActive(false);
-                    break;
 
+                    TargetUI.SetActive(false);
+                    break;
             }
 
             // 상태를 변경하고 경매를 킨다
@@ -304,13 +226,8 @@ public class InGameUIManager : MonoBehaviour
 
             // 경매 UI 활성화
             gameManager.OpenSelldPop();
-
-            // UI 상태 활성화
-            isUIon = true;
         }
     }
-
-
 
     /// <summary>
     /// 경매 UI를 끌 때 호출되는 함수
@@ -325,12 +242,24 @@ public class InGameUIManager : MonoBehaviour
 
             // 경매 UI 비활성화
             gameManager.CloseSellPop();
-
-            // UI 상태 비활성화
-            isUIon = false;
         }
     }
 
+    /// <summary>
+    /// 건설 UI를 키는 함수
+    /// </summary>
+    public void OnClickBuildEnter()
+    {
+        // 만일 아무 UI도 켜져 있지 않다면
+        if(UICheck == UI_BitFlag.NONE)
+        {
+            // 상태를 건설 모드로 변경
+            UICheck = UI_BitFlag.BUILD;
+
+            // 건설 UI 활성화
+            gameManager.OpenBuildPop();
+        }
+    }
 
     /// <summary>
     /// 건설 UI를 끄는 함수
@@ -346,12 +275,10 @@ public class InGameUIManager : MonoBehaviour
             // 건설 UI 비활성화
             gameManager.CloseBuildPop();
 
-            // UI 상태 비활성화
-            isUIon = false;
+            // 타겟 UI 비활성화
+            TargetUI.SetActive(false);
         }
     }
-
-
 
     /// <summary>
     /// 업그레이드 UI를 키는 함수
@@ -363,12 +290,10 @@ public class InGameUIManager : MonoBehaviour
             Debug.Log("OnClickUpgradeEnter() 실행!");
 
             InGameManager.inGameManager.ItemGameManager.UpgradeUpdate(
-                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Name,
-                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Level);
+                GridMap.Map.tiles[GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos)].Name,
+                GridMap.Map.tiles[GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos)].Level);
         }
     }
-
-
 
     /// <summary>
     /// 업그레이드 UI를 끄는 함수
@@ -382,8 +307,25 @@ public class InGameUIManager : MonoBehaviour
             upgradeUI.SetActive(false);
         }
     }
+    
+    /// <summary>
+    /// 작물 UI를 키는 함수
+    /// </summary>
+    public void OnClickCropEnter()
+    {
+        if (UICheck == UI_BitFlag.NONE)
+        {
+            UICheck = (InputManager.InputSystem.selectedObject.CompareTag("Tree")) ? UI_BitFlag.TREE :
+                ((InputManager.InputSystem.selectedObject.CompareTag("Field")) ? UI_BitFlag.FIELD : UI_BitFlag.NONE);
 
+            if (UICheck == UI_BitFlag.NONE)
+                return;
 
+            InGameManager.inGameManager.ItemGameManager.CropUpdate(
+                GridMap.Map.tiles[GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos)].Name,
+                GridMap.Map.tiles[GridMap.Map.GettingGridIdx(InputManager.InputSystem.TargetPos)].Level);
+        }
+    }
 
     /// <summary>
     /// 작물 UI를 끄는 함수
@@ -394,44 +336,43 @@ public class InGameUIManager : MonoBehaviour
         {
             cropUI.SetActive(false);
 
-            UICheck = UI_BitFlag.NONE;
+            TargetUI.SetActive(false);
 
-            isUIon = false;
+            UICheck = UI_BitFlag.NONE;
         }
     }
 
     /// <summary>
-    /// 작물 UI를 키는 함수
+    /// Option UI를 키는 함수
     /// </summary>
-    public void OnClickCropEnter()
+    public void OnClickOptionEnter()
     {
-        if(UICheck < UI_BitFlag.SHOP)
+        // 만일 옵션이 켜져있지 않다면
+        if((UICheck & UI_BitFlag.OPTION) == 0)
         {
-            UICheck = (InputManager.InputSystem.selectedObject.CompareTag("Tree")) ? UI_BitFlag.TREE : 
-                ((InputManager.InputSystem.selectedObject.CompareTag("Field")) ? UI_BitFlag.FIELD : UI_BitFlag.NONE);
+            // 옵션 창을 킨다
+            OptionUI.SetActive(true);
 
-            if (UICheck == UI_BitFlag.NONE)
-                return;
-
-            InGameManager.inGameManager.ItemGameManager.CropUpdate(
-                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Name,
-                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Level);
-
-            isUIon = true;
+            // 상태를 옵션창을 킨 상태로 변경
+            UICheck |= UI_BitFlag.OPTION;
         }
     }
 
-    public void OnClickHarvest()
+    /// <summary>
+    /// Option UI를 끄는 함수
+    /// </summary>
+    public void OnClickOptionExit()
     {
-        if(InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].CountHarvest > 0)
+        // 만일 옵션창이 켜져 있다면
+        if((UICheck & UI_BitFlag.OPTION) != 0)
         {
-            InGameManager.inGameManager.ItemGameManager.harvest(
-                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].Name,
-                InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].CountHarvest);
+            // 옵션창을 끈다
+            OptionUI.SetActive(false);
 
-            InGameManager.inGameManager.gridSystem.tiles[InGameManager.inGameManager.gridSystem.GettingGridIdx(InputManager.InputSystem.TargetPos)].CountHarvest = 0;
-
-            OnClickCropExit();
+            // 상태를 옵션창을 끈 상태로 변경
+            UICheck &= ~(UI_BitFlag.OPTION);
         }
     }
+
+    #endregion
 }

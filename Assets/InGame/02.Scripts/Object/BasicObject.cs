@@ -29,12 +29,17 @@ public abstract class BasicObject : MonoBehaviour
     /// <summary>
     ///  오브젝트가 자동수확을 한 횟수
     /// </summary>
-    public int harvestCount { get; protected set; }
+    public int harvestCount { get; set; }
 
     /// <summary>
-    /// 오브젝트의 수확주기 (건설주기는 수확주기의 2배) (단위 : 초)
+    /// 오브젝트의 기본 수확주기 (건설주기는 수확주기의 2배) (단위 : 초)
     /// </summary>
     public int cycle { get; protected set; }
+
+    /// <summary>
+    /// 실제 작물의 사이클 (단위 : 초)
+    /// </summary>
+    public float realCycle { get; protected set; }
 
     /// <summary>
     /// 현재 오브젝트의 인덱스
@@ -44,6 +49,5 @@ public abstract class BasicObject : MonoBehaviour
     /// <summary>
     /// 오브젝트의 업그레이드를 하는 함수
     /// </summary>
-    /// <param name="newCycle">오브젝트의 다음 레벨의 수확주기</param>
-    public abstract void Upgrade(int newCycle);
+    public abstract void Upgrade();
 }

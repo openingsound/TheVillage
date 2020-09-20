@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2679927187011082263}
-  - component: {fileID: 5922885200598661026}
+  - component: {fileID: 6701853355903227245}
   m_Layer: 0
   m_Name: Bush_02_Tree
   m_TagString: Untagged
@@ -34,7 +34,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &5922885200598661026
+--- !u!95 &6701853355903227245
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0

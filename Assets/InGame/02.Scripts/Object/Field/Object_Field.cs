@@ -21,14 +21,6 @@ public class Object_Field : BasicObject
     // 현재 작물의 크기
     public SizeState size { get; protected set; }
 
-    // 현재 나무의 크기
-
-    // 밭을 가는데 걸리는 시간
-    //public float FieldPlowTime { get; protected set; }
-
-    // 열매가 자라나는데 걸리는 시간
-    //public float CropGrowTime { get; protected set; }
-
     // 상태 변환이 종료되는 시각 (DateTime 구조체)
     [SerializeField]
     protected string stateEndTime;
@@ -48,17 +40,16 @@ public class Object_Field : BasicObject
 
     #endregion
 
-
-
     #region Field Basic Method
 
 
     /// <summary>
     /// 밭의 기본적인 수치들을 초기화하는 함수
     /// </summary>
-    /// <param name="_name"></param>
-    /// <param name="plowTime"></param>
-    /// <param name="cropTime"></param>
+    /// <param name="_name">밭의 이름</param>
+    /// <param name="_cycle">밭의 수확 주기</param>
+    /// <param name="_idx">그리드 상의 인덱스 번호</param>
+    /// <param name="_level">밭의 레벨</param>
     public void InitField(string _name, int _cycle, int _idx, int _level = 1)
     {
         // 오브젝트 이름 설정
@@ -70,13 +61,17 @@ public class Object_Field : BasicObject
         // 오브젝트의 수확주기
         cycle = _cycle;
 
-        // 레벨은 1
+        // 레벨 초기화
         level = _level;
 
         // 오브젝트가 자동 수확을 진행한 횟수
         harvestCount = 0;
 
+        // 그리드 상의 인덱스 번호
         mapIdx = _idx;
+
+        // 오브젝트의 실제 수확 주기 초기화
+        realCycle = cycle - (cycle / 10f) * (level - 1);
     }
 
 
@@ -96,7 +91,7 @@ public class Object_Field : BasicObject
         anim.Anim_SetLevel(level);
 
         // 나무의 상태 초기화
-        fieldStateInit(FieldState.Plow, SizeState.NULL);
+        //fieldStateInit(FieldState.Plow, SizeState.NULL);
     }
 
 
@@ -111,12 +106,12 @@ public class Object_Field : BasicObject
         //anim.Anim_GetFruitBox();
 
         // 열매 아이템 떨구기
-        anim.Anim_DropBox();
+        //anim.Anim_DropBox();
 
         //anim.Anim_SetLevel(level);
 
         // 다시 열매 성장 상태로 초기화
-        fieldStateInit(FieldState.Grow, SizeState.S, 0, true);
+        fieldStateInit(FieldState.Grow, SizeState.S, 0);
     }
 
     /// <summary>
@@ -125,8 +120,7 @@ public class Object_Field : BasicObject
     /// <param name="newFieldState">밭의 새 성장 상태</param>
     /// <param name="newSizeState">밭의 새 크기 상태</param>
     /// <param name="pastTime">현재 상태에서 지난 시간</param>
-    /// <param name="isHarvest">수확을 하려 하는가 (수확 가능 상태에 바로 안되고, 그 다음에 따고서 Fruit 상태로 돌아갈 때 isHarvest를 쓴다)</param>
-    public virtual void fieldStateInit(FieldState newFieldState, SizeState newSizeState, float pastTime = 0, bool isHarvest = false)
+    public virtual void fieldStateInit(FieldState newFieldState, SizeState newSizeState, float pastTime = 0)
     {
         // 상태 변수의 값 변경
         growth = newFieldState;
@@ -173,56 +167,40 @@ public class Object_Field : BasicObject
         Debug.Log("State Ending Time : " + stateEndTime);
 
         // 상태 애니메이션 초기화 함수 실행
-        anim.Anim_StateInit(newFieldState, newSizeState, isHarvest, (pastTime / totalTime));
+        anim.Anim_StateInit(newFieldState, newSizeState, ((newFieldState == FieldState.Harvest) ? 0 : (pastTime / totalTime)));
     }
     
     /// <summary>
     /// 작물을 업그레이드하는 함수
     /// </summary>
-    public override void Upgrade(int newCycle)
+    public override void Upgrade()
     {
         if (level == MaxLevel)
         {
-            Debug.LogError("Error) 해당 오브젝트는 이미 최대 레벨입니다!");
+            Debug.Log("Error) 해당 오브젝트는 이미 최대 레벨입니다!");
             return;
         }
 
         // 최고 레벨이 아니면 레벨을 1 올린다
         level++;
 
-        // 완전히 성장하지 않았을 때
-        System.DateTime newStateEndTime = System.DateTime.Now.AddSeconds(((newCycle / cycle) * (System.DateTime.Now - System.DateTime.Parse(stateEndTime)).TotalSeconds));
+        // 그리고 이를 그리드 타일에도 저장한다
+        GridMap.Map.tiles[mapIdx].Level++;
 
-        stateEndTime = newStateEndTime.ToString("yyyy-MM-dd HH:mm:ss");
+        // 새 수확 주기
+        float newLevelCycle = cycle - (cycle / 10f) * (level - 1);
 
-        // 수확 시 필요한 성장 시간 새로 대입
-        cycle = newCycle;
+        // 진척도를 0.0 ~ 1.0 사이로 표현
+        float progress = ((float)(System.DateTime.Now - System.DateTime.Parse(GridMap.Map.tiles[mapIdx].LastStateTime)).Seconds) / realCycle;
 
-        // 레벨별 초기화 애니메이션 실행
-        anim.Anim_SetLevel(level);
+        // 새 수확 주기 대입
+        realCycle = newLevelCycle;
 
-        // 상태변화에 필요한 전체 시간
-        float totalTime;
-
-        if (growth == FieldState.Plow)
-        {
-            totalTime = cycle * 3;
-        }
-        else if (growth == FieldState.Grow)
-        {
-            totalTime = cycle / 3f;
-        }
-        else
-        {
-            totalTime = 0;
-        }
-
-        anim.Anim_StateInit(growth, size, false, (cycle - ((float)(newStateEndTime - System.DateTime.Now).TotalSeconds)) / totalTime);
+        // 상태 변경
+        fieldStateInit(growth, size, progress * newLevelCycle);
     }
 
     #endregion
-
-
 
     #region Tree Basic LifeCycle
 
@@ -236,7 +214,7 @@ public class Object_Field : BasicObject
     {
         if(growth == FieldState.Harvest)
         {
-            if(harvestCount <= (level - 2) * 2)
+            if(harvestCount < Mathf.Max(0, (level - 2) * 2))
             {
                 // 수확하는 함수
                 FruitHarvesting();

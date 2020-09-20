@@ -7,7 +7,7 @@ public class UIManager : MonoBehaviour
   
     TimingManager _timingManager;
     
-     public Text _gameOverText;
+     
 
     public GameObject coin;
 
@@ -43,6 +43,6 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        _gameOverText.text = "Game Over\n획득 골드: ";
+       
     }
 }

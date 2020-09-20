@@ -67,7 +67,16 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    int n = 0; //버튼 1 비 활성화 정수
+    public int num;//버튼 1 비 활성화 정수
+    bool nT = false;
+    int n = 0;
+    
+     public void NRe()
+    {       
+         n = 0;
+        Debug.Log(num);
+        _button.ButtonInteractable(false);
+    }
 
     public void OnClick1()
     {
@@ -75,16 +84,23 @@ public class PlayerController : MonoBehaviour
 
         theTimingManager.CheckTiming();
 
-        n++;
+       num = n;
 
-        if (n % 2 == 0)
+        num++;
+        Debug.Log(num);
+
+        if (num % 2 == 0)
         {
             _button.ButtonInteractable(false);
         }
+
     }
 
     void Update()
     {
         button = GameObject.FindWithTag("Button");
     }
+
+    
+
 }

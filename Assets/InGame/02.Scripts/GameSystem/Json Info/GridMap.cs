@@ -6,40 +6,73 @@ using UnityEngine;
 [System.Serializable]
 public class GridMap : MonoBehaviour
 {
+    /// <summary>
+    /// 그리드 맵의 싱글턴
+    /// </summary>
     public static GridMap Map { get; private set; } = null;
 
-
+    /// <summary>
+    /// 그리드 맵 타일의 기본 크기
+    /// </summary>
     public const float BasicCellSize = 3f;
 
+    /// <summary>
+    /// 그리드 맵 타일의 한 변에서의 개수
+    /// </summary>
     [Header(" - 그리드 설정")]
-    public int GridSize;
+    public int GridSize = 1;
 
+    /// <summary>
+    /// 그리드 맵 타일이 놓일 높이
+    /// </summary>
     [SerializeField]
     private float zHeight = -0.5f;
 
+    /// <summary>
+    /// 그리드 맵 타일 하나의 크기
+    /// </summary>
     [SerializeField]
     private float cellSize = 3f;
+
+    /// <summary>
+    /// 그리드 맵 타일의 하나의 크기에 대한 프로퍼티
+    /// </summary>
     public float CellSize { get { return cellSize; } private set { cellSize = value; } }
 
+    /// <summary>
+    /// 그리드 타일 프리팹
+    /// </summary>
     [Header(" - 그리드 타일")]
-
     public GameObject gridTile;
     
+    /// <summary>
+    /// 그리드 타일들에 대한 배열
+    /// </summary>
     [SerializeField]
     public GridTile[] tiles;
     
+    /// <summary>
+    /// 그리드 타일 오브젝트 배열
+    /// </summary>
     private GameObject[] gridObjects;
+
+    /// <summary>
+    /// 플레이어의 마지막 접속 시각
+    /// </summary>
+    public string lastConnectTime;
 
     private void Awake()
     {
         Map = this;
 
         // 그리드 맵 초기 설정
-        GenerateGrid();
+        //GenerateGrid();
     }
 
 
-
+    /// <summary>
+    /// 그리드를 새로 만드는 함수
+    /// </summary>
     public void GenerateGrid()
     {
         // 내부 칸의 내용물 배열
@@ -58,7 +91,9 @@ public class GridMap : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// JSON 파일에서 그리드 맵을 불러온 이후에 그리드 맵을 재생성하는 함수
+    /// </summary>
     public void LoadGrid()
     {
         // 그리드 중앙 좌표
@@ -97,7 +132,10 @@ public class GridMap : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// 그리드의 크기를 재조절하는 함수
+    /// </summary>
+    /// <param name="newGridSize"></param>
     public void ResizeGrid(int newGridSize)
     {
         // 내부 칸의 내용물 배열
@@ -138,6 +176,25 @@ public class GridMap : MonoBehaviour
         tiles = newTiles;
         gridObjects = newgridObjects;
         GridSize = newGridSize;
+
+        // 맵 배경 오브젝트 새로 활성화
+        for(int i = 1; i <= 10; i++)
+        {
+            if(i == 10)
+            {
+                InGameManager.inGameManager.BackGroud[i - 2].SetActive(true);
+                continue;
+            }
+
+            if(i == InGameManager.inGameManager.ItemGameManager.UserLevel)
+            {
+                InGameManager.inGameManager.BackGroud[i-1].SetActive(true);
+            }
+            else
+            {
+                InGameManager.inGameManager.BackGroud[i-1].SetActive(false);
+            }
+        }
     }
 
 
@@ -146,12 +203,12 @@ public class GridMap : MonoBehaviour
     /// </summary>
     /// <param name="x">그리드 내 x좌표</param>
     /// <param name="y">그리드 내 y좌표</param>
-    /// <param name="size">현재 그리드의 크기</param>
+    /// <param name="size">새 그리드의 크기</param>
     private GameObject CreateNullTile(int x, int y, int size)
     {
         // 위치 설정
         // 그리드 좌표 : (((xSize - 1) / 2f - x) * cellSize, zHeight, ((ySize - 1) / 2f - y) * cellSize)
-        Vector3 pos = GettingGridPos(y * GridSize + x).Value;
+        Vector3 pos = GettingGridPos(y * size + x, size).Value;
         Quaternion rot = Quaternion.Euler(90, 0, 0);
 
         // 그리드 타일 생성
@@ -176,6 +233,7 @@ public class GridMap : MonoBehaviour
         return tile;
     }
 
+    #region GridMap Get_IDX/POS_Method
 
     /// <summary>
     /// 주어진 좌표로 grid의 어느 인덱스에 존재하는지 반환하는 함수
@@ -202,37 +260,23 @@ public class GridMap : MonoBehaviour
         return y * GridSize + x;
     }
 
-
-    public Vector3? GettingGridPos(int idx)
+    /// <summary>
+    /// 인덱스 번호로 해당 그리드의 위치를 반환하는 함수
+    /// </summary>
+    /// <param name="idx">해당 그리드 타일의 인덱스 번호</param>
+    /// <returns></returns>
+    public Vector3? GettingGridPos(int idx, int size)
     {
-        if(idx < 0 || idx > GridSize * GridSize)
+        if(idx < 0 || idx > size * size)
         {
             return null;
         }
 
-        int x = idx % GridSize;
-        int y = idx / GridSize;
+        int x = idx % size;
+        int y = idx / size;
 
-        return new Vector3(((GridSize - 1) / 2f - x) * cellSize, zHeight, ((GridSize - 1) / 2f - y) * cellSize);
+        return new Vector3(((size - 1) / 2f - x) * cellSize, zHeight, ((size - 1) / 2f - y) * cellSize);
     }
-
-
-    public Vector3? GettingGridPos(int x, int y)
-    {
-        if(x < 0 || x >= GridSize)
-        {
-            return null;
-        }
-
-        if(y < 0 || y >= GridSize)
-        {
-            return null;
-        }
-
-        return new Vector3(((GridSize - 1) / 2f - x) * cellSize, zHeight, ((GridSize - 1) / 2f - y) * cellSize);
-    }
-
-
 
     /// <summary>
     /// 그리드 내용물 배열에 값을 변경하는 함수
@@ -251,19 +295,11 @@ public class GridMap : MonoBehaviour
         Debug.Log(" - buidings[" + (idx % GridSize) + ", " + (idx / GridSize) + "] = " + newTiles.ToString());
     }
 
-    
-    public void ChangeGridContent(int x, int y, GridTile newTiles)
-    {
-        if(x < 0 || y < 0 || x >= GridSize || y >= GridSize)
-        {
-            return;
-        }
-
-        tiles[y * GridSize + x] = newTiles;
-
-        Debug.Log(" - buidings[" + x + ", " + y + "] = " + newTiles.ToString());
-    }
-
+    /// <summary>
+    /// 그리드 내용물을 변경하는 함수
+    /// </summary>
+    /// <param name="pos">찾고자 하는 위치</param>
+    /// <param name="newTiles">변경하고자 하는 내용</param>
     public void ChangeGridContent(Vector3 pos, GridTile newTiles)
     {
         int idx = GettingGridIdx(pos);
@@ -277,4 +313,6 @@ public class GridMap : MonoBehaviour
 
         Debug.Log(" - buidings[" + (idx % GridSize) + ", " + (idx / GridSize) + "] = " + newTiles.ToString());
     }
+
+    #endregion
 }
