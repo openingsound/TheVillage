@@ -38,12 +38,6 @@ public class GridMap : MonoBehaviour
     /// 그리드 맵 타일의 하나의 크기에 대한 프로퍼티
     /// </summary>
     public float CellSize { get { return cellSize; } private set { cellSize = value; } }
-
-    /// <summary>
-    /// 그리드 타일 프리팹
-    /// </summary>
-    [Header(" - 그리드 타일")]
-    public GameObject gridTile;
     
     /// <summary>
     /// 그리드 타일들에 대한 배열
@@ -178,14 +172,8 @@ public class GridMap : MonoBehaviour
         GridSize = newGridSize;
 
         // 맵 배경 오브젝트 새로 활성화
-        for(int i = 1; i <= 10; i++)
+        for(int i = 1; i < 10; i++)
         {
-            if(i == 10)
-            {
-                InGameManager.inGameManager.BackGroud[i - 2].SetActive(true);
-                continue;
-            }
-
             if(i == InGameManager.inGameManager.ItemGameManager.UserLevel)
             {
                 InGameManager.inGameManager.BackGroud[i-1].SetActive(true);
@@ -194,6 +182,11 @@ public class GridMap : MonoBehaviour
             {
                 InGameManager.inGameManager.BackGroud[i-1].SetActive(false);
             }
+        }
+
+        if (InGameManager.inGameManager.ItemGameManager.UserLevel == 10)
+        {
+            InGameManager.inGameManager.BackGroud[InGameManager.inGameManager.ItemGameManager.UserLevel - 2].SetActive(true);
         }
     }
 
@@ -212,7 +205,7 @@ public class GridMap : MonoBehaviour
         Quaternion rot = Quaternion.Euler(90, 0, 0);
 
         // 그리드 타일 생성
-        GameObject tile = Instantiate(gridTile, pos, rot);
+        GameObject tile = Instantiate(InGameManager.inGameManager.gridTile, pos, rot);
 
         tile.transform.localScale = new Vector3(cellSize, cellSize, cellSize);
 
@@ -228,7 +221,7 @@ public class GridMap : MonoBehaviour
         // 그리드 값 초기화
         //tiles[y * size + x] = nullTile;
 
-        Debug.Log("Create Tile[" + x + ", " + y + "] - null Tile");
+        //Debug.Log("Create Tile[" + x + ", " + y + "] - null Tile");
 
         return tile;
     }

@@ -11,9 +11,14 @@ public class InGameManager : MonoBehaviour
 
     public Test_Json Json;
 
+    /// <summary>
+    /// 그리드 타일 프리팹
+    /// </summary>
+    public GameObject gridTile;
+
     public List<GameObject> BackGroud = new List<GameObject>();
 
-    private void Awake()
+    private void Start()
     {
         inGameManager = this;
 

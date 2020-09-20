@@ -31,9 +31,9 @@ public class Test_Json : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        savePath = Application.dataPath;
+        savePath = Application.persistentDataPath;
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public class Test_Json : MonoBehaviour
     /// </summary>
     public void OnLoadJson()
     {
-        print("파일 경로 : " + string.Format("{0}/{1}.json", savePath, "GridMapJson"));
+        print("파일 경로 : " + string.Format("{0}/{1}.txt", savePath, "GridMapJson"));
 
         // GridMap은 MonoBehaviour을 상속하는 컴포넌트이므로 별도로 불러온다
         LoadMapJsonFile(savePath, "GridMapJson");
@@ -121,32 +121,13 @@ public class Test_Json : MonoBehaviour
     /// <param name="jsonData">json으로 변환된 데이터</param>
     public void CreateJsonFile(string path, string fileName, string jsonData)
     {
-        // 파일 쓰기를 위한 파일 스트림 객체 생성
-        FileStream fileStream; 
-            
-        if(new FileInfo(string.Format("{0}/{1}.json", path, fileName)).Exists)
-        {
-            fileStream = new FileStream(string.Format("{0}/{1}.json", path, fileName), FileMode.Truncate, FileAccess.Write);
-        }
-        else
-        {
-            fileStream = new FileStream(string.Format("{0}/{1}.json", path, fileName), FileMode.CreateNew, FileAccess.Write);
-        }
-
-        
-
-        // 쓸 데이터를 byte형식으로 변환
-        byte[] data = System.Text.Encoding.UTF8.GetBytes(jsonData);
-
-        // 데이터 쓰기
-        fileStream.Write(data, 0, data.Length);
-
-        // 파일 닫기
-        fileStream.Close();
-
+        // 텍스트 파일 생성
+        File.WriteAllText(string.Format("{0}/{1}.txt", path, fileName), jsonData);
 
         // (디버깅용) Json 파일의 경로 출력
-        Debug.Log("Create File Success! ) Path : " + string.Format("{0}/{1}.json", path, fileName));
+        Debug.Log("Create File Success! ) Path : " + string.Format("{0}/{1}.txt", path, fileName));
+
+        Debug.Log("Create File Success! ) 생성여부 : " + new FileInfo(string.Format("{0}/{1}.txt", path, fileName)).Exists);
     }
 
     /// <summary>
@@ -158,30 +139,21 @@ public class Test_Json : MonoBehaviour
     /// <returns>JSON</returns>
     public T LoadJsonFile<T>(string path, string fileName)
     {
-        // 만일 해당 경로에 Json 파일이 존재하지 않는다면
-        if(!File.Exists(string.Format("{0}/{1}.json", path, fileName)))
-        {
-            Debug.LogError("Load Json Error ) 해당 경로에 Json 파일이 존재하지 않습니다!");
+        //// 만일 해당 경로에 Json 파일이 존재하지 않는다면
+        //if(File.Exists(string.Format("{0}/{1}.txt", path, fileName)) == false)
+        //{
+        //    Debug.LogError("Load Json Error ) 해당 경로에 Json 파일이 존재하지 않습니다!");
 
-            // 기본값 출력
-            return default;
+        //    // 기본값 출력
+        //    return default;
+        //}
+
+        if (!File.Exists(string.Format("{0}/{1}.txt", path, fileName))) 
+        {
+            CreateJsonFile(path, fileName, "");
         }
 
-        // 파일 읽기를 위한 파일 스트림 객체 생성
-        FileStream fileStream = new FileStream(string.Format("{0}/{1}.json", path, fileName), FileMode.Open);
-
-        // 파일 데이터를 받을 byte배열 선언
-        byte[] data = new byte[fileStream.Length];
-
-        // 파일 데이터 읽기
-        fileStream.Read(data, 0, data.Length);
-
-        // 파일 닫기
-        fileStream.Close();
-
-        // jsonData를 문자열로 변환
-        string jsonData = System.Text.Encoding.UTF8.GetString(data);
-
+        string jsonData = File.ReadAllText(string.Format("{0}/{1}.txt", path, fileName));
 
         // (디버깅용) 로드된 Json 문자열을 출력
         Debug.Log("Load File Success! ) " + jsonData);
@@ -199,34 +171,18 @@ public class Test_Json : MonoBehaviour
     /// <param name="fileName">Json 파일의 이름</param>
     public void LoadMapJsonFile(string path, string fileName)
     {
-        // 만일 해당 경로에 Json 파일이 존재하지 않는다면
-        if (File.Exists(string.Format("{0}/{1}.json", path, fileName)) == false)
+        if (!File.Exists(string.Format("{0}/{1}.txt", path, fileName)))
         {
             Debug.Log("Load Json Error ) 해당 경로에 Json 파일이 존재하지 않습니다!");
 
             return;
         }
 
-
         /* Json 파일 읽기 */
 
-        // 파일 읽기를 위한 파일 스트림 객체 생성
-        FileStream fileStream = new FileStream(string.Format("{0}/{1}.json", path, fileName), FileMode.Open);
-
-        // 파일 데이터를 받을 byte배열 선언
-        byte[] data = new byte[fileStream.Length];
-
-        // 파일 데이터 읽기
-        fileStream.Read(data, 0, data.Length);
-
-        // 파일 닫기
-        fileStream.Close();
-
-        // jsonData를 문자열로 변환
-        string jsonData = System.Text.Encoding.UTF8.GetString(data);
+        string jsonData = File.ReadAllText(string.Format("{0}/{1}.txt", path, fileName));
 
         Debug.Log("Load File Success! ) " + jsonData);
-
 
         /* <GridMap> 컴포넌트에 정보 덮어쓰기 */
 
