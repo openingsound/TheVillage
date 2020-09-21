@@ -288,8 +288,10 @@ public class InputManager : MonoBehaviour
         {
             if(Input.GetTouch(0).phase == TouchPhase.Began)
             {
+
                 // 시작점은 현재 마우스 클릭을 시작한 위치로 함
-                StartPos = TouchScreen(Input.GetTouch(0).position).point;
+                StartPos = Input.GetTouch(0).position;
+                
 
                 // 시작점이 null이면 인식을 끝내도 됨
                 if (StartPos == null)
@@ -307,10 +309,37 @@ public class InputManager : MonoBehaviour
                     // 외부에서 보여지는 상태는 뗄때가 클릭 상태임
                     State = InputState.CLICK;
 
-                    selectedObject = TouchScreen(Input.mousePosition).collider.gameObject;
+                    selectPos = TouchScreen(Input.GetTouch(0).position).point;
+
+                    selectedObject = TouchScreen(Input.GetTouch(0).position).collider.gameObject;
                     Debug.Log("Select Object : " + selectedObject.tag);
 
-                    TargetPos = new Vector3((((int)(StartPos.Value.x + 1.5f)) / 3) * 3, 0.51f, (((int)(StartPos.Value.z + 1.5f)) / 3) * 3);
+                    float targetX, targetZ;
+
+                    if (selectPos.x > -1 * 0.5f * GridMap.Map.CellSize)
+                    {
+                        targetX = (((int)(selectPos.x + 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
+                    }
+                    else
+                    {
+                        targetX = (((int)(selectPos.x - 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
+                    }
+
+                    if (selectPos.z > -1.5f)
+                    {
+                        targetZ = (((int)(selectPos.z + 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
+                    }
+                    else
+                    {
+                        targetZ = (((int)(selectPos.z - 0.5f * GridMap.Map.CellSize)) / ((int)GridMap.Map.CellSize)) * GridMap.Map.CellSize;
+                    }
+
+                    TargetPos = new Vector3(targetX, selectPos.y, targetZ);
+
+                    Debug.Log(" - TargetPos : " + TargetPos.ToString());
+
+                    int idx = GridMap.Map.GettingGridIdx(TargetPos);
+                    Debug.Log(" - Grid[" + (idx % GridMap.Map.GridSize) + ", " + (idx / GridMap.Map.GridSize) + "]");
                 }
             }
             else if(Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(0).phase == TouchPhase.Stationary)
@@ -339,7 +368,7 @@ public class InputManager : MonoBehaviour
 
 
                 // 시작점과 끝점의 차이가 없다면 일반 클릭으로 인식
-                if (StartPos.Value == endPos.Value)
+                if (StartPos == EndPos)
                 {
                     return;
                 }
